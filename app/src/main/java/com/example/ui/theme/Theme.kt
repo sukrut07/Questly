@@ -10,15 +10,15 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.ui.graphics.Color
 
 private val QuestlyDarkColorScheme = darkColorScheme(
-    primary = PrimaryViolet,
+    primary = DarkPrimaryAccent,
     onPrimary = Color(0xFF0F0B24),
     primaryContainer = Color(0xFF2E2754),
     onPrimaryContainer = Color(0xFFEADBFF),
-    secondary = SecondaryBlue,
+    secondary = DarkSecondaryAccent,
     onSecondary = Color(0xFF003355),
     secondaryContainer = Color(0xFF163E5E),
     onSecondaryContainer = Color(0xFFCFE5FF),
-    tertiary = GoldAchievement,
+    tertiary = DarkAchievementGold,
     onTertiary = Color(0xFF3E2E00),
     tertiaryContainer = Color(0xFF5A4300),
     onTertiaryContainer = Color(0xFFFFE08B),
@@ -29,20 +29,20 @@ private val QuestlyDarkColorScheme = darkColorScheme(
     surfaceVariant = DarkCardSurface,
     onSurfaceVariant = DarkTextSecondary,
     outline = DarkBorder,
-    error = ErrorRed,
+    error = DarkError,
     onError = Color.White
 )
 
 private val QuestlyLightColorScheme = lightColorScheme(
-    primary = PrimaryVioletLight,
+    primary = LightPrimaryAccent,
     onPrimary = Color.White,
     primaryContainer = Color(0xFFEADBFF),
     onPrimaryContainer = Color(0xFF2E2754),
-    secondary = Color(0xFF026AA7),
+    secondary = LightSecondaryAccent,
     onSecondary = Color.White,
     secondaryContainer = Color(0xFFD4EDFF),
     onSecondaryContainer = Color(0xFF003355),
-    tertiary = GoldAchievementLight,
+    tertiary = LightAchievementGold,
     onTertiary = Color.White,
     tertiaryContainer = Color(0xFFFFE8B3),
     onTertiaryContainer = Color(0xFF3E2E00),
@@ -53,7 +53,7 @@ private val QuestlyLightColorScheme = lightColorScheme(
     surfaceVariant = LightCardSurface,
     onSurfaceVariant = LightTextSecondary,
     outline = LightBorder,
-    error = ErrorRed,
+    error = LightError,
     onError = Color.White
 )
 
@@ -66,46 +66,54 @@ object QuestlyThemeTokens {
 
 @Composable
 fun QuestlyTheme(
-    themePreference: String = "dark", // "dark", "light", "system"
+    themePreference: String = "dark", // "dark", "light", "system", etc.
     content: @Composable () -> Unit
 ) {
     val isSystemDark = isSystemInDarkTheme()
-    val isDark = when (themePreference) {
-        "light" -> false
-        "dark" -> true
+    val isDark = when (themePreference.lowercase()) {
+        "light", "light clean" -> false
+        "dark", "dark rpg", "midnight" -> true
         else -> isSystemDark
     }
 
     val customColors = if (isDark) {
         QuestlyCustomColors(
             background = DarkBackground,
+            secondaryBackground = DarkSecondaryBackground,
             surface = DarkSurface,
+            secondarySurface = DarkElevatedSurface,
             cardSurface = DarkCardSurface,
             elevatedSurface = DarkElevatedSurface,
             border = DarkBorder,
             primaryText = DarkTextPrimary,
             secondaryText = DarkTextSecondary,
             mutedText = DarkTextMuted,
-            primaryAccent = PrimaryViolet,
-            secondaryAccent = SecondaryBlue,
-            success = SuccessGreen,
-            gold = GoldAchievement,
+            primaryAccent = DarkPrimaryAccent,
+            secondaryAccent = DarkSecondaryAccent,
+            success = DarkSuccess,
+            gold = DarkAchievementGold,
+            warning = DarkWarning,
+            error = DarkError,
             isDark = true
         )
     } else {
         QuestlyCustomColors(
             background = LightBackground,
+            secondaryBackground = LightSecondarySurface,
             surface = LightSurface,
+            secondarySurface = LightElevatedSurface,
             cardSurface = LightCardSurface,
             elevatedSurface = LightElevatedSurface,
             border = LightBorder,
             primaryText = LightTextPrimary,
             secondaryText = LightTextSecondary,
             mutedText = LightTextMuted,
-            primaryAccent = PrimaryVioletLight,
-            secondaryAccent = Color(0xFF026AA7),
-            success = SuccessGreenLight,
-            gold = GoldAchievementLight,
+            primaryAccent = LightPrimaryAccent,
+            secondaryAccent = LightSecondaryAccent,
+            success = LightSuccess,
+            gold = LightAchievementGold,
+            warning = LightWarning,
+            error = LightError,
             isDark = false
         )
     }

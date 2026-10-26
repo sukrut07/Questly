@@ -69,11 +69,13 @@ import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
+import com.example.ui.theme.QuestlyThemeTokens
+
 @Composable
 fun QuestlyCard(
     modifier: Modifier = Modifier,
-    backgroundColor: Color = DarkCardSurface,
-    borderColor: Color = DarkBorder,
+    backgroundColor: Color = QuestlyThemeTokens.colors.cardSurface,
+    borderColor: Color = QuestlyThemeTokens.colors.border,
     onClick: (() -> Unit)? = null,
     content: @Composable () -> Unit
 ) {
@@ -99,12 +101,13 @@ fun XpProgressBar(
     stage: ProgressionStage,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val animatedProgress by animateFloatAsState(targetValue = progressPercent, label = "xp_progress")
 
     QuestlyCard(
         modifier = modifier.fillMaxWidth(),
-        backgroundColor = DarkCardSurface,
-        borderColor = PrimaryViolet.copy(alpha = 0.35f)
+        backgroundColor = colors.cardSurface,
+        borderColor = colors.primaryAccent.copy(alpha = 0.35f)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -116,7 +119,7 @@ fun XpProgressBar(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Brush.horizontalGradient(listOf(PrimaryViolet, SecondaryBlue)))
+                            .background(Brush.horizontalGradient(listOf(colors.primaryAccent, colors.secondaryAccent)))
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Text(
@@ -131,7 +134,7 @@ fun XpProgressBar(
                         text = stage.stageName.uppercase(),
                         fontSize = 12.sp,
                         fontWeight = FontWeight.SemiBold,
-                        color = SecondaryBlue,
+                        color = colors.secondaryAccent,
                         letterSpacing = 1.sp
                     )
                 }
@@ -139,7 +142,7 @@ fun XpProgressBar(
                     text = "$currentXp / $requiredXp XP",
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
 
@@ -150,7 +153,7 @@ fun XpProgressBar(
                     .fillMaxWidth()
                     .height(8.dp)
                     .clip(RoundedCornerShape(4.dp))
-                    .background(DarkElevatedSurface)
+                    .background(colors.elevatedSurface)
             ) {
                 Box(
                     modifier = Modifier
@@ -159,7 +162,7 @@ fun XpProgressBar(
                         .clip(RoundedCornerShape(4.dp))
                         .background(
                             Brush.horizontalGradient(
-                                listOf(PrimaryViolet, SecondaryBlue, SuccessGreen)
+                                listOf(colors.primaryAccent, colors.secondaryAccent, colors.success)
                             )
                         )
                 )
@@ -174,12 +177,13 @@ fun XpProgressBar(
                 Text(
                     text = "${(animatedProgress * 100).toInt()}% towards Level ${level + 1}",
                     fontSize = 11.sp,
-                    color = TextMuted
+                    color = colors.mutedText
                 )
                 Text(
-                    text = "+${requiredXp - currentXp} XP needed",
+                    text = "+${(requiredXp - currentXp).coerceAtLeast(0)} XP needed",
                     fontSize = 11.sp,
-                    color = PrimaryViolet
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.primaryAccent
                 )
             }
         }
@@ -192,10 +196,11 @@ fun StreakFlameBadge(
     longestStreak: Int,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     QuestlyCard(
         modifier = modifier,
-        backgroundColor = DarkCardSurface,
-        borderColor = WarningOrange.copy(alpha = 0.4f)
+        backgroundColor = colors.cardSurface,
+        borderColor = colors.warning.copy(alpha = 0.4f)
     ) {
         Row(
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
@@ -205,13 +210,13 @@ fun StreakFlameBadge(
                 modifier = Modifier
                     .size(36.dp)
                     .clip(CircleShape)
-                    .background(WarningOrange.copy(alpha = 0.15f)),
+                    .background(colors.warning.copy(alpha = 0.15f)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.LocalFireDepartment,
                     contentDescription = "Streak flame",
-                    tint = WarningOrange,
+                    tint = colors.warning,
                     modifier = Modifier.size(22.dp)
                 )
             }
@@ -221,12 +226,12 @@ fun StreakFlameBadge(
                     text = "$currentStreak Day Streak",
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "Best: $longestStreak days",
                     fontSize = 11.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
         }
@@ -235,6 +240,7 @@ fun StreakFlameBadge(
 
 @Composable
 fun CategoryBadge(category: QuestCategory, modifier: Modifier = Modifier) {
+    val colors = QuestlyThemeTokens.colors
     val icon = when (category) {
         QuestCategory.CODING -> Icons.Default.Code
         QuestCategory.STUDY -> Icons.Default.School
@@ -249,21 +255,21 @@ fun CategoryBadge(category: QuestCategory, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(6.dp))
-            .background(DarkElevatedSurface)
+            .background(colors.elevatedSurface)
             .padding(horizontal = 6.dp, vertical = 2.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = icon,
             contentDescription = category.displayName,
-            tint = SecondaryBlue,
+            tint = colors.secondaryAccent,
             modifier = Modifier.size(12.dp)
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = category.displayName,
             fontSize = 10.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             fontWeight = FontWeight.Medium
         )
     }
@@ -271,11 +277,12 @@ fun CategoryBadge(category: QuestCategory, modifier: Modifier = Modifier) {
 
 @Composable
 fun DifficultyBadge(difficulty: QuestDifficulty, modifier: Modifier = Modifier) {
+    val colors = QuestlyThemeTokens.colors
     val color = when (difficulty) {
-        QuestDifficulty.EASY -> SuccessGreen
-        QuestDifficulty.MEDIUM -> SecondaryBlue
-        QuestDifficulty.HARD -> WarningOrange
-        QuestDifficulty.EPIC -> GoldAchievement
+        QuestDifficulty.EASY -> colors.success
+        QuestDifficulty.MEDIUM -> colors.secondaryAccent
+        QuestDifficulty.HARD -> colors.warning
+        QuestDifficulty.EPIC -> colors.gold
     }
 
     Text(
@@ -285,7 +292,7 @@ fun DifficultyBadge(difficulty: QuestDifficulty, modifier: Modifier = Modifier) 
         color = color,
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
-            .background(color.copy(alpha = 0.12f))
+            .background(color.copy(alpha = 0.15f))
             .padding(horizontal = 6.dp, vertical = 2.dp)
     )
 }
@@ -297,6 +304,7 @@ fun QuestItemCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val isCompleted = quest.status == QuestStatus.COMPLETED
 
     QuestlyCard(
@@ -304,8 +312,8 @@ fun QuestItemCard(
             .fillMaxWidth()
             .testTag("quest_card_${quest.id}"),
         onClick = onClick,
-        backgroundColor = if (isCompleted) DarkCardSurface.copy(alpha = 0.6f) else DarkCardSurface,
-        borderColor = if (isCompleted) SuccessGreen.copy(alpha = 0.3f) else DarkBorder
+        backgroundColor = if (isCompleted) colors.cardSurface.copy(alpha = 0.65f) else colors.cardSurface,
+        borderColor = if (isCompleted) colors.success.copy(alpha = 0.35f) else colors.border
     ) {
         Row(
             modifier = Modifier.padding(14.dp),
@@ -316,10 +324,10 @@ fun QuestItemCard(
                 modifier = Modifier
                     .size(28.dp)
                     .clip(CircleShape)
-                    .background(if (isCompleted) SuccessGreen else DarkElevatedSurface)
+                    .background(if (isCompleted) colors.success else colors.elevatedSurface)
                     .border(
                         1.dp,
-                        if (isCompleted) SuccessGreen else PrimaryViolet.copy(alpha = 0.5f),
+                        if (isCompleted) colors.success else colors.primaryAccent.copy(alpha = 0.5f),
                         CircleShape
                     )
                     .clickable { onCompleteToggle() }
@@ -330,7 +338,7 @@ fun QuestItemCard(
                     Icon(
                         imageVector = Icons.Default.Check,
                         contentDescription = "Completed",
-                        tint = DarkBackground,
+                        tint = if (colors.isDark) colors.background else Color.White,
                         modifier = Modifier.size(16.dp)
                     )
                 }
@@ -350,7 +358,11 @@ fun QuestItemCard(
                             text = "URGENT",
                             fontSize = 9.sp,
                             fontWeight = FontWeight.Bold,
-                            color = ErrorRed
+                            color = colors.error,
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(4.dp))
+                                .background(colors.error.copy(alpha = 0.15f))
+                                .padding(horizontal = 5.dp, vertical = 1.dp)
                         )
                     }
                 }
@@ -361,7 +373,7 @@ fun QuestItemCard(
                     text = quest.title,
                     fontWeight = FontWeight.SemiBold,
                     fontSize = 15.sp,
-                    color = if (isCompleted) TextMuted else TextPrimary,
+                    color = if (isCompleted) colors.mutedText else colors.primaryText,
                     textDecoration = if (isCompleted) TextDecoration.LineThrough else TextDecoration.None,
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis
@@ -372,7 +384,7 @@ fun QuestItemCard(
                     Text(
                         text = quest.description,
                         fontSize = 12.sp,
-                        color = TextSecondary,
+                        color = colors.secondaryText,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -388,14 +400,14 @@ fun QuestItemCard(
                         Icon(
                             imageVector = Icons.Default.Timer,
                             contentDescription = "Duration",
-                            tint = TextMuted,
+                            tint = colors.mutedText,
                             modifier = Modifier.size(12.dp)
                         )
                         Spacer(modifier = Modifier.width(3.dp))
                         Text(
                             text = "${quest.estimatedMinutes}m",
                             fontSize = 11.sp,
-                            color = TextMuted
+                            color = colors.mutedText
                         )
                     }
 
@@ -403,7 +415,7 @@ fun QuestItemCard(
                         text = "+${quest.xpReward} XP",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = if (isCompleted) SuccessGreen else GoldAchievement
+                        color = if (isCompleted) colors.success else colors.gold
                     )
                 }
             }

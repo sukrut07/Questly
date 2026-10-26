@@ -99,16 +99,17 @@ fun QuestlyNavHost(
 
     val showBottomBar = currentRoute in bottomNavItems.map { it.route }
     val startDestination = if (isOnboardingCompleted) Screen.Home.route else Screen.Onboarding.route
+    val colors = com.example.ui.theme.QuestlyThemeTokens.colors
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = DarkBackground,
+        containerColor = colors.background,
         snackbarHost = { SnackbarHost(snackbarHostState) },
         bottomBar = {
             if (showBottomBar) {
                 NavigationBar(
-                    containerColor = DarkCardSurface,
-                    contentColor = PrimaryViolet,
+                    containerColor = colors.cardSurface,
+                    contentColor = colors.primaryAccent,
                     tonalElevation = 8.dp
                 ) {
                     bottomNavItems.forEach { item ->
@@ -119,7 +120,7 @@ fun QuestlyNavHost(
                                     Icon(
                                         imageVector = it,
                                         contentDescription = item.title,
-                                        tint = if (isSelected) PrimaryViolet else TextMuted
+                                        tint = if (isSelected) colors.primaryAccent else colors.mutedText
                                     )
                                 }
                             },
@@ -127,7 +128,8 @@ fun QuestlyNavHost(
                                 Text(
                                     text = item.title,
                                     fontSize = 11.sp,
-                                    color = if (isSelected) PrimaryViolet else TextMuted
+                                    fontWeight = if (isSelected) androidx.compose.ui.text.font.FontWeight.Bold else androidx.compose.ui.text.font.FontWeight.Normal,
+                                    color = if (isSelected) colors.primaryAccent else colors.mutedText
                                 )
                             },
                             selected = isSelected,
@@ -143,9 +145,9 @@ fun QuestlyNavHost(
                                 }
                             },
                             colors = NavigationBarItemDefaults.colors(
-                                indicatorColor = DarkElevatedSurface,
-                                selectedIconColor = PrimaryViolet,
-                                unselectedIconColor = TextMuted
+                                indicatorColor = colors.elevatedSurface,
+                                selectedIconColor = colors.primaryAccent,
+                                unselectedIconColor = colors.mutedText
                             ),
                             modifier = Modifier.testTag("nav_item_${item.route}")
                         )

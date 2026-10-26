@@ -58,17 +58,20 @@ import com.example.ui.theme.TextPrimary
 import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
 
+import com.example.ui.theme.QuestlyThemeTokens
+
 @Composable
 fun LivingWorldCard(
     streakInfo: StreakInfo,
     modifier: Modifier = Modifier
 ) {
     val worldStage = streakInfo.worldStage
+    val colors = QuestlyThemeTokens.colors
 
     // Particle and glow animations
     val infiniteTransition = rememberInfiniteTransition(label = "world_anim")
     val pulseGlow by infiniteTransition.animateFloat(
-        initialValue = 0.4f,
+        initialValue = 0.45f,
         targetValue = 0.95f,
         animationSpec = infiniteRepeatable(
             animation = tween(2200, easing = FastOutSlowInEasing),
@@ -90,13 +93,13 @@ fun LivingWorldCard(
         modifier = modifier
             .fillMaxWidth()
             .testTag("living_world_hero_card"),
-        backgroundColor = DarkCardSurface,
+        backgroundColor = colors.cardSurface,
         borderColor = when (worldStage) {
-            WorldStage.FORGOTTEN_OUTPOST -> DarkBorder
-            WorldStage.THE_AWAKENING -> PrimaryViolet.copy(alpha = 0.5f)
-            WorldStage.THE_GROWING_REALM -> SecondaryBlue.copy(alpha = 0.6f)
-            WorldStage.THE_RADIANT_CITADEL -> GoldAchievement.copy(alpha = 0.7f)
-            WorldStage.THE_CELESTIAL_KINGDOM -> PrimaryViolet.copy(alpha = 0.9f)
+            WorldStage.FORGOTTEN_OUTPOST -> colors.border
+            WorldStage.THE_AWAKENING -> colors.primaryAccent.copy(alpha = 0.5f)
+            WorldStage.THE_GROWING_REALM -> colors.secondaryAccent.copy(alpha = 0.6f)
+            WorldStage.THE_RADIANT_CITADEL -> colors.gold.copy(alpha = 0.7f)
+            WorldStage.THE_CELESTIAL_KINGDOM -> colors.primaryAccent.copy(alpha = 0.9f)
         }
     ) {
         Column {
@@ -104,7 +107,7 @@ fun LivingWorldCard(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(170.dp)
+                    .height(180.dp)
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
                     .background(
                         when (worldStage) {
@@ -403,22 +406,23 @@ fun LivingWorldCard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(DarkCardSurface.copy(alpha = 0.85f))
+                            .background(colors.cardSurface.copy(alpha = 0.90f))
+                            .border(1.dp, colors.border.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
                             .padding(horizontal = 10.dp, vertical = 4.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.AutoAwesome,
                                 contentDescription = "Stage",
-                                tint = GoldAchievement,
+                                tint = colors.gold,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(6.dp))
                             Text(
-                                text = "STAGE ${worldStage.stageNumber}: ${worldStage.title.uppercase()}",
+                                text = "MY WORLD • STAGE ${worldStage.stageNumber}",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary,
+                                color = colors.primaryText,
                                 letterSpacing = 0.5.sp
                             )
                         }
@@ -427,15 +431,15 @@ fun LivingWorldCard(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(WarningOrange.copy(alpha = 0.2f))
-                            .border(1.dp, WarningOrange.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                            .background(colors.warning.copy(alpha = 0.18f))
+                            .border(1.dp, colors.warning.copy(alpha = 0.5f), RoundedCornerShape(8.dp))
                             .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.LocalFireDepartment,
                                 contentDescription = "Streak",
-                                tint = WarningOrange,
+                                tint = colors.warning,
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -443,7 +447,7 @@ fun LivingWorldCard(
                                 text = "${streakInfo.currentStreak}d Streak",
                                 fontSize = 11.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = WarningOrange
+                                color = colors.warning
                             )
                         }
                     }
@@ -453,16 +457,24 @@ fun LivingWorldCard(
             // Information and milestone text below canvas
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
-                    text = worldStage.subtitle,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    color = TextPrimary
+                    text = worldStage.title.uppercase(),
+                    fontSize = 15.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.primaryText,
+                    letterSpacing = 0.5.sp
+                )
+                Text(
+                    text = "\"${worldStage.subtitle}\"",
+                    fontSize = 13.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colors.primaryAccent,
+                    modifier = Modifier.padding(top = 2.dp)
                 )
                 Text(
                     text = worldStage.description,
                     fontSize = 12.sp,
-                    color = TextSecondary,
-                    modifier = Modifier.padding(top = 2.dp, bottom = 10.dp)
+                    color = colors.secondaryText,
+                    modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
                 )
 
                 // Progress to next stage
@@ -484,8 +496,8 @@ fun LivingWorldCard(
                         .fillMaxWidth()
                         .height(6.dp)
                         .clip(RoundedCornerShape(3.dp)),
-                    color = PrimaryViolet,
-                    trackColor = DarkElevatedSurface
+                    color = colors.primaryAccent,
+                    trackColor = colors.elevatedSurface
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -497,13 +509,13 @@ fun LivingWorldCard(
                     Text(
                         text = worldStage.nextMilestoneDesc,
                         fontSize = 11.sp,
-                        color = TextMuted
+                        color = colors.mutedText
                     )
                     Text(
                         text = "${streakInfo.currentStreak}/$nextThreshold days",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = SecondaryBlue
+                        color = colors.secondaryAccent
                     )
                 }
             }
