@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Icon
@@ -37,17 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun AchievementsScreen(
@@ -55,13 +44,14 @@ fun AchievementsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val achievements by viewModel.achievements.collectAsState()
     val unlockedCount = achievements.count { it.isUnlocked }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp)
     ) {
         // Header
@@ -73,7 +63,7 @@ fun AchievementsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -82,12 +72,12 @@ fun AchievementsScreen(
                     text = "Hall of Achievements",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "$unlockedCount of ${achievements.size} badges unlocked",
                     fontSize = 12.sp,
-                    color = GoldAchievement
+                    color = colors.gold
                 )
             }
         }
@@ -103,8 +93,8 @@ fun AchievementsScreen(
             items(achievements) { ach ->
                 QuestlyCard(
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = DarkCardSurface,
-                    borderColor = if (ach.isUnlocked) GoldAchievement.copy(alpha = 0.4f) else DarkBorder
+                    backgroundColor = colors.cardSurface,
+                    borderColor = if (ach.isUnlocked) colors.gold.copy(alpha = 0.5f) else colors.border
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -115,15 +105,15 @@ fun AchievementsScreen(
                                 .size(48.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (ach.isUnlocked) GoldAchievement.copy(alpha = 0.2f)
-                                    else DarkElevatedSurface
+                                    if (ach.isUnlocked) colors.gold.copy(alpha = 0.2f)
+                                    else colors.elevatedSurface
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = if (ach.isUnlocked) Icons.Default.EmojiEvents else Icons.Default.Lock,
                                 contentDescription = ach.title,
-                                tint = if (ach.isUnlocked) GoldAchievement else TextMuted,
+                                tint = if (ach.isUnlocked) colors.gold else colors.mutedText,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -140,20 +130,20 @@ fun AchievementsScreen(
                                     text = ach.title,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (ach.isUnlocked) TextPrimary else TextSecondary
+                                    color = if (ach.isUnlocked) colors.primaryText else colors.secondaryText
                                 )
                                 Text(
                                     text = "+${ach.xpReward} XP",
                                     fontSize = 12.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = GoldAchievement
+                                    color = colors.gold
                                 )
                             }
 
                             Text(
                                 text = ach.description,
                                 fontSize = 12.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 modifier = Modifier.padding(vertical = 3.dp)
                             )
 
@@ -163,8 +153,8 @@ fun AchievementsScreen(
                                     .fillMaxWidth()
                                     .height(4.dp)
                                     .clip(RoundedCornerShape(2.dp)),
-                                color = if (ach.isUnlocked) SuccessGreen else SecondaryBlue,
-                                trackColor = DarkElevatedSurface
+                                color = if (ach.isUnlocked) colors.success else colors.secondaryAccent,
+                                trackColor = colors.elevatedSurface
                             )
 
                             Row(
@@ -176,13 +166,13 @@ fun AchievementsScreen(
                                 Text(
                                     text = ach.category.displayName,
                                     fontSize = 10.sp,
-                                    color = TextMuted
+                                    color = colors.mutedText
                                 )
                                 Text(
                                     text = if (ach.isUnlocked) "UNLOCKED" else "${ach.currentValue} / ${ach.targetValue}",
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = if (ach.isUnlocked) SuccessGreen else TextSecondary
+                                    color = if (ach.isUnlocked) colors.success else colors.secondaryText
                                 )
                             }
                         }

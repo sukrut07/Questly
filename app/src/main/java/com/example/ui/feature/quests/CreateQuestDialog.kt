@@ -48,18 +48,7 @@ import com.example.core.domain.XpProgressionEngine
 import com.example.core.model.QuestCategory
 import com.example.core.model.QuestDifficulty
 import com.example.core.model.QuestPriority
-import com.example.ui.components.CategoryBadge
-import com.example.ui.components.DifficultyBadge
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.ErrorRed
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun CreateQuestDialog(
@@ -74,6 +63,7 @@ fun CreateQuestDialog(
         subtasks: List<String>
     ) -> Unit
 ) {
+    val colors = QuestlyThemeTokens.colors
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf(QuestCategory.CODING) }
@@ -94,7 +84,7 @@ fun CreateQuestDialog(
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(24.dp))
                 .testTag("create_quest_dialog"),
-            color = DarkCardSurface
+            color = colors.cardSurface
         ) {
             Column(
                 modifier = Modifier
@@ -110,13 +100,13 @@ fun CreateQuestDialog(
                         text = "Craft New Quest",
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = colors.primaryText
                     )
                     IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             contentDescription = "Close",
-                            tint = TextSecondary
+                            tint = colors.secondaryText
                         )
                     }
                 }
@@ -130,25 +120,27 @@ fun CreateQuestDialog(
                         title = it
                         if (it.isNotBlank()) errorMessage = null
                     },
-                    label = { Text("Quest Title", color = TextSecondary) },
-                    placeholder = { Text("e.g. Build authentication flow", color = TextMuted) },
+                    label = { Text("Quest Title", color = colors.secondaryText) },
+                    placeholder = { Text("e.g. Build authentication flow", color = colors.mutedText) },
                     singleLine = true,
                     isError = errorMessage != null,
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("quest_title_input"),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary,
-                        focusedBorderColor = PrimaryViolet,
-                        unfocusedBorderColor = DarkBorder
+                        focusedTextColor = colors.primaryText,
+                        unfocusedTextColor = colors.primaryText,
+                        focusedBorderColor = colors.primaryAccent,
+                        unfocusedBorderColor = colors.border,
+                        focusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f),
+                        unfocusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f)
                     )
                 )
 
                 if (errorMessage != null) {
                     Text(
                         text = errorMessage!!,
-                        color = ErrorRed,
+                        color = colors.error,
                         fontSize = 12.sp,
                         modifier = Modifier.padding(top = 4.dp)
                     )
@@ -160,14 +152,16 @@ fun CreateQuestDialog(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Description & Objectives (Optional)", color = TextSecondary) },
+                    label = { Text("Description & Objectives (Optional)", color = colors.secondaryText) },
                     maxLines = 3,
                     modifier = Modifier.fillMaxWidth(),
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary,
-                        focusedBorderColor = PrimaryViolet,
-                        unfocusedBorderColor = DarkBorder
+                        focusedTextColor = colors.primaryText,
+                        unfocusedTextColor = colors.primaryText,
+                        focusedBorderColor = colors.primaryAccent,
+                        unfocusedBorderColor = colors.border,
+                        focusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f),
+                        unfocusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f)
                     )
                 )
 
@@ -178,7 +172,7 @@ fun CreateQuestDialog(
                     text = "Category Realm",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -187,7 +181,7 @@ fun CreateQuestDialog(
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                                .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                                 .clickable { selectedCategory = cat }
                                 .padding(horizontal = 10.dp, vertical = 6.dp)
                         ) {
@@ -195,7 +189,7 @@ fun CreateQuestDialog(
                                 text = cat.displayName,
                                 fontSize = 11.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) Color.White else TextSecondary
+                                color = if (isSelected) Color.White else colors.secondaryText
                             )
                         }
                     }
@@ -208,7 +202,7 @@ fun CreateQuestDialog(
                     text = "Difficulty Tier",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
@@ -221,7 +215,7 @@ fun CreateQuestDialog(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) SecondaryBlue else DarkElevatedSurface)
+                                .background(if (isSelected) colors.secondaryAccent else colors.elevatedSurface)
                                 .clickable { selectedDifficulty = diff }
                                 .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
@@ -230,7 +224,7 @@ fun CreateQuestDialog(
                                 text = diff.displayName,
                                 fontSize = 11.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) DarkCardSurface else TextSecondary
+                                color = if (isSelected) Color.White else colors.secondaryText
                             )
                         }
                     }
@@ -243,7 +237,7 @@ fun CreateQuestDialog(
                     text = "Priority Level",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(6.dp))
                 Row(
@@ -256,7 +250,7 @@ fun CreateQuestDialog(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) GoldAchievement else DarkElevatedSurface)
+                                .background(if (isSelected) colors.gold else colors.elevatedSurface)
                                 .clickable { selectedPriority = prio }
                                 .padding(vertical = 8.dp),
                             contentAlignment = Alignment.Center
@@ -265,7 +259,7 @@ fun CreateQuestDialog(
                                 text = prio.displayName,
                                 fontSize = 11.sp,
                                 fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                                color = if (isSelected) DarkCardSurface else TextSecondary
+                                color = if (isSelected) Color(0xFF181D2C) else colors.secondaryText
                             )
                         }
                     }
@@ -284,7 +278,7 @@ fun CreateQuestDialog(
                             text = "Estimated Duration",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = TextSecondary
+                            color = colors.secondaryText
                         )
                         Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
                             listOf(15, 30, 45, 60, 90).forEach { mins ->
@@ -292,7 +286,7 @@ fun CreateQuestDialog(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
-                                        .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                                        .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                                         .clickable { estimatedMinutes = mins }
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
@@ -300,7 +294,7 @@ fun CreateQuestDialog(
                                         text = "${mins}m",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (isSelected) Color.White else TextSecondary
+                                        color = if (isSelected) Color.White else colors.secondaryText
                                     )
                                 }
                             }
@@ -310,7 +304,7 @@ fun CreateQuestDialog(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(10.dp))
-                            .background(GoldAchievement.copy(alpha = 0.15f))
+                            .background(colors.gold.copy(alpha = 0.18f))
                             .padding(horizontal = 12.dp, vertical = 8.dp),
                         contentAlignment = Alignment.Center
                     ) {
@@ -318,7 +312,7 @@ fun CreateQuestDialog(
                             text = "+$calculatedXp XP",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = GoldAchievement
+                            color = colors.gold
                         )
                     }
                 }
@@ -330,7 +324,7 @@ fun CreateQuestDialog(
                     text = "Subtasks / Milestones",
                     fontSize = 12.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(6.dp))
 
@@ -341,14 +335,16 @@ fun CreateQuestDialog(
                     OutlinedTextField(
                         value = subtaskInput,
                         onValueChange = { subtaskInput = it },
-                        placeholder = { Text("Add subtask step...", color = TextMuted) },
+                        placeholder = { Text("Add subtask step...", color = colors.mutedText) },
                         singleLine = true,
                         modifier = Modifier.weight(1f),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary,
-                            focusedBorderColor = SecondaryBlue,
-                            unfocusedBorderColor = DarkBorder
+                            focusedTextColor = colors.primaryText,
+                            unfocusedTextColor = colors.primaryText,
+                            focusedBorderColor = colors.secondaryAccent,
+                            unfocusedBorderColor = colors.border,
+                            focusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f),
+                            unfocusedContainerColor = colors.elevatedSurface.copy(alpha = 0.5f)
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
@@ -363,7 +359,7 @@ fun CreateQuestDialog(
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Add subtask",
-                            tint = SecondaryBlue
+                            tint = colors.secondaryAccent
                         )
                     }
                 }
@@ -381,7 +377,7 @@ fun CreateQuestDialog(
                             Text(
                                 text = "• $item",
                                 fontSize = 12.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 modifier = Modifier.weight(1f)
                             )
                             IconButton(
@@ -391,7 +387,7 @@ fun CreateQuestDialog(
                                 Icon(
                                     imageVector = Icons.Default.Close,
                                     contentDescription = "Remove",
-                                    tint = TextMuted,
+                                    tint = colors.mutedText,
                                     modifier = Modifier.size(14.dp)
                                 )
                             }
@@ -423,7 +419,7 @@ fun CreateQuestDialog(
                         .fillMaxWidth()
                         .testTag("save_quest_button"),
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = PrimaryViolet,
+                        containerColor = colors.primaryAccent,
                         contentColor = Color.White
                     ),
                     shape = RoundedCornerShape(12.dp)

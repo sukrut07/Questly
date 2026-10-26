@@ -22,7 +22,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.FilterList
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -50,29 +49,19 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.core.model.Quest
 import com.example.core.model.QuestCategory
 import com.example.core.model.QuestStatus
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestItemCard
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun QuestsScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val allQuests by viewModel.allQuests.collectAsState()
     var selectedTab by remember { mutableIntStateOf(0) }
     val tabs = listOf("Active", "Today", "Completed", "All")
@@ -119,11 +108,11 @@ fun QuestsScreen(
 
     Scaffold(
         modifier = modifier.fillMaxSize(),
-        containerColor = DarkBackground,
+        containerColor = colors.background,
         floatingActionButton = {
             FloatingActionButton(
                 onClick = { showCreateDialog = true },
-                containerColor = PrimaryViolet,
+                containerColor = colors.primaryAccent,
                 contentColor = Color.White,
                 shape = CircleShape,
                 modifier = Modifier.testTag("quests_fab_add")
@@ -155,12 +144,12 @@ fun QuestsScreen(
                         text = "Quest Log",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = colors.primaryText
                     )
                     Text(
                         text = "${filteredQuests.size} missions listed",
                         fontSize = 12.sp,
-                        color = TextSecondary
+                        color = colors.secondaryText
                     )
                 }
             }
@@ -171,12 +160,12 @@ fun QuestsScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                placeholder = { Text("Search quests or tags...", color = TextMuted, fontSize = 13.sp) },
+                placeholder = { Text("Search quests or tags...", color = colors.mutedText, fontSize = 13.sp) },
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
                         contentDescription = "Search",
-                        tint = TextSecondary,
+                        tint = colors.secondaryText,
                         modifier = Modifier.size(18.dp)
                     )
                 },
@@ -186,7 +175,7 @@ fun QuestsScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Clear",
-                                tint = TextMuted,
+                                tint = colors.mutedText,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -197,12 +186,12 @@ fun QuestsScreen(
                     .fillMaxWidth()
                     .testTag("quests_search_input"),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedTextColor = TextPrimary,
-                    unfocusedTextColor = TextPrimary,
-                    focusedBorderColor = PrimaryViolet,
-                    unfocusedBorderColor = DarkBorder,
-                    focusedContainerColor = DarkCardSurface,
-                    unfocusedContainerColor = DarkCardSurface
+                    focusedTextColor = colors.primaryText,
+                    unfocusedTextColor = colors.primaryText,
+                    focusedBorderColor = colors.primaryAccent,
+                    unfocusedBorderColor = colors.border,
+                    focusedContainerColor = colors.cardSurface,
+                    unfocusedContainerColor = colors.cardSurface
                 ),
                 shape = RoundedCornerShape(12.dp)
             )
@@ -213,14 +202,14 @@ fun QuestsScreen(
             TabRow(
                 selectedTabIndex = selectedTab,
                 containerColor = Color.Transparent,
-                contentColor = PrimaryViolet,
+                contentColor = colors.primaryAccent,
                 indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
                         Modifier.tabIndicatorOffset(tabPositions[selectedTab]),
-                        color = PrimaryViolet
+                        color = colors.primaryAccent
                     )
                 },
-                divider = { Box(Modifier.fillMaxWidth().height(1.dp).background(DarkBorder)) }
+                divider = { Box(Modifier.fillMaxWidth().height(1.dp).background(colors.border)) }
             ) {
                 tabs.forEachIndexed { index, tabTitle ->
                     Tab(
@@ -231,7 +220,7 @@ fun QuestsScreen(
                                 text = tabTitle,
                                 fontSize = 13.sp,
                                 fontWeight = if (selectedTab == index) FontWeight.Bold else FontWeight.Medium,
-                                color = if (selectedTab == index) PrimaryViolet else TextSecondary
+                                color = if (selectedTab == index) colors.primaryAccent else colors.secondaryText
                             )
                         }
                     )
@@ -247,7 +236,7 @@ fun QuestsScreen(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(if (isAll) SecondaryBlue else DarkElevatedSurface)
+                            .background(if (isAll) colors.secondaryAccent else colors.elevatedSurface)
                             .clickable { selectedCategoryFilter = null }
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
@@ -255,7 +244,7 @@ fun QuestsScreen(
                             text = "All Categories",
                             fontSize = 11.sp,
                             fontWeight = if (isAll) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isAll) DarkCardSurface else TextSecondary
+                            color = if (isAll) Color.White else colors.secondaryText
                         )
                     }
                 }
@@ -264,7 +253,7 @@ fun QuestsScreen(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(8.dp))
-                            .background(if (isSelected) SecondaryBlue else DarkElevatedSurface)
+                            .background(if (isSelected) colors.secondaryAccent else colors.elevatedSurface)
                             .clickable { selectedCategoryFilter = cat }
                             .padding(horizontal = 10.dp, vertical = 6.dp)
                     ) {
@@ -272,7 +261,7 @@ fun QuestsScreen(
                             text = cat.displayName,
                             fontSize = 11.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) DarkCardSurface else TextSecondary
+                            color = if (isSelected) Color.White else colors.secondaryText
                         )
                     }
                 }
@@ -288,7 +277,11 @@ fun QuestsScreen(
                         .fillMaxWidth(),
                     contentAlignment = Alignment.Center
                 ) {
-                    QuestlyCard(modifier = Modifier.fillMaxWidth()) {
+                    QuestlyCard(
+                        modifier = Modifier.fillMaxWidth(),
+                        backgroundColor = colors.cardSurface,
+                        borderColor = colors.border
+                    ) {
                         Column(
                             modifier = Modifier.padding(28.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -296,7 +289,7 @@ fun QuestsScreen(
                             Icon(
                                 imageVector = Icons.Default.CheckCircle,
                                 contentDescription = "No quests",
-                                tint = SuccessGreen,
+                                tint = colors.success,
                                 modifier = Modifier.size(40.dp)
                             )
                             Spacer(modifier = Modifier.height(12.dp))
@@ -304,12 +297,12 @@ fun QuestsScreen(
                                 text = "No quests found",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = TextPrimary
+                                color = colors.primaryText
                             )
                             Text(
-                                text = "Adjust filters or tap the '+' button to forge your next challenge.",
+                                text = "Adjust filters or tap '+' to commission a new quest.",
                                 fontSize = 12.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
                         }
@@ -331,7 +324,7 @@ fun QuestsScreen(
                                 }
                             },
                             onClick = {
-                                // Can toggle or show details
+                                // Details or actions
                             }
                         )
                     }

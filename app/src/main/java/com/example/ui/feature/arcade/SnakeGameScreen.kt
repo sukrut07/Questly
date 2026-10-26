@@ -33,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -53,19 +54,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core.model.GameType
 import com.example.ui.MainViewModel
-import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.ErrorRed
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 import kotlinx.coroutines.delay
 import kotlin.random.Random
 
@@ -78,6 +67,9 @@ fun SnakeGameScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
+    val highScore by viewModel.snakeHighScore.collectAsState()
+
     val gridSize = 16
     val snake = remember {
         mutableStateListOf(
@@ -89,9 +81,9 @@ fun SnakeGameScreen(
     var food by remember { mutableStateOf(GridPoint(5, 5)) }
     var currentDirection by remember { mutableStateOf(Direction.UP) }
     var nextDirection by remember { mutableStateOf(Direction.UP) }
-    var isGameOver by remember { mutableStateOf(false) }
-    var isPlaying by remember { mutableStateOf(false) }
     var score by remember { mutableIntStateOf(0) }
+    var isPlaying by remember { mutableStateOf(false) }
+    var isGameOver by remember { mutableStateOf(false) }
     var startTime by remember { mutableStateOf(0L) }
 
     fun spawnFood() {
@@ -114,34 +106,46 @@ fun SnakeGameScreen(
         spawnFood()
     }
 
-    // Game loop
     LaunchedEffect(isPlaying, isGameOver) {
         if (isPlaying && !isGameOver) {
             while (isPlaying && !isGameOver) {
-                delay(180) // Game speed
+                delay(150)
                 currentDirection = nextDirection
+
                 val head = snake.first()
                 val newHead = when (currentDirection) {
-                    Direction.UP -> GridPoint(head.x, (head.y - 1 + gridSize) % gridSize)
-                    Direction.DOWN -> GridPoint(head.x, (head.y + 1) % gridSize)
-                    Direction.LEFT -> GridPoint((head.x - 1 + gridSize) % gridSize, head.y)
-                    Direction.RIGHT -> GridPoint((head.x + 1) % gridSize, head.y)
+                    Direction.UP -> GridPoint(head.x, head.y - 1)
+                    Direction.DOWN -> GridPoint(head.x, head.y + 1)
+                    Direction.LEFT -> GridPoint(head.x - 1, head.y)
+                    Direction.RIGHT -> GridPoint(head.x + 1, head.y)
                 }
 
-                // Self collision check
-                if (snake.dropLast(1).contains(newHead)) {
+                // Wall collision
+                if (newHead.x !in 0 until gridSize || newHead.y !in 0 until gridSize) {
                     isGameOver = true
                     isPlaying = false
                     val durationSec = ((System.currentTimeMillis() - startTime) / 1000).toInt()
                     viewModel.recordGameScore(GameType.SNAKE, score, snake.size, durationSec)
+                    break
+                }
+
+                // Self collision
+                if (snake.contains(newHead)) {
+                    isGameOver = true
+                    isPlaying = false
+                    val durationSec = ((System.currentTimeMillis() - startTime) / 1000).toInt()
+                    viewModel.recordGameScore(GameType.SNAKE, score, snake.size, durationSec)
+                    break
+                }
+
+                snake.add(0, newHead)
+
+                // Check food
+                if (newHead == food) {
+                    score += 10
+                    spawnFood()
                 } else {
-                    snake.add(0, newHead)
-                    if (newHead == food) {
-                        score += 10
-                        spawnFood()
-                    } else {
-                        snake.removeAt(snake.lastIndex)
-                    }
+                    snake.removeAt(snake.size - 1)
                 }
             }
         }
@@ -150,11 +154,11 @@ fun SnakeGameScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Header
+        // Top Bar
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -164,40 +168,40 @@ fun SnakeGameScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
             Text(
                 text = "Cyber Snake",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = colors.primaryText
             )
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(PrimaryViolet.copy(alpha = 0.2f))
+                    .background(colors.gold.copy(alpha = 0.15f))
                     .padding(horizontal = 10.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = "Score: $score",
-                    fontSize = 13.sp,
+                    text = "Score: $score (Best: $highScore)",
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
-                    color = PrimaryViolet
+                    color = colors.gold
                 )
             }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Game Board Canvas
+        // Game Board
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
                 .clip(RoundedCornerShape(16.dp))
-                .background(DarkCardSurface)
-                .border(2.dp, if (isGameOver) ErrorRed else PrimaryViolet.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                .background(Color(0xFF070914))
+                .border(2.dp, colors.primaryAccent.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
                 .pointerInput(Unit) {
                     detectDragGestures { _, dragAmount ->
                         if (isPlaying && !isGameOver) {
@@ -226,7 +230,7 @@ fun SnakeGameScreen(
                 // Draw Food
                 val foodOffset = Offset(food.x * cellSize + cellSize * 0.15f, food.y * cellSize + cellSize * 0.15f)
                 drawRoundRect(
-                    color = GoldAchievement,
+                    color = Color(0xFFF5C96A),
                     topLeft = foodOffset,
                     size = Size(cellSize * 0.7f, cellSize * 0.7f),
                     cornerRadius = CornerRadius(cellSize * 0.2f, cellSize * 0.2f)
@@ -235,7 +239,7 @@ fun SnakeGameScreen(
                 // Draw Snake
                 snake.forEachIndexed { index, segment ->
                     val segOffset = Offset(segment.x * cellSize + cellSize * 0.08f, segment.y * cellSize + cellSize * 0.08f)
-                    val color = if (index == 0) SuccessGreen else PrimaryViolet
+                    val color = if (index == 0) Color(0xFF69D8A5) else Color(0xFF8B7CFF)
                     drawRoundRect(
                         color = color,
                         topLeft = segOffset,
@@ -248,7 +252,7 @@ fun SnakeGameScreen(
             if (!isPlaying && !isGameOver) {
                 Button(
                     onClick = { restartGame() },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
                     shape = RoundedCornerShape(12.dp),
                     modifier = Modifier.testTag("snake_play_button")
                 ) {
@@ -263,25 +267,25 @@ fun SnakeGameScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
                         .clip(RoundedCornerShape(16.dp))
-                        .background(DarkBackground.copy(alpha = 0.9f))
+                        .background(Color(0xFF0B0D14).copy(alpha = 0.92f))
                         .padding(24.dp)
                 ) {
                     Text(
                         text = "Game Over",
                         fontSize = 22.sp,
                         fontWeight = FontWeight.Bold,
-                        color = ErrorRed
+                        color = colors.error
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Final Score: $score",
                         fontSize = 15.sp,
-                        color = TextPrimary
+                        color = colors.primaryText
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Button(
                         onClick = { restartGame() },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
                         shape = RoundedCornerShape(10.dp)
                     ) {
                         Icon(imageVector = Icons.Default.Refresh, contentDescription = "Restart")
@@ -304,9 +308,9 @@ fun SnakeGameScreen(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(DarkElevatedSurface)
+                    .background(colors.elevatedSurface)
             ) {
-                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Up", tint = TextPrimary)
+                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Up", tint = colors.primaryText)
             }
 
             Row(horizontalArrangement = Arrangement.spacedBy(36.dp)) {
@@ -315,18 +319,18 @@ fun SnakeGameScreen(
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(DarkElevatedSurface)
+                        .background(colors.elevatedSurface)
                 ) {
-                    Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Left", tint = TextPrimary)
+                    Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Left", tint = colors.primaryText)
                 }
                 IconButton(
                     onClick = { if (currentDirection != Direction.LEFT) nextDirection = Direction.RIGHT },
                     modifier = Modifier
                         .size(48.dp)
                         .clip(CircleShape)
-                        .background(DarkElevatedSurface)
+                        .background(colors.elevatedSurface)
                 ) {
-                    Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Right", tint = TextPrimary)
+                    Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Right", tint = colors.primaryText)
                 }
             }
 
@@ -335,9 +339,9 @@ fun SnakeGameScreen(
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(DarkElevatedSurface)
+                    .background(colors.elevatedSurface)
             ) {
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Down", tint = TextPrimary)
+                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Down", tint = colors.primaryText)
             }
         }
     }

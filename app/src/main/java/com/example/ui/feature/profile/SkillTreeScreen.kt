@@ -52,17 +52,7 @@ import com.example.core.model.SkillBranch
 import com.example.core.model.SkillNode
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun SkillTreeScreen(
@@ -70,6 +60,7 @@ fun SkillTreeScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val skills by viewModel.skills.collectAsState()
     var selectedBranch by remember { mutableStateOf<SkillBranch?>(null) }
 
@@ -80,7 +71,7 @@ fun SkillTreeScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp)
     ) {
         // Header
@@ -92,7 +83,7 @@ fun SkillTreeScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -101,12 +92,12 @@ fun SkillTreeScreen(
                     text = "Skill Tree & Mastery",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "Unlock nodes through real productivity milestones",
                     fontSize = 12.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
         }
@@ -120,7 +111,7 @@ fun SkillTreeScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (isAll) PrimaryViolet else DarkElevatedSurface)
+                        .background(if (isAll) colors.primaryAccent else colors.elevatedSurface)
                         .clickable { selectedBranch = null }
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
@@ -128,7 +119,7 @@ fun SkillTreeScreen(
                         text = "All Branches",
                         fontSize = 12.sp,
                         fontWeight = if (isAll) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isAll) Color.White else TextSecondary
+                        color = if (isAll) Color.White else colors.secondaryText
                     )
                 }
             }
@@ -138,7 +129,7 @@ fun SkillTreeScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                        .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                         .clickable { selectedBranch = branch }
                         .padding(horizontal = 12.dp, vertical = 6.dp)
                 ) {
@@ -146,7 +137,7 @@ fun SkillTreeScreen(
                         text = branch.displayName,
                         fontSize = 12.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else TextSecondary
+                        color = if (isSelected) Color.White else colors.secondaryText
                     )
                 }
             }
@@ -173,8 +164,8 @@ fun SkillTreeScreen(
 
                 QuestlyCard(
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = DarkCardSurface,
-                    borderColor = if (node.isUnlocked) SuccessGreen.copy(alpha = 0.4f) else DarkBorder
+                    backgroundColor = colors.cardSurface,
+                    borderColor = if (node.isUnlocked) colors.success.copy(alpha = 0.5f) else colors.border
                 ) {
                     Row(
                         modifier = Modifier.padding(16.dp),
@@ -185,15 +176,15 @@ fun SkillTreeScreen(
                                 .size(44.dp)
                                 .clip(CircleShape)
                                 .background(
-                                    if (node.isUnlocked) SuccessGreen.copy(alpha = 0.2f)
-                                    else DarkElevatedSurface
+                                    if (node.isUnlocked) colors.success.copy(alpha = 0.2f)
+                                    else colors.elevatedSurface
                                 ),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = if (node.isUnlocked) Icons.Default.Check else branchIcon,
                                 contentDescription = node.name,
-                                tint = if (node.isUnlocked) SuccessGreen else SecondaryBlue,
+                                tint = if (node.isUnlocked) colors.success else colors.secondaryAccent,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -210,20 +201,20 @@ fun SkillTreeScreen(
                                     text = node.name,
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = colors.primaryText
                                 )
                                 Text(
                                     text = if (node.isUnlocked) "UNLOCKED" else "LVL ${node.requiredLevel}",
                                     fontSize = 10.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (node.isUnlocked) SuccessGreen else GoldAchievement
+                                    color = if (node.isUnlocked) colors.success else colors.gold
                                 )
                             }
 
                             Text(
                                 text = node.description,
                                 fontSize = 12.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 modifier = Modifier.padding(vertical = 4.dp)
                             )
 
@@ -234,8 +225,8 @@ fun SkillTreeScreen(
                                     .fillMaxWidth()
                                     .height(4.dp)
                                     .clip(RoundedCornerShape(2.dp)),
-                                color = if (node.isUnlocked) SuccessGreen else PrimaryViolet,
-                                trackColor = DarkElevatedSurface
+                                color = if (node.isUnlocked) colors.success else colors.primaryAccent,
+                                trackColor = colors.elevatedSurface
                             )
 
                             Row(
@@ -247,12 +238,12 @@ fun SkillTreeScreen(
                                 Text(
                                     text = node.branch.displayName,
                                     fontSize = 10.sp,
-                                    color = TextMuted
+                                    color = colors.mutedText
                                 )
                                 Text(
                                     text = "${node.currentProgress} / ${node.maxProgress}",
                                     fontSize = 10.sp,
-                                    color = TextSecondary
+                                    color = colors.secondaryText
                                 )
                             }
                         }

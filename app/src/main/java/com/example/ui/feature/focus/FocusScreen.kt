@@ -65,18 +65,7 @@ import com.example.core.model.Quest
 import com.example.core.model.TimerState
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.QuestlyThemeTokens
 import kotlinx.coroutines.delay
 
 @Composable
@@ -84,6 +73,7 @@ fun FocusScreen(
     viewModel: MainViewModel,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val activeQuests by viewModel.activeQuests.collectAsState()
 
     var selectedMode by remember { mutableStateOf(FocusMode.POMODORO) }
@@ -155,7 +145,7 @@ fun FocusScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(24.dp))
                     .testTag("focus_completion_dialog"),
-                color = DarkCardSurface
+                color = colors.cardSurface
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -165,13 +155,13 @@ fun FocusScreen(
                         modifier = Modifier
                             .size(60.dp)
                             .clip(CircleShape)
-                            .background(GoldAchievement.copy(alpha = 0.2f)),
+                            .background(colors.gold.copy(alpha = 0.2f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
                             imageVector = Icons.Default.EmojiEvents,
                             contentDescription = "Completed",
-                            tint = GoldAchievement,
+                            tint = colors.gold,
                             modifier = Modifier.size(34.dp)
                         )
                     }
@@ -182,13 +172,13 @@ fun FocusScreen(
                         text = "Session Complete!",
                         fontSize = 20.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = colors.primaryText
                     )
 
                     Text(
                         text = "Focused for ${elapsedSeconds / 60} mins${selectedQuest?.let { " on ${it.title}" } ?: ""}",
                         fontSize = 13.sp,
-                        color = TextSecondary,
+                        color = colors.secondaryText,
                         textAlign = TextAlign.Center,
                         modifier = Modifier.padding(top = 4.dp)
                     )
@@ -198,14 +188,14 @@ fun FocusScreen(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(12.dp))
-                            .background(PrimaryViolet.copy(alpha = 0.15f))
+                            .background(colors.primaryAccent.copy(alpha = 0.18f))
                             .padding(horizontal = 16.dp, vertical = 8.dp)
                     ) {
                         Text(
                             text = "+$earnedXpThisSession XP Earned",
                             fontSize = 16.sp,
                             fontWeight = FontWeight.Bold,
-                            color = PrimaryViolet
+                            color = colors.primaryAccent
                         )
                     }
 
@@ -214,14 +204,14 @@ fun FocusScreen(
                     OutlinedTextField(
                         value = sessionNotes,
                         onValueChange = { sessionNotes = it },
-                        placeholder = { Text("Reflection notes (e.g. key breakthroughs)...", color = TextMuted, fontSize = 12.sp) },
+                        placeholder = { Text("Reflection notes (e.g. key breakthroughs)...", color = colors.mutedText, fontSize = 12.sp) },
                         maxLines = 2,
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary,
-                            focusedBorderColor = PrimaryViolet,
-                            unfocusedBorderColor = DarkBorder
+                            focusedTextColor = colors.primaryText,
+                            unfocusedTextColor = colors.primaryText,
+                            focusedBorderColor = colors.primaryAccent,
+                            unfocusedBorderColor = colors.border
                         )
                     )
 
@@ -243,7 +233,7 @@ fun FocusScreen(
                             switchMode(selectedMode)
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = PrimaryViolet,
+                            containerColor = colors.primaryAccent,
                             contentColor = Color.White
                         ),
                         modifier = Modifier
@@ -261,7 +251,7 @@ fun FocusScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -271,12 +261,12 @@ fun FocusScreen(
             text = "Focus Chamber",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
         Text(
             text = "Deep work sessions yield XP and build cognitive mastery",
             fontSize = 12.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
         )
 
@@ -290,7 +280,7 @@ fun FocusScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                        .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                         .clickable(enabled = timerState == TimerState.IDLE) { switchMode(mode) }
                         .padding(horizontal = 12.dp, vertical = 8.dp)
                 ) {
@@ -298,7 +288,7 @@ fun FocusScreen(
                         text = mode.displayName,
                         fontSize = 12.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else TextSecondary
+                        color = if (isSelected) Color.White else colors.secondaryText
                     )
                 }
             }
@@ -310,7 +300,8 @@ fun FocusScreen(
         if (activeQuests.isNotEmpty()) {
             QuestlyCard(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = DarkCardSurface
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.border
             ) {
                 Row(
                     modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
@@ -322,14 +313,14 @@ fun FocusScreen(
                             text = "LINKED QUEST",
                             fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            color = SecondaryBlue,
+                            color = colors.secondaryAccent,
                             letterSpacing = 0.5.sp
                         )
                         Text(
                             text = selectedQuest?.title ?: "Select active quest (optional)",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.SemiBold,
-                            color = TextPrimary,
+                            color = colors.primaryText,
                             maxLines = 1
                         )
                     }
@@ -339,7 +330,7 @@ fun FocusScreen(
                             Icon(
                                 imageVector = Icons.Default.Close,
                                 contentDescription = "Unlink",
-                                tint = TextMuted,
+                                tint = colors.mutedText,
                                 modifier = Modifier.size(16.dp)
                             )
                         }
@@ -349,14 +340,14 @@ fun FocusScreen(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
-                                        .background(DarkElevatedSurface)
+                                        .background(colors.elevatedSurface)
                                         .clickable { selectedQuest = q }
                                         .padding(horizontal = 8.dp, vertical = 4.dp)
                                 ) {
                                     Text(
                                         text = q.title.take(12) + "...",
                                         fontSize = 11.sp,
-                                        color = PrimaryViolet
+                                        color = colors.primaryAccent
                                     )
                                 }
                             }
@@ -392,14 +383,14 @@ fun FocusScreen(
                 val strokeWidth = 14.dp.toPx()
                 // Track
                 drawCircle(
-                    color = DarkElevatedSurface,
+                    color = colors.elevatedSurface,
                     radius = (size.minDimension - strokeWidth) / 2f,
                     style = Stroke(width = strokeWidth)
                 )
                 // Progress Arc
                 drawArc(
                     brush = Brush.sweepGradient(
-                        listOf(PrimaryViolet, SecondaryBlue, SuccessGreen, PrimaryViolet)
+                        listOf(colors.primaryAccent, colors.secondaryAccent, colors.success, colors.primaryAccent)
                     ),
                     startAngle = -90f,
                     sweepAngle = 360f * animatedProgress,
@@ -413,7 +404,7 @@ fun FocusScreen(
                     text = timeDisplay,
                     fontSize = 44.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary,
+                    color = colors.primaryText,
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -427,10 +418,10 @@ fun FocusScreen(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Bold,
                     color = when (timerState) {
-                        TimerState.RUNNING -> SuccessGreen
-                        TimerState.PAUSED -> WarningOrange
-                        TimerState.COMPLETED -> GoldAchievement
-                        else -> PrimaryViolet
+                        TimerState.RUNNING -> colors.success
+                        TimerState.PAUSED -> colors.warning
+                        TimerState.COMPLETED -> colors.gold
+                        else -> colors.primaryAccent
                     },
                     letterSpacing = 1.5.sp
                 )
@@ -454,7 +445,7 @@ fun FocusScreen(
                             timerState = TimerState.RUNNING
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = PrimaryViolet,
+                            containerColor = colors.primaryAccent,
                             contentColor = Color.White
                         ),
                         shape = CircleShape,
@@ -477,8 +468,8 @@ fun FocusScreen(
                             timerState = TimerState.PAUSED
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = WarningOrange,
-                            contentColor = DarkBackground
+                            containerColor = colors.warning,
+                            contentColor = colors.background
                         ),
                         shape = CircleShape,
                         modifier = Modifier
@@ -506,7 +497,7 @@ fun FocusScreen(
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = "Finish",
-                            tint = SuccessGreen
+                            tint = colors.success
                         )
                     }
                 }
@@ -520,8 +511,8 @@ fun FocusScreen(
                             timerState = TimerState.RUNNING
                         },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = SuccessGreen,
-                            contentColor = DarkBackground
+                            containerColor = colors.success,
+                            contentColor = colors.background
                         ),
                         shape = CircleShape,
                         modifier = Modifier
@@ -544,12 +535,12 @@ fun FocusScreen(
                         modifier = Modifier
                             .size(48.dp)
                             .clip(CircleShape)
-                            .background(DarkElevatedSurface)
+                            .background(colors.elevatedSurface)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Reset",
-                            tint = TextSecondary
+                            tint = colors.secondaryText
                         )
                     }
                 }
@@ -559,7 +550,7 @@ fun FocusScreen(
                             timerState = TimerState.IDLE
                             switchMode(selectedMode)
                         },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
                         shape = RoundedCornerShape(12.dp)
                     ) {
                         Text("New Session", fontWeight = FontWeight.Bold)

@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -59,17 +58,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core.model.GameType
 import com.example.ui.MainViewModel
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 import kotlinx.coroutines.delay
 
 data class MemoryCard(
@@ -86,6 +75,8 @@ fun MemoryMatchScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
+
     val runeTypes = listOf(
         Pair("sword", Icons.Default.Shield),
         Pair("bolt", Icons.Default.Bolt),
@@ -181,7 +172,7 @@ fun MemoryMatchScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -195,20 +186,20 @@ fun MemoryMatchScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
             Text(
                 text = "Rune Memory",
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = colors.primaryText
             )
             IconButton(onClick = { initializeDeck() }) {
                 Icon(
                     imageVector = Icons.Default.Refresh,
                     contentDescription = "Restart",
-                    tint = PrimaryViolet
+                    tint = colors.primaryAccent
                 )
             }
         }
@@ -220,8 +211,13 @@ fun MemoryMatchScreen(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceAround
         ) {
-            Text(text = "Moves: $moveCount", color = TextSecondary, fontSize = 13.sp)
-            Text(text = "Matched: $matchedPairsCount / ${runeTypes.size}", color = SecondaryBlue, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+            Text(text = "Moves: $moveCount", color = colors.secondaryText, fontSize = 13.sp)
+            Text(
+                text = "Matched: $matchedPairsCount / ${runeTypes.size}",
+                color = colors.secondaryAccent,
+                fontSize = 13.sp,
+                fontWeight = FontWeight.SemiBold
+            )
         }
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -251,15 +247,15 @@ fun MemoryMatchScreen(
                         }
                         .clip(RoundedCornerShape(12.dp))
                         .background(
-                            if (card.isMatched) SuccessGreen.copy(alpha = 0.2f)
-                            else if (card.isFaceUp) DarkElevatedSurface
-                            else DarkCardSurface
+                            if (card.isMatched) colors.success.copy(alpha = 0.2f)
+                            else if (card.isFaceUp) colors.elevatedSurface
+                            else colors.cardSurface
                         )
                         .border(
                             1.dp,
-                            if (card.isMatched) SuccessGreen
-                            else if (card.isFaceUp) PrimaryViolet
-                            else DarkBorder,
+                            if (card.isMatched) colors.success
+                            else if (card.isFaceUp) colors.primaryAccent
+                            else colors.border,
                             RoundedCornerShape(12.dp)
                         )
                         .clickable(enabled = !card.isFaceUp && !card.isMatched && !isBusy) {
@@ -272,7 +268,7 @@ fun MemoryMatchScreen(
                         Icon(
                             imageVector = card.icon,
                             contentDescription = card.runeKey,
-                            tint = if (card.isMatched) SuccessGreen else GoldAchievement,
+                            tint = if (card.isMatched) colors.success else colors.gold,
                             modifier = Modifier
                                 .size(28.dp)
                                 .graphicsLayer { rotationY = 180f }
@@ -283,7 +279,7 @@ fun MemoryMatchScreen(
                             modifier = Modifier
                                 .size(18.dp)
                                 .clip(CircleShape)
-                                .background(PrimaryViolet.copy(alpha = 0.3f))
+                                .background(colors.primaryAccent.copy(alpha = 0.35f))
                         )
                     }
                 }
@@ -297,15 +293,15 @@ fun MemoryMatchScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .background(DarkCardSurface)
-                    .border(1.dp, GoldAchievement, RoundedCornerShape(16.dp))
+                    .background(colors.cardSurface)
+                    .border(1.dp, colors.gold, RoundedCornerShape(16.dp))
                     .padding(18.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Icon(
                     imageVector = Icons.Default.EmojiEvents,
                     contentDescription = "Victory",
-                    tint = GoldAchievement,
+                    tint = colors.gold,
                     modifier = Modifier.size(36.dp)
                 )
                 Spacer(modifier = Modifier.height(6.dp))
@@ -313,17 +309,17 @@ fun MemoryMatchScreen(
                     text = "Rune Mastery Achieved!",
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "Solved in $moveCount moves. Cognitive acuity improved!",
                     fontSize = 12.sp,
-                    color = TextSecondary,
+                    color = colors.secondaryText,
                     modifier = Modifier.padding(top = 2.dp, bottom = 12.dp)
                 )
                 Button(
                     onClick = { initializeDeck() },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
                     shape = RoundedCornerShape(10.dp)
                 ) {
                     Text("Play Next Round", fontWeight = FontWeight.Bold)

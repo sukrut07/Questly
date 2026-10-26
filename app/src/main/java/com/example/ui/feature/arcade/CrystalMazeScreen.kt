@@ -26,15 +26,19 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowLeft
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.filled.Stars
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
@@ -55,19 +59,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core.model.GameType
 import com.example.ui.MainViewModel
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.ErrorRed
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 import kotlinx.coroutines.delay
 
 data class MazePos(val x: Int, val y: Int)
-data class MazeChaser(var x: Int, var y: Int, var dir: Direction)
+data class MazeChaser(
+    var x: Int,
+    var y: Int,
+    var dir: Direction,
+    val color: Color,
+    val name: String,
+    var isBanished: Boolean = false
+)
 
 @Composable
 fun CrystalMazeScreen(
@@ -75,7 +78,10 @@ fun CrystalMazeScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    // 11 x 11 Maze Layout (1 = Wall, 0 = Path with Crystal)
+    val colors = QuestlyThemeTokens.colors
+    val personalBest by viewModel.mazeHighScore.collectAsState()
+
+    // 11 x 11 Maze Layout (1 = Wall, 0 = Open Path)
     val mazeLayout = remember {
         listOf(
             listOf(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
@@ -95,62 +101,117 @@ fun CrystalMazeScreen(
     val rows = mazeLayout.size
     val cols = mazeLayout[0].size
 
-    val crystals = remember { mutableStateListOf<MazePos>() }
-    var playerPos by remember { mutableStateOf(MazePos(1, 1)) }
+    // 4 Super Crystal (Power Pellet) positions in corners
+    val superCrystalPositions = remember {
+        setOf(MazePos(1, 1), MazePos(9, 1), MazePos(1, 9), MazePos(9, 9))
+    }
+
+    val regularCrystals = remember { mutableStateListOf<MazePos>() }
+    val superCrystals = remember { mutableStateListOf<MazePos>() }
+
+    var playerPos by remember { mutableStateOf(MazePos(5, 5)) }
     var currentDir by remember { mutableStateOf(Direction.RIGHT) }
     var nextDir by remember { mutableStateOf(Direction.RIGHT) }
 
     val chasers = remember {
         mutableStateListOf(
-            MazeChaser(9, 9, Direction.LEFT),
-            MazeChaser(9, 1, Direction.DOWN)
+            MazeChaser(1, 1, Direction.RIGHT, Color(0xFFFF6B7D), "Shadow"),
+            MazeChaser(9, 1, Direction.DOWN, Color(0xFFF5C96A), "Speedy"),
+            MazeChaser(1, 9, Direction.UP, Color(0xFF8B7CFF), "Phantom"),
+            MazeChaser(9, 9, Direction.LEFT, Color(0xFF67B8FF), "Azure")
         )
     }
 
     var score by remember { mutableIntStateOf(0) }
     var lives by remember { mutableIntStateOf(3) }
+    var level by remember { mutableIntStateOf(1) }
+    var crystalsGathered by remember { mutableIntStateOf(0) }
+    var chasersBanished by remember { mutableIntStateOf(0) }
+
+    var vulnerableTimer by remember { mutableIntStateOf(0) } // in ticks
+
     var isPlaying by remember { mutableStateOf(false) }
+    var isPaused by remember { mutableStateOf(false) }
     var isGameOver by remember { mutableStateOf(false) }
     var isVictory by remember { mutableStateOf(false) }
     var startTime by remember { mutableStateOf(0L) }
+    var elapsedSeconds by remember { mutableIntStateOf(0) }
 
     fun canMove(x: Int, y: Int): Boolean {
         if (x !in 0 until cols || y !in 0 until rows) return false
         return mazeLayout[y][x] == 0
     }
 
-    fun restartGame() {
-        crystals.clear()
+    fun initMazeForLevel(lvl: Int) {
+        regularCrystals.clear()
+        superCrystals.clear()
+
         for (r in 0 until rows) {
             for (c in 0 until cols) {
                 if (mazeLayout[r][c] == 0) {
-                    crystals.add(MazePos(c, r))
+                    val pos = MazePos(c, r)
+                    if (superCrystalPositions.contains(pos)) {
+                        superCrystals.add(pos)
+                    } else if (pos != MazePos(5, 5)) {
+                        regularCrystals.add(pos)
+                    }
                 }
             }
         }
-        playerPos = MazePos(1, 1)
-        crystals.remove(playerPos)
+
+        playerPos = MazePos(5, 5)
         currentDir = Direction.RIGHT
         nextDir = Direction.RIGHT
+
         chasers.clear()
-        chasers.add(MazeChaser(9, 9, Direction.LEFT))
-        chasers.add(MazeChaser(9, 1, Direction.DOWN))
-        score = 0
-        lives = 3
-        isGameOver = false
-        isVictory = false
-        isPlaying = true
-        startTime = System.currentTimeMillis()
+        chasers.add(MazeChaser(1, 1, Direction.RIGHT, Color(0xFFFF6B7D), "Shadow"))
+        chasers.add(MazeChaser(9, 1, Direction.DOWN, Color(0xFFF5C96A), "Speedy"))
+        chasers.add(MazeChaser(1, 9, Direction.UP, Color(0xFF8B7CFF), "Phantom"))
+        chasers.add(MazeChaser(9, 9, Direction.LEFT, Color(0xFF67B8FF), "Azure"))
+        vulnerableTimer = 0
     }
 
-    // Game loop
-    LaunchedEffect(isPlaying, isGameOver, isVictory) {
-        if (isPlaying && !isGameOver && !isVictory) {
-            var chaserTick = 0
-            while (isPlaying && !isGameOver && !isVictory) {
-                delay(220) // Game tick speed
+    fun restartGame() {
+        score = 0
+        lives = 3
+        level = 1
+        crystalsGathered = 0
+        chasersBanished = 0
+        isGameOver = false
+        isVictory = false
+        isPaused = false
+        isPlaying = true
+        startTime = System.currentTimeMillis()
+        elapsedSeconds = 0
+        initMazeForLevel(1)
+    }
 
-                // 1. Move Player in desired or current direction
+    fun advanceToNextLevel() {
+        level++
+        score += 250 * level
+        initMazeForLevel(level)
+    }
+
+    // Main Game Loop
+    LaunchedEffect(isPlaying, isPaused, isGameOver, isVictory) {
+        if (isPlaying && !isPaused && !isGameOver && !isVictory) {
+            var chaserTick = 0
+            var secondAccumulator = 0
+            while (isPlaying && !isPaused && !isGameOver && !isVictory) {
+                val tickDelay = (210 - (level * 10)).coerceAtLeast(140).toLong()
+                delay(tickDelay)
+
+                secondAccumulator += tickDelay.toInt()
+                if (secondAccumulator >= 1000) {
+                    elapsedSeconds++
+                    secondAccumulator = 0
+                }
+
+                if (vulnerableTimer > 0) {
+                    vulnerableTimer--
+                }
+
+                // 1. Move Player in desired (queued) direction or maintain current direction
                 val targetNext = when (nextDir) {
                     Direction.UP -> MazePos(playerPos.x, playerPos.y - 1)
                     Direction.DOWN -> MazePos(playerPos.x, playerPos.y + 1)
@@ -173,21 +234,31 @@ fun CrystalMazeScreen(
                     }
                 }
 
-                // 2. Collect Crystal
-                if (crystals.contains(playerPos)) {
-                    crystals.remove(playerPos)
+                // 2. Collect Regular Crystals
+                if (regularCrystals.contains(playerPos)) {
+                    regularCrystals.remove(playerPos)
                     score += 10
-                    if (crystals.isEmpty()) {
-                        isVictory = true
-                        isPlaying = false
-                        val durationSec = ((System.currentTimeMillis() - startTime) / 1000).toInt()
-                        viewModel.recordGameScore(GameType.CRYSTAL_MAZE, score + 200, 1, durationSec)
-                    }
+                    crystalsGathered++
                 }
 
-                // 3. Move Chasers
+                // 3. Collect Super Crystals (Power Energizer)
+                if (superCrystals.contains(playerPos)) {
+                    superCrystals.remove(playerPos)
+                    score += 50
+                    crystalsGathered++
+                    vulnerableTimer = 35 // ~7-8 seconds of vulnerable state
+                }
+
+                // Check Level Cleared (All crystals collected)
+                if (regularCrystals.isEmpty() && superCrystals.isEmpty()) {
+                    advanceToNextLevel()
+                }
+
+                // 4. Move Chasers
                 chaserTick++
-                if (chaserTick % 2 == 0) {
+                // Chasers move every 1 or 2 ticks (slower when vulnerable)
+                val chaserFrequency = if (vulnerableTimer > 0) 3 else 2
+                if (chaserTick % chaserFrequency == 0) {
                     chasers.forEach { chaser ->
                         val possibleDirs = mutableListOf<Direction>()
                         listOf(Direction.UP, Direction.DOWN, Direction.LEFT, Direction.RIGHT).forEach { d ->
@@ -206,20 +277,39 @@ fun CrystalMazeScreen(
                             }
                         }
 
-                        // Try to head toward player or pick random valid dir
-                        val chosenDir = possibleDirs.minByOrNull { d ->
-                            val nx = when (d) {
-                                Direction.LEFT -> chaser.x - 1
-                                Direction.RIGHT -> chaser.x + 1
-                                else -> chaser.x
-                            }
-                            val ny = when (d) {
-                                Direction.UP -> chaser.y - 1
-                                Direction.DOWN -> chaser.y + 1
-                                else -> chaser.y
-                            }
-                            kotlin.math.abs(nx - playerPos.x) + kotlin.math.abs(ny - playerPos.y)
-                        } ?: chaser.dir
+                        // Pathfinding: If vulnerable, flee player. Otherwise, chase player!
+                        val isVulnerable = vulnerableTimer > 0
+                        val chosenDir = if (isVulnerable) {
+                            // Maximize distance to player
+                            possibleDirs.maxByOrNull { d ->
+                                val nx = when (d) {
+                                    Direction.LEFT -> chaser.x - 1
+                                    Direction.RIGHT -> chaser.x + 1
+                                    else -> chaser.x
+                                }
+                                val ny = when (d) {
+                                    Direction.UP -> chaser.y - 1
+                                    Direction.DOWN -> chaser.y + 1
+                                    else -> chaser.y
+                                }
+                                kotlin.math.abs(nx - playerPos.x) + kotlin.math.abs(ny - playerPos.y)
+                            } ?: chaser.dir
+                        } else {
+                            // Minimize distance to player
+                            possibleDirs.minByOrNull { d ->
+                                val nx = when (d) {
+                                    Direction.LEFT -> chaser.x - 1
+                                    Direction.RIGHT -> chaser.x + 1
+                                    else -> chaser.x
+                                }
+                                val ny = when (d) {
+                                    Direction.UP -> chaser.y - 1
+                                    Direction.DOWN -> chaser.y + 1
+                                    else -> chaser.y
+                                }
+                                kotlin.math.abs(nx - playerPos.x) + kotlin.math.abs(ny - playerPos.y)
+                            } ?: chaser.dir
+                        }
 
                         chaser.dir = chosenDir
                         when (chosenDir) {
@@ -229,16 +319,26 @@ fun CrystalMazeScreen(
                             Direction.RIGHT -> chaser.x += 1
                         }
 
-                        // Collision with player
+                        // Check Collision with Player
                         if (chaser.x == playerPos.x && chaser.y == playerPos.y) {
-                            lives--
-                            if (lives <= 0) {
-                                isGameOver = true
-                                isPlaying = false
-                                val durationSec = ((System.currentTimeMillis() - startTime) / 1000).toInt()
-                                viewModel.recordGameScore(GameType.CRYSTAL_MAZE, score, 0, durationSec)
+                            if (vulnerableTimer > 0) {
+                                // Player banishes chaser!
+                                score += 150
+                                chasersBanished++
+                                // Send chaser back to corner
+                                chaser.x = 1
+                                chaser.y = 1
                             } else {
-                                playerPos = MazePos(1, 1)
+                                // Player loses life
+                                lives--
+                                if (lives <= 0) {
+                                    isGameOver = true
+                                    isPlaying = false
+                                    val durationSec = ((System.currentTimeMillis() - startTime) / 1000).toInt()
+                                    viewModel.recordGameScore(GameType.CRYSTAL_MAZE, score, level, durationSec)
+                                } else {
+                                    playerPos = MazePos(5, 5)
+                                }
                             }
                         }
                     }
@@ -250,7 +350,7 @@ fun CrystalMazeScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -264,59 +364,84 @@ fun CrystalMazeScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
-            Text(
-                text = "Crystal Maze",
-                fontSize = 18.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextPrimary
-            )
+
+            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Text(
+                    text = "Crystal Maze",
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = colors.primaryText
+                )
+                Text(
+                    text = "LEVEL $level • BEST: $personalBest",
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    color = colors.gold,
+                    letterSpacing = 1.sp
+                )
+            }
+
             Row(verticalAlignment = Alignment.CenterVertically) {
+                if (isPlaying && !isGameOver && !isVictory) {
+                    IconButton(onClick = { isPaused = !isPaused }) {
+                        Icon(
+                            imageVector = if (isPaused) Icons.Default.PlayArrow else Icons.Default.Pause,
+                            contentDescription = if (isPaused) "Resume" else "Pause",
+                            tint = colors.primaryAccent
+                        )
+                    }
+                }
+
                 Icon(
                     imageVector = Icons.Default.Favorite,
                     contentDescription = "Lives",
-                    tint = ErrorRed,
+                    tint = colors.error,
                     modifier = Modifier.size(16.dp)
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(3.dp))
                 Text(
                     text = "$lives",
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
-                    color = ErrorRed
+                    color = colors.error
                 )
-                Spacer(modifier = Modifier.width(12.dp))
+                Spacer(modifier = Modifier.width(10.dp))
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(GoldAchievement.copy(alpha = 0.2f))
+                        .background(colors.gold.copy(alpha = 0.2f))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
-                        text = "Score: $score",
+                        text = "$score pts",
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = GoldAchievement
+                        color = colors.gold
                     )
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
 
-        // Maze Canvas
+        // Maze Canvas Playfield
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .aspectRatio(1f)
-                .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF090C16))
-                .border(2.dp, PrimaryViolet.copy(alpha = 0.4f), RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(20.dp))
+                .background(Color(0xFF070914))
+                .border(
+                    2.dp,
+                    if (vulnerableTimer > 0) Color(0xFF67B8FF) else colors.primaryAccent.copy(alpha = 0.4f),
+                    RoundedCornerShape(20.dp)
+                )
                 .pointerInput(Unit) {
                     detectDragGestures { _, dragAmount ->
-                        if (isPlaying && !isGameOver && !isVictory) {
+                        if (isPlaying && !isPaused && !isGameOver && !isVictory) {
                             if (kotlin.math.abs(dragAmount.x) > kotlin.math.abs(dragAmount.y)) {
                                 nextDir = if (dragAmount.x > 0) Direction.RIGHT else Direction.LEFT
                             } else {
@@ -332,150 +457,306 @@ fun CrystalMazeScreen(
                 val cellW = size.width / cols
                 val cellH = size.height / rows
 
-                // Draw Walls
+                // 1. Draw Neon Labyrinth Walls
                 for (r in 0 until rows) {
                     for (c in 0 until cols) {
                         if (mazeLayout[r][c] == 1) {
                             drawRoundRect(
-                                color = Color(0xFF1E263D),
+                                color = Color(0xFF14192B),
                                 topLeft = Offset(c * cellW, r * cellH),
                                 size = Size(cellW, cellH),
-                                cornerRadius = CornerRadius(4f, 4f)
+                                cornerRadius = CornerRadius(5f, 5f)
                             )
-                            // Subtle blue grid outline
                             drawRoundRect(
-                                color = SecondaryBlue.copy(alpha = 0.2f),
-                                topLeft = Offset(c * cellW + 1f, r * cellH + 1f),
-                                size = Size(cellW - 2f, cellH - 2f),
-                                cornerRadius = CornerRadius(3f, 3f)
+                                color = Color(0xFF283457),
+                                topLeft = Offset(c * cellW + 1.5f, r * cellH + 1.5f),
+                                size = Size(cellW - 3f, cellH - 3f),
+                                cornerRadius = CornerRadius(4f, 4f)
                             )
                         }
                     }
                 }
 
-                // Draw Crystals
-                crystals.forEach { crystal ->
+                // 2. Draw Regular Crystals
+                regularCrystals.forEach { crystal ->
                     drawCircle(
-                        color = GoldAchievement,
+                        color = Color(0xFFF5C96A),
                         radius = cellW * 0.16f,
                         center = Offset((crystal.x + 0.5f) * cellW, (crystal.y + 0.5f) * cellH)
                     )
                 }
 
-                // Draw Player (Glowing Cyan/Violet Orb)
+                // 3. Draw Super Crystals (Power Energizers with glowing aura)
+                superCrystals.forEach { sc ->
+                    val cx = (sc.x + 0.5f) * cellW
+                    val cy = (sc.y + 0.5f) * cellH
+                    drawCircle(
+                        color = Color(0xFF8B7CFF).copy(alpha = 0.4f),
+                        radius = cellW * 0.35f,
+                        center = Offset(cx, cy)
+                    )
+                    drawCircle(
+                        color = Color(0xFF8B7CFF),
+                        radius = cellW * 0.22f,
+                        center = Offset(cx, cy)
+                    )
+                    drawCircle(
+                        color = Color.White,
+                        radius = cellW * 0.10f,
+                        center = Offset(cx, cy)
+                    )
+                }
+
+                // 4. Draw Player (Luminous Energy Orb with direction indicator)
+                val px = (playerPos.x + 0.5f) * cellW
+                val py = (playerPos.y + 0.5f) * cellH
+
                 drawCircle(
-                    color = SecondaryBlue,
-                    radius = cellW * 0.38f,
-                    center = Offset((playerPos.x + 0.5f) * cellW, (playerPos.y + 0.5f) * cellH)
+                    color = Color(0xFF67B8FF).copy(alpha = 0.35f),
+                    radius = cellW * 0.44f,
+                    center = Offset(px, py)
+                )
+                drawCircle(
+                    color = Color(0xFF67B8FF),
+                    radius = cellW * 0.34f,
+                    center = Offset(px, py)
                 )
                 drawCircle(
                     color = Color.White,
-                    radius = cellW * 0.18f,
-                    center = Offset((playerPos.x + 0.5f) * cellW, (playerPos.y + 0.5f) * cellH)
+                    radius = cellW * 0.16f,
+                    center = Offset(px, py)
                 )
 
-                // Draw Chasers (Red/Violet Specters)
+                // 5. Draw Chasers (Specters)
                 chasers.forEach { chaser ->
+                    val cx = (chaser.x + 0.5f) * cellW
+                    val cy = (chaser.y + 0.5f) * cellH
+                    val isVulnerable = vulnerableTimer > 0
+
+                    val specterColor = if (isVulnerable) Color(0xFF45A0E6) else chaser.color
+
                     drawCircle(
-                        color = ErrorRed,
+                        color = specterColor,
                         radius = cellW * 0.36f,
-                        center = Offset((chaser.x + 0.5f) * cellW, (chaser.y + 0.5f) * cellH)
+                        center = Offset(cx, cy)
                     )
-                    // Specter eye
+                    // Specter Eye pointing in direction
+                    val eyeDx = when (chaser.dir) {
+                        Direction.LEFT -> -cellW * 0.08f
+                        Direction.RIGHT -> cellW * 0.08f
+                        else -> 0f
+                    }
+                    val eyeDy = when (chaser.dir) {
+                        Direction.UP -> -cellH * 0.08f
+                        Direction.DOWN -> cellH * 0.08f
+                        else -> 0f
+                    }
                     drawCircle(
-                        color = Color.White,
+                        color = if (isVulnerable) Color(0xFF10284A) else Color.White,
                         radius = cellW * 0.12f,
-                        center = Offset((chaser.x + 0.5f) * cellW, (chaser.y + 0.45f) * cellH)
+                        center = Offset(cx + eyeDx, cy + eyeDy - 2f)
                     )
                 }
             }
 
+            // Start Overlay
             if (!isPlaying && !isGameOver && !isVictory) {
-                Button(
-                    onClick = { restartGame() },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
-                    shape = RoundedCornerShape(12.dp),
-                    modifier = Modifier.testTag("maze_start_button")
-                ) {
-                    Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text("Enter Maze", fontWeight = FontWeight.Bold)
-                }
-            }
-
-            if (isGameOver) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(DarkBackground.copy(alpha = 0.92f))
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color(0xFF0B0D14).copy(alpha = 0.90f))
                         .padding(24.dp)
                 ) {
-                    Text("Trapped!", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = ErrorRed)
-                    Text("Final Score: $score", fontSize = 15.sp, color = TextPrimary, modifier = Modifier.padding(vertical = 4.dp))
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Icon(
+                        imageVector = Icons.Default.Stars,
+                        contentDescription = "Maze",
+                        tint = colors.gold,
+                        modifier = Modifier.size(36.dp)
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "CRYSTAL MAZE",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.primaryText,
+                        letterSpacing = 1.sp
+                    )
+                    Text(
+                        text = "Collect all crystals • Power crystals banish chasers",
+                        fontSize = 12.sp,
+                        color = colors.secondaryText,
+                        modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
+                    )
                     Button(
                         onClick = { restartGame() },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet)
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
+                        shape = RoundedCornerShape(12.dp),
+                        modifier = Modifier.testTag("maze_start_button")
                     ) {
-                        Icon(imageVector = Icons.Default.Refresh, contentDescription = "Restart")
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text("Retry Maze")
+                        Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play")
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text("Enter Labyrinth", fontWeight = FontWeight.Bold)
                     }
                 }
             }
 
-            if (isVictory) {
+            // Pause Overlay
+            if (isPaused && !isGameOver) {
                 Column(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     modifier = Modifier
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(DarkBackground.copy(alpha = 0.92f))
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color(0xFF0B0D14).copy(alpha = 0.90f))
                         .padding(24.dp)
                 ) {
-                    Icon(imageVector = Icons.Default.EmojiEvents, contentDescription = "Victory", tint = GoldAchievement, modifier = Modifier.size(36.dp))
-                    Text("Maze Cleared!", fontSize = 22.sp, fontWeight = FontWeight.Bold, color = GoldAchievement)
-                    Text("All crystals gathered! Score: $score", fontSize = 14.sp, color = TextPrimary, modifier = Modifier.padding(vertical = 4.dp))
-                    Spacer(modifier = Modifier.height(12.dp))
+                    Text(
+                        text = "LABYRINTH PAUSED",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.primaryText,
+                        letterSpacing = 1.sp
+                    )
+                    Spacer(modifier = Modifier.height(14.dp))
                     Button(
-                        onClick = { restartGame() },
-                        colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet)
+                        onClick = { isPaused = false },
+                        colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
+                        shape = RoundedCornerShape(10.dp)
                     ) {
-                        Text("Play Next Realm")
+                        Text("Resume Labyrinth", fontWeight = FontWeight.Bold)
+                    }
+                }
+            }
+
+            // Game Over Modal with Full Performance Stats
+            if (isGameOver) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(18.dp))
+                        .background(Color(0xFF0B0D14).copy(alpha = 0.95f))
+                        .border(1.dp, colors.border, RoundedCornerShape(18.dp))
+                        .padding(24.dp)
+                ) {
+                    Text(
+                        text = "TRAPPED IN THE MAZE",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = colors.error,
+                        letterSpacing = 1.sp
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text("Final Score", fontSize = 11.sp, color = colors.mutedText)
+                            Text("$score", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = colors.primaryText)
+                        }
+                        Column {
+                            Text("Level Reached", fontSize = 11.sp, color = colors.mutedText)
+                            Text("Level $level", fontSize = 16.sp, fontWeight = FontWeight.Bold, color = colors.gold)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(10.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(0.85f),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text("Crystals Gathered", fontSize = 11.sp, color = colors.mutedText)
+                            Text("$crystalsGathered", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = colors.secondaryAccent)
+                        }
+                        Column {
+                            Text("Chasers Banished", fontSize = 11.sp, color = colors.mutedText)
+                            Text("$chasersBanished", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = colors.primaryAccent)
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Button(
+                            onClick = { restartGame() },
+                            colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Icon(imageVector = Icons.Default.Refresh, contentDescription = "Retry", modifier = Modifier.size(16.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text("Retry Maze", fontWeight = FontWeight.Bold)
+                        }
+                        OutlinedButton(
+                            onClick = onBack,
+                            shape = RoundedCornerShape(10.dp)
+                        ) {
+                            Text("Exit Arcade", color = colors.secondaryText)
+                        }
                     }
                 }
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // D-Pad Controls
+        // D-Pad Directional Controls
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             IconButton(
                 onClick = { nextDir = Direction.UP },
-                modifier = Modifier.size(44.dp).clip(CircleShape).background(DarkElevatedSurface)
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(colors.elevatedSurface)
             ) {
-                Icon(Icons.Default.KeyboardArrowUp, contentDescription = "Up", tint = TextPrimary)
+                Icon(
+                    Icons.Default.KeyboardArrowUp,
+                    contentDescription = "Move Up",
+                    tint = colors.primaryText
+                )
             }
-            Row(horizontalArrangement = Arrangement.spacedBy(32.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(28.dp)) {
                 IconButton(
                     onClick = { nextDir = Direction.LEFT },
-                    modifier = Modifier.size(44.dp).clip(CircleShape).background(DarkElevatedSurface)
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(colors.elevatedSurface)
                 ) {
-                    Icon(Icons.Default.KeyboardArrowLeft, contentDescription = "Left", tint = TextPrimary)
+                    Icon(
+                        Icons.Default.KeyboardArrowLeft,
+                        contentDescription = "Move Left",
+                        tint = colors.primaryText
+                    )
                 }
                 IconButton(
                     onClick = { nextDir = Direction.RIGHT },
-                    modifier = Modifier.size(44.dp).clip(CircleShape).background(DarkElevatedSurface)
+                    modifier = Modifier
+                        .size(42.dp)
+                        .clip(CircleShape)
+                        .background(colors.elevatedSurface)
                 ) {
-                    Icon(Icons.Default.KeyboardArrowRight, contentDescription = "Right", tint = TextPrimary)
+                    Icon(
+                        Icons.Default.KeyboardArrowRight,
+                        contentDescription = "Move Right",
+                        tint = colors.primaryText
+                    )
                 }
             }
             IconButton(
                 onClick = { nextDir = Direction.DOWN },
-                modifier = Modifier.size(44.dp).clip(CircleShape).background(DarkElevatedSurface)
+                modifier = Modifier
+                    .size(42.dp)
+                    .clip(CircleShape)
+                    .background(colors.elevatedSurface)
             ) {
-                Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Down", tint = TextPrimary)
+                Icon(
+                    Icons.Default.KeyboardArrowDown,
+                    contentDescription = "Move Down",
+                    tint = colors.primaryText
+                )
             }
         }
     }

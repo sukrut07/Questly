@@ -45,11 +45,7 @@ import com.example.ui.feature.profile.AnalyticsScreen
 import com.example.ui.feature.profile.ProfileScreen
 import com.example.ui.feature.profile.SkillTreeScreen
 import com.example.ui.feature.quests.QuestsScreen
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.TextMuted
+
 
 sealed class Screen(val route: String, val title: String, val icon: ImageVector? = null) {
     object Home : Screen("home", "Home", Icons.Default.Home)

@@ -14,26 +14,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RocketLaunch
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SportsEsports
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,32 +40,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.core.model.Quest
-import com.example.core.model.QuestPriority
-import com.example.core.model.QuestStatus
 import com.example.ui.MainViewModel
 import com.example.ui.components.CategoryBadge
 import com.example.ui.components.DifficultyBadge
 import com.example.ui.components.LivingWorldCard
 import com.example.ui.components.QuestlyCard
 import com.example.ui.components.XpProgressBar
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.QuestlyThemeTokens
 import java.time.LocalTime
 
 @Composable
@@ -81,6 +63,7 @@ fun HomeScreen(
     onNavigateToAnalytics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val profile by viewModel.profile.collectAsState()
     val levelInfo by viewModel.levelInfo.collectAsState()
     val streak by viewModel.streak.collectAsState()
@@ -88,6 +71,7 @@ fun HomeScreen(
     val achievements by viewModel.achievements.collectAsState()
     val analytics by viewModel.analytics.collectAsState()
     val defenderBest by viewModel.defenderHighScore.collectAsState()
+    val mazeBest by viewModel.mazeHighScore.collectAsState()
 
     val greeting = when (LocalTime.now().hour) {
         in 5..11 -> "Good morning"
@@ -101,7 +85,7 @@ fun HomeScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -122,7 +106,7 @@ fun HomeScreen(
                             .clip(CircleShape)
                             .background(
                                 Brush.radialGradient(
-                                    listOf(PrimaryViolet, DarkElevatedSurface)
+                                    listOf(colors.primaryAccent, colors.elevatedSurface)
                                 )
                             ),
                         contentAlignment = Alignment.Center
@@ -131,23 +115,26 @@ fun HomeScreen(
                             text = profile.displayName.take(1).uppercase(),
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            color = androidx.compose.ui.graphics.Color.White
                         )
                     }
 
                     Spacer(modifier = Modifier.width(12.dp))
 
                     Column {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "$greeting, ${profile.displayName}",
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.primaryText
+                            )
+                        }
                         Text(
-                            text = "$greeting, Adventurer",
+                            text = "Level ${levelInfo.currentLevel} • ${levelInfo.stage.stageName}",
                             fontSize = 12.sp,
-                            color = TextSecondary
-                        )
-                        Text(
-                            text = profile.displayName,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            fontWeight = FontWeight.Medium,
+                            color = colors.secondaryAccent
                         )
                     }
                 }
@@ -156,14 +143,14 @@ fun HomeScreen(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(10.dp))
-                        .background(WarningOrange.copy(alpha = 0.18f))
+                        .background(colors.warning.copy(alpha = 0.16f))
                         .padding(horizontal = 10.dp, vertical = 6.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.LocalFireDepartment,
                             contentDescription = "Streak",
-                            tint = WarningOrange,
+                            tint = colors.warning,
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(4.dp))
@@ -171,7 +158,7 @@ fun HomeScreen(
                             text = "${streak.currentStreak}d Streak",
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
-                            color = WarningOrange
+                            color = colors.warning
                         )
                     }
                 }
@@ -206,8 +193,8 @@ fun HomeScreen(
                     .fillMaxWidth()
                     .clickable { onNavigateToAnalytics() }
                     .testTag("home_momentum_card"),
-                backgroundColor = DarkCardSurface,
-                borderColor = SecondaryBlue.copy(alpha = 0.4f)
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.secondaryAccent.copy(alpha = 0.35f)
             ) {
                 Row(
                     modifier = Modifier.padding(18.dp),
@@ -219,7 +206,7 @@ fun HomeScreen(
                             text = "TODAY'S MOMENTUM",
                             fontSize = 11.sp,
                             fontWeight = FontWeight.Bold,
-                            color = SecondaryBlue,
+                            color = colors.secondaryAccent,
                             letterSpacing = 1.sp
                         )
                         Spacer(modifier = Modifier.height(6.dp))
@@ -227,12 +214,12 @@ fun HomeScreen(
                             text = "$dailyMins / $targetMins mins focused",
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
                         Text(
-                            text = "$completedCount quests completed today • ${streak.currentStreak} day streak active",
+                            text = "$completedCount quests completed today • ${streak.currentStreak}d streak active",
                             fontSize = 12.sp,
-                            color = TextSecondary,
+                            color = colors.secondaryText,
                             modifier = Modifier.padding(top = 2.dp)
                         )
                     }
@@ -245,15 +232,15 @@ fun HomeScreen(
                         CircularProgressIndicator(
                             progress = { focusPercent },
                             modifier = Modifier.fillMaxSize(),
-                            color = SecondaryBlue,
-                            trackColor = DarkElevatedSurface,
+                            color = colors.secondaryAccent,
+                            trackColor = colors.elevatedSurface,
                             strokeWidth = 6.dp
                         )
                         Text(
                             text = "${(focusPercent * 100).toInt()}%",
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
                     }
                 }
@@ -271,12 +258,12 @@ fun HomeScreen(
                     text = "Quest of the Day",
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "View all (${activeQuests.size})",
                     fontSize = 12.sp,
-                    color = PrimaryViolet,
+                    color = colors.primaryAccent,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.clickable { onNavigateToQuests() }
                 )
@@ -289,8 +276,8 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .testTag("quest_of_the_day_card"),
-                    backgroundColor = DarkCardSurface,
-                    borderColor = GoldAchievement.copy(alpha = 0.5f)
+                    backgroundColor = colors.cardSurface,
+                    borderColor = colors.gold.copy(alpha = 0.5f)
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Row(
@@ -306,7 +293,7 @@ fun HomeScreen(
                                 text = "+${questOfTheDay.xpReward} XP",
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = GoldAchievement
+                                color = colors.gold
                             )
                         }
 
@@ -316,14 +303,14 @@ fun HomeScreen(
                             text = questOfTheDay.title,
                             fontSize = 17.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
 
                         if (questOfTheDay.description.isNotEmpty()) {
                             Text(
                                 text = questOfTheDay.description,
                                 fontSize = 13.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 maxLines = 2,
                                 modifier = Modifier.padding(top = 4.dp)
                             )
@@ -340,21 +327,21 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Default.Timer,
                                     contentDescription = "Duration",
-                                    tint = TextMuted,
+                                    tint = colors.mutedText,
                                     modifier = Modifier.size(14.dp)
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
                                     text = "${questOfTheDay.estimatedMinutes}m target",
                                     fontSize = 12.sp,
-                                    color = TextMuted
+                                    color = colors.mutedText
                                 )
                             }
 
                             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                                 Button(
                                     onClick = onNavigateToFocus,
-                                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet),
+                                    colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent),
                                     shape = RoundedCornerShape(10.dp)
                                 ) {
                                     Icon(
@@ -373,27 +360,35 @@ fun HomeScreen(
                                     Icon(
                                         imageVector = Icons.Default.Check,
                                         contentDescription = "Complete",
-                                        tint = SuccessGreen,
+                                        tint = colors.success,
                                         modifier = Modifier.size(16.dp)
                                     )
                                     Spacer(modifier = Modifier.width(4.dp))
-                                    Text("Done", color = SuccessGreen, fontSize = 12.sp)
+                                    Text("Done", color = colors.success, fontSize = 12.sp)
                                 }
                             }
                         }
                     }
                 }
             } else {
-                QuestlyCard(modifier = Modifier.fillMaxWidth()) {
+                QuestlyCard(
+                    modifier = Modifier.fillMaxWidth(),
+                    backgroundColor = colors.cardSurface,
+                    borderColor = colors.border
+                ) {
                     Column(
                         modifier = Modifier.padding(20.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text("No active quests remaining today!", color = TextPrimary, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "All quests cleared for now!",
+                            color = colors.primaryText,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
                         Button(
                             onClick = onNavigateToQuests,
-                            colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet)
+                            colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent)
                         ) {
                             Icon(Icons.Default.Add, contentDescription = "Add")
                             Spacer(modifier = Modifier.width(4.dp))
@@ -404,15 +399,15 @@ fun HomeScreen(
             }
         }
 
-        // F. Arcade Entry Feature Card (Quest Defender)
+        // F. Arcade Entry Feature Card (Quest Defender & Crystal Maze)
         item {
             QuestlyCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clickable { onNavigateToArcade() }
                     .testTag("home_arcade_card"),
-                backgroundColor = DarkCardSurface,
-                borderColor = PrimaryViolet.copy(alpha = 0.4f)
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.primaryAccent.copy(alpha = 0.4f)
             ) {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -424,13 +419,13 @@ fun HomeScreen(
                             modifier = Modifier
                                 .size(44.dp)
                                 .clip(CircleShape)
-                                .background(PrimaryViolet.copy(alpha = 0.2f)),
+                                .background(colors.primaryAccent.copy(alpha = 0.18f)),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
                                 imageVector = Icons.Default.RocketLaunch,
                                 contentDescription = "Arcade",
-                                tint = PrimaryViolet,
+                                tint = colors.primaryAccent,
                                 modifier = Modifier.size(24.dp)
                             )
                         }
@@ -440,12 +435,12 @@ fun HomeScreen(
                                 text = "Arcade: Quest Defender",
                                 fontSize = 15.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary
+                                color = colors.primaryText
                             )
                             Text(
-                                text = "Take a break • Best: $defenderBest pts",
+                                text = "High Scores: Defender $defenderBest pts • Maze $mazeBest pts",
                                 fontSize = 12.sp,
-                                color = TextSecondary
+                                color = colors.secondaryText
                             )
                         }
                     }
@@ -453,7 +448,7 @@ fun HomeScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Play",
-                        tint = PrimaryViolet
+                        tint = colors.primaryAccent
                     )
                 }
             }
@@ -461,9 +456,6 @@ fun HomeScreen(
 
         // G. Recent Achievements Preview
         item {
-            val unlockedAchievements = achievements.filter { it.isUnlocked }.take(2)
-            val nextAchievement = achievements.firstOrNull { !it.isUnlocked }
-
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -473,12 +465,12 @@ fun HomeScreen(
                     text = "Recent Badges",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "View Hall (${achievements.count { it.isUnlocked }}/${achievements.size})",
                     fontSize = 12.sp,
-                    color = GoldAchievement,
+                    color = colors.gold,
                     fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.clickable { onNavigateToAchievements() }
                 )
@@ -494,7 +486,9 @@ fun HomeScreen(
                     QuestlyCard(
                         modifier = Modifier
                             .weight(1f)
-                            .clickable { onNavigateToAchievements() }
+                            .clickable { onNavigateToAchievements() },
+                        backgroundColor = colors.cardSurface,
+                        borderColor = colors.border
                     ) {
                         Column(modifier = Modifier.padding(12.dp)) {
                             Row(
@@ -504,14 +498,14 @@ fun HomeScreen(
                                 Icon(
                                     imageVector = Icons.Default.EmojiEvents,
                                     contentDescription = ach.title,
-                                    tint = if (ach.isUnlocked) GoldAchievement else TextMuted,
+                                    tint = if (ach.isUnlocked) colors.gold else colors.mutedText,
                                     modifier = Modifier.size(18.dp)
                                 )
                                 Text(
                                     text = if (ach.isUnlocked) "UNLOCKED" else "${ach.currentValue}/${ach.targetValue}",
                                     fontSize = 9.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = if (ach.isUnlocked) SuccessGreen else TextMuted
+                                    color = if (ach.isUnlocked) colors.success else colors.mutedText
                                 )
                             }
                             Spacer(modifier = Modifier.height(6.dp))
@@ -519,13 +513,13 @@ fun HomeScreen(
                                 text = ach.title,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary,
+                                color = colors.primaryText,
                                 maxLines = 1
                             )
                             Text(
                                 text = ach.description,
                                 fontSize = 10.sp,
-                                color = TextSecondary,
+                                color = colors.secondaryText,
                                 maxLines = 1
                             )
                         }

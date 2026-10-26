@@ -42,18 +42,7 @@ import androidx.compose.ui.unit.sp
 import com.example.core.model.QuestCategory
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun AnalyticsScreen(
@@ -61,6 +50,7 @@ fun AnalyticsScreen(
     onBack: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val analytics by viewModel.analytics.collectAsState()
     var selectedRange by remember { mutableStateOf("7 Days") }
     val ranges = listOf("7 Days", "30 Days", "90 Days")
@@ -68,7 +58,7 @@ fun AnalyticsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp)
     ) {
         // Header
@@ -80,7 +70,7 @@ fun AnalyticsScreen(
                 Icon(
                     imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
-                    tint = TextPrimary
+                    tint = colors.primaryText
                 )
             }
             Spacer(modifier = Modifier.width(8.dp))
@@ -89,12 +79,12 @@ fun AnalyticsScreen(
                     text = "Productivity Intelligence",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "Explainable metrics comparing you against your own goals",
                     fontSize = 12.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
         }
@@ -112,7 +102,7 @@ fun AnalyticsScreen(
                     modifier = Modifier
                         .weight(1f)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                        .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                         .clickable { selectedRange = range }
                         .padding(vertical = 8.dp),
                     contentAlignment = Alignment.Center
@@ -121,7 +111,7 @@ fun AnalyticsScreen(
                         text = range,
                         fontSize = 12.sp,
                         fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else TextSecondary
+                        color = if (isSelected) Color.White else colors.secondaryText
                     )
                 }
             }
@@ -140,8 +130,8 @@ fun AnalyticsScreen(
                 val score = analytics?.productivityScore
                 QuestlyCard(
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = DarkCardSurface,
-                    borderColor = PrimaryViolet.copy(alpha = 0.4f)
+                    backgroundColor = colors.cardSurface,
+                    borderColor = colors.primaryAccent.copy(alpha = 0.4f)
                 ) {
                     Column(modifier = Modifier.padding(18.dp)) {
                         Row(
@@ -154,14 +144,14 @@ fun AnalyticsScreen(
                                     text = "PRODUCTIVITY SCORE",
                                     fontSize = 11.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = PrimaryViolet,
+                                    color = colors.primaryAccent,
                                     letterSpacing = 1.sp
                                 )
                                 Text(
                                     text = "${score?.totalScore ?: 85} / 100",
                                     fontSize = 26.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = colors.primaryText
                                 )
                             }
 
@@ -169,14 +159,14 @@ fun AnalyticsScreen(
                                 modifier = Modifier
                                     .size(54.dp)
                                     .clip(CircleShape)
-                                    .background(PrimaryViolet.copy(alpha = 0.15f)),
+                                    .background(colors.primaryAccent.copy(alpha = 0.15f)),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Text(
                                     text = "${score?.totalScore ?: 85}",
                                     fontSize = 18.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = PrimaryViolet
+                                    color = colors.primaryAccent
                                 )
                             }
                         }
@@ -186,19 +176,19 @@ fun AnalyticsScreen(
                         Text(
                             text = score?.formulaExplanation ?: "Score = 0.35C + 0.30F + 0.20G + 0.15S",
                             fontSize = 11.sp,
-                            color = TextMuted
+                            color = colors.mutedText
                         )
 
                         Spacer(modifier = Modifier.height(14.dp))
 
                         // Component bars
-                        ScoreComponentBar("C: Task Completion (35%)", score?.completionScore ?: 80f, SuccessGreen)
+                        ScoreComponentBar("C: Task Completion (35%)", score?.completionScore ?: 80f, colors.success)
                         Spacer(modifier = Modifier.height(8.dp))
-                        ScoreComponentBar("F: Focus Duration (30%)", score?.focusScore ?: 70f, SecondaryBlue)
+                        ScoreComponentBar("F: Focus Duration (30%)", score?.focusScore ?: 70f, colors.secondaryAccent)
                         Spacer(modifier = Modifier.height(8.dp))
-                        ScoreComponentBar("G: Goal Execution (20%)", score?.goalScore ?: 75f, GoldAchievement)
+                        ScoreComponentBar("G: Goal Execution (20%)", score?.goalScore ?: 75f, colors.gold)
                         Spacer(modifier = Modifier.height(8.dp))
-                        ScoreComponentBar("S: Streak Cadence (15%)", score?.streakScore ?: 85f, WarningOrange)
+                        ScoreComponentBar("S: Streak Cadence (15%)", score?.streakScore ?: 85f, colors.warning)
                     }
                 }
             }
@@ -209,42 +199,54 @@ fun AnalyticsScreen(
                     modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
-                    QuestlyCard(modifier = Modifier.weight(1f)) {
+                    QuestlyCard(
+                        modifier = Modifier.weight(1f),
+                        backgroundColor = colors.cardSurface,
+                        borderColor = colors.border
+                    ) {
                         Column(modifier = Modifier.padding(14.dp)) {
-                            Text(text = "Total Focus", fontSize = 11.sp, color = TextSecondary)
+                            Text(text = "Total Focus", fontSize = 11.sp, color = colors.secondaryText)
                             Text(
                                 text = String.format("%.1fh", analytics?.totalFocusHours ?: 0f),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = TextPrimary
+                                color = colors.primaryText
                             )
-                            Text(text = "Verified sessions", fontSize = 10.sp, color = TextMuted)
+                            Text(text = "Verified sessions", fontSize = 10.sp, color = colors.mutedText)
                         }
                     }
 
-                    QuestlyCard(modifier = Modifier.weight(1f)) {
+                    QuestlyCard(
+                        modifier = Modifier.weight(1f),
+                        backgroundColor = colors.cardSurface,
+                        borderColor = colors.border
+                    ) {
                         Column(modifier = Modifier.padding(14.dp)) {
-                            Text(text = "Completion Rate", fontSize = 11.sp, color = TextSecondary)
+                            Text(text = "Completion Rate", fontSize = 11.sp, color = colors.secondaryText)
                             Text(
                                 text = "${analytics?.completionRatePercent?.toInt() ?: 0}%",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = SuccessGreen
+                                color = colors.success
                             )
-                            Text(text = "${analytics?.completedQuestsCount ?: 0} quests done", fontSize = 10.sp, color = TextMuted)
+                            Text(text = "${analytics?.completedQuestsCount ?: 0} quests done", fontSize = 10.sp, color = colors.mutedText)
                         }
                     }
 
-                    QuestlyCard(modifier = Modifier.weight(1f)) {
+                    QuestlyCard(
+                        modifier = Modifier.weight(1f),
+                        backgroundColor = colors.cardSurface,
+                        borderColor = colors.border
+                    ) {
                         Column(modifier = Modifier.padding(14.dp)) {
-                            Text(text = "Streak Record", fontSize = 11.sp, color = TextSecondary)
+                            Text(text = "Streak Record", fontSize = 11.sp, color = colors.secondaryText)
                             Text(
                                 text = "${analytics?.longestStreakDays ?: 1}d",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = WarningOrange
+                                color = colors.warning
                             )
-                            Text(text = "Personal best", fontSize = 10.sp, color = TextMuted)
+                            Text(text = "Personal best", fontSize = 10.sp, color = colors.mutedText)
                         }
                     }
                 }
@@ -254,20 +256,21 @@ fun AnalyticsScreen(
             item {
                 QuestlyCard(
                     modifier = Modifier.fillMaxWidth(),
-                    backgroundColor = DarkCardSurface
+                    backgroundColor = colors.cardSurface,
+                    borderColor = colors.border
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
                             text = "Category Distribution",
                             fontSize = 15.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
                         Spacer(modifier = Modifier.height(12.dp))
 
                         val dist = analytics?.categoryDistribution ?: emptyMap()
                         if (dist.isEmpty()) {
-                            Text(text = "No category data recorded yet.", fontSize = 12.sp, color = TextSecondary)
+                            Text(text = "No category data recorded yet.", fontSize = 12.sp, color = colors.secondaryText)
                         } else {
                             dist.forEach { (cat, count) ->
                                 Row(
@@ -277,8 +280,8 @@ fun AnalyticsScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween,
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text(text = cat.displayName, fontSize = 13.sp, color = TextSecondary)
-                                    Text(text = "$count quests", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = PrimaryViolet)
+                                    Text(text = cat.displayName, fontSize = 13.sp, color = colors.secondaryText)
+                                    Text(text = "$count quests", fontSize = 12.sp, fontWeight = FontWeight.Bold, color = colors.primaryAccent)
                                 }
                             }
                         }
@@ -295,12 +298,13 @@ fun AnalyticsScreen(
 
 @Composable
 private fun ScoreComponentBar(label: String, value: Float, color: Color) {
+    val colors = QuestlyThemeTokens.colors
     Column {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(text = label, fontSize = 11.sp, color = TextSecondary)
+            Text(text = label, fontSize = 11.sp, color = colors.secondaryText)
             Text(text = "${value.toInt()}%", fontSize = 11.sp, fontWeight = FontWeight.Bold, color = color)
         }
         Spacer(modifier = Modifier.height(3.dp))
@@ -311,7 +315,7 @@ private fun ScoreComponentBar(label: String, value: Float, color: Color) {
                 .height(4.dp)
                 .clip(RoundedCornerShape(2.dp)),
             color = color,
-            trackColor = DarkElevatedSurface
+            trackColor = colors.elevatedSurface
         )
     }
 }

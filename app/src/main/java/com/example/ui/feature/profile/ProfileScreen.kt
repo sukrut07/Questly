@@ -58,19 +58,7 @@ import androidx.compose.ui.unit.sp
 import com.example.core.model.ProgressionStage
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.ErrorRed
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
-import com.example.ui.theme.WarningOrange
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun ProfileScreen(
@@ -80,6 +68,7 @@ fun ProfileScreen(
     onNavigateToAnalytics: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val profile by viewModel.profile.collectAsState()
     val levelInfo by viewModel.levelInfo.collectAsState()
     val streak by viewModel.streak.collectAsState()
@@ -94,16 +83,16 @@ fun ProfileScreen(
     if (showEditNameDialog) {
         AlertDialog(
             onDismissRequest = { showEditNameDialog = false },
-            title = { Text("Update Adventurer Name", color = TextPrimary) },
+            title = { Text("Update Adventurer Name", color = colors.primaryText) },
             text = {
                 OutlinedTextField(
                     value = editNameText,
                     onValueChange = { editNameText = it },
                     singleLine = true,
                     colors = OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary,
-                        focusedBorderColor = PrimaryViolet
+                        focusedTextColor = colors.primaryText,
+                        unfocusedTextColor = colors.primaryText,
+                        focusedBorderColor = colors.primaryAccent
                     )
                 )
             },
@@ -115,17 +104,17 @@ fun ProfileScreen(
                         }
                         showEditNameDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = PrimaryViolet)
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.primaryAccent)
                 ) {
                     Text("Save")
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showEditNameDialog = false }) {
-                    Text("Cancel", color = TextSecondary)
+                    Text("Cancel", color = colors.secondaryText)
                 }
             },
-            containerColor = DarkCardSurface
+            containerColor = colors.cardSurface
         )
     }
 
@@ -137,15 +126,15 @@ fun ProfileScreen(
                 Icon(
                     imageVector = Icons.Default.Warning,
                     contentDescription = "Warning",
-                    tint = ErrorRed,
+                    tint = colors.error,
                     modifier = Modifier.size(36.dp)
                 )
             },
-            title = { Text("Reset Questly Data?", color = TextPrimary) },
+            title = { Text("Reset Questly Data?", color = colors.primaryText) },
             text = {
                 Text(
                     "This action resets all completed quests, focus history, and XP back to initial defaults. Your local preferences will be cleared.",
-                    color = TextSecondary,
+                    color = colors.secondaryText,
                     fontSize = 13.sp
                 )
             },
@@ -155,24 +144,24 @@ fun ProfileScreen(
                         viewModel.resetAllData()
                         showResetDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = ErrorRed)
+                    colors = ButtonDefaults.buttonColors(containerColor = colors.error)
                 ) {
                     Text("Confirm Reset")
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showResetDialog = false }) {
-                    Text("Cancel", color = TextSecondary)
+                    Text("Cancel", color = colors.secondaryText)
                 }
             },
-            containerColor = DarkCardSurface
+            containerColor = colors.cardSurface
         )
     }
 
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -181,8 +170,8 @@ fun ProfileScreen(
             // Profile Card Header
             QuestlyCard(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = DarkCardSurface,
-                borderColor = PrimaryViolet.copy(alpha = 0.4f)
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.primaryAccent.copy(alpha = 0.4f)
             ) {
                 Column(modifier = Modifier.padding(20.dp)) {
                     Row(
@@ -195,10 +184,10 @@ fun ProfileScreen(
                                 .clip(CircleShape)
                                 .background(
                                     Brush.radialGradient(
-                                        listOf(PrimaryViolet, DarkElevatedSurface)
+                                        listOf(colors.primaryAccent, colors.elevatedSurface)
                                     )
                                 )
-                                .border(2.dp, GoldAchievement, CircleShape),
+                                .border(2.dp, colors.gold, CircleShape),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
@@ -217,7 +206,7 @@ fun ProfileScreen(
                                     text = profile.displayName,
                                     fontSize = 20.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary
+                                    color = colors.primaryText
                                 )
                                 IconButton(
                                     onClick = {
@@ -229,7 +218,7 @@ fun ProfileScreen(
                                     Icon(
                                         imageVector = Icons.Default.Edit,
                                         contentDescription = "Edit name",
-                                        tint = TextMuted,
+                                        tint = colors.mutedText,
                                         modifier = Modifier.size(14.dp)
                                     )
                                 }
@@ -238,7 +227,7 @@ fun ProfileScreen(
                             Text(
                                 text = profile.title,
                                 fontSize = 12.sp,
-                                color = TextSecondary
+                                color = colors.secondaryText
                             )
 
                             Spacer(modifier = Modifier.height(4.dp))
@@ -247,28 +236,28 @@ fun ProfileScreen(
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
-                                        .background(PrimaryViolet.copy(alpha = 0.2f))
+                                        .background(colors.primaryAccent.copy(alpha = 0.2f))
                                         .padding(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
                                     Text(
                                         text = "LVL ${levelInfo.currentLevel}",
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = PrimaryViolet
+                                        color = colors.primaryAccent
                                     )
                                 }
 
                                 Box(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(6.dp))
-                                        .background(SecondaryBlue.copy(alpha = 0.2f))
+                                        .background(colors.secondaryAccent.copy(alpha = 0.2f))
                                         .padding(horizontal = 8.dp, vertical = 2.dp)
                                 ) {
                                     Text(
                                         text = profile.currentStage.stageName.uppercase(),
                                         fontSize = 11.sp,
                                         fontWeight = FontWeight.Bold,
-                                        color = SecondaryBlue
+                                        color = colors.secondaryAccent
                                     )
                                 }
                             }
@@ -281,13 +270,13 @@ fun ProfileScreen(
                         text = "TOTAL PROGRESSION: ${profile.totalXp} XP",
                         fontSize = 11.sp,
                         fontWeight = FontWeight.Bold,
-                        color = GoldAchievement,
+                        color = colors.gold,
                         letterSpacing = 1.sp
                     )
                     Text(
                         text = levelInfo.nextLevelUnlock,
                         fontSize = 12.sp,
-                        color = TextSecondary,
+                        color = colors.secondaryText,
                         modifier = Modifier.padding(top = 2.dp)
                     )
                 }
@@ -305,14 +294,14 @@ fun ProfileScreen(
                         title = "Quests Completed",
                         value = "${analytics?.completedQuestsCount ?: 0}",
                         sub = "Lifetime tasks",
-                        color = SuccessGreen,
+                        color = colors.success,
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         title = "Focus Time",
                         value = String.format("%.1fh", analytics?.totalFocusHours ?: 0f),
                         sub = "Deep work sessions",
-                        color = PrimaryViolet,
+                        color = colors.primaryAccent,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -324,14 +313,14 @@ fun ProfileScreen(
                         title = "Current Streak",
                         value = "${streak.currentStreak} Days",
                         sub = "Active cadence",
-                        color = WarningOrange,
+                        color = colors.warning,
                         modifier = Modifier.weight(1f)
                     )
                     StatCard(
                         title = "Longest Streak",
                         value = "${streak.longestStreak} Days",
                         sub = "Personal best",
-                        color = GoldAchievement,
+                        color = colors.gold,
                         modifier = Modifier.weight(1f)
                     )
                 }
@@ -344,7 +333,7 @@ fun ProfileScreen(
                 text = "Progression Portals",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = colors.primaryText
             )
         }
 
@@ -353,7 +342,7 @@ fun ProfileScreen(
                 title = "Interactive Skill Tree",
                 description = "Six skill branches: Focus, Consistency, Planning, Execution...",
                 icon = Icons.Default.Architecture,
-                color = SecondaryBlue,
+                color = colors.secondaryAccent,
                 onClick = onNavigateToSkillTree
             )
         }
@@ -363,7 +352,7 @@ fun ProfileScreen(
                 title = "Hall of Achievements",
                 description = "Earn badges, milestone rewards, and cosmetic unlocks",
                 icon = Icons.Default.EmojiEvents,
-                color = GoldAchievement,
+                color = colors.gold,
                 onClick = onNavigateToAchievements
             )
         }
@@ -373,7 +362,7 @@ fun ProfileScreen(
                 title = "Productivity Intelligence",
                 description = "Explainable score formula & category analytics",
                 icon = Icons.Default.BarChart,
-                color = SuccessGreen,
+                color = colors.success,
                 onClick = onNavigateToAnalytics
             )
         }
@@ -382,14 +371,15 @@ fun ProfileScreen(
         item {
             QuestlyCard(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = DarkCardSurface
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.border
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.Palette,
                             contentDescription = "Themes",
-                            tint = PrimaryViolet,
+                            tint = colors.primaryAccent,
                             modifier = Modifier.size(18.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -397,7 +387,7 @@ fun ProfileScreen(
                             text = "Adaptive Themes (Stage Unlocks)",
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
                     }
 
@@ -418,7 +408,7 @@ fun ProfileScreen(
                                 modifier = Modifier
                                     .weight(1f)
                                     .clip(RoundedCornerShape(8.dp))
-                                    .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                                    .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                                     .clickable { viewModel.updateTheme(mode) }
                                     .padding(vertical = 8.dp),
                                 contentAlignment = Alignment.Center
@@ -427,7 +417,7 @@ fun ProfileScreen(
                                     text = label,
                                     fontSize = 12.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                    color = if (isSelected) Color.White else TextSecondary
+                                    color = if (isSelected) Color.White else colors.secondaryText
                                 )
                             }
                         }
@@ -437,7 +427,7 @@ fun ProfileScreen(
                     Text(
                         text = "Cosmetic Accents",
                         fontSize = 12.sp,
-                        color = TextSecondary
+                        color = colors.secondaryText
                     )
                     Spacer(modifier = Modifier.height(6.dp))
 
@@ -449,10 +439,10 @@ fun ProfileScreen(
                             Box(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(10.dp))
-                                    .background(DarkElevatedSurface)
+                                    .background(colors.elevatedSurface)
                                     .border(
                                         1.dp,
-                                        if (isSelected) PrimaryViolet else DarkBorder,
+                                        if (isSelected) colors.primaryAccent else colors.border,
                                         RoundedCornerShape(10.dp)
                                     )
                                     .clickable(enabled = isUnlocked) {
@@ -471,14 +461,14 @@ fun ProfileScreen(
                                     Text(
                                         text = cosmetic.name,
                                         fontSize = 12.sp,
-                                        color = if (isUnlocked) TextPrimary else TextMuted
+                                        color = if (isUnlocked) colors.primaryText else colors.mutedText
                                     )
                                     if (!isUnlocked) {
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Icon(
                                             imageVector = Icons.Default.Lock,
                                             contentDescription = "Locked",
-                                            tint = TextMuted,
+                                            tint = colors.mutedText,
                                             modifier = Modifier.size(12.dp)
                                         )
                                     }
@@ -494,22 +484,21 @@ fun ProfileScreen(
         item {
             QuestlyCard(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = DarkCardSurface
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.border
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     Text(
                         text = "Data & System",
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = colors.primaryText
                     )
                     Spacer(modifier = Modifier.height(10.dp))
 
                     OutlinedButton(
                         onClick = { showResetDialog = true },
-                        colors = ButtonDefaults.outlinedButtonBorder.let {
-                            ButtonDefaults.outlinedButtonColors(contentColor = ErrorRed)
-                        },
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = colors.error),
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier
                             .fillMaxWidth()
@@ -518,11 +507,11 @@ fun ProfileScreen(
                         Icon(
                             imageVector = Icons.Default.Refresh,
                             contentDescription = "Reset",
-                            tint = ErrorRed,
+                            tint = colors.error,
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(6.dp))
-                        Text("Reset All Data to Factory State", color = ErrorRed, fontSize = 12.sp)
+                        Text("Reset All Data to Factory State", color = colors.error, fontSize = 12.sp)
                     }
                 }
             }
@@ -542,11 +531,16 @@ private fun StatCard(
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    QuestlyCard(modifier = modifier) {
+    val colors = QuestlyThemeTokens.colors
+    QuestlyCard(
+        modifier = modifier,
+        backgroundColor = colors.cardSurface,
+        borderColor = colors.border
+    ) {
         Column(modifier = Modifier.padding(14.dp)) {
-            Text(text = title, fontSize = 11.sp, color = TextSecondary)
+            Text(text = title, fontSize = 11.sp, color = colors.secondaryText)
             Text(text = value, fontSize = 18.sp, fontWeight = FontWeight.Bold, color = color)
-            Text(text = sub, fontSize = 10.sp, color = TextMuted)
+            Text(text = sub, fontSize = 10.sp, color = colors.mutedText)
         }
     }
 }
@@ -559,10 +553,13 @@ private fun PortalItem(
     color: Color,
     onClick: () -> Unit
 ) {
+    val colors = QuestlyThemeTokens.colors
     QuestlyCard(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable { onClick() }
+            .clickable { onClick() },
+        backgroundColor = colors.cardSurface,
+        borderColor = colors.border
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -590,19 +587,19 @@ private fun PortalItem(
                     text = title,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = description,
                     fontSize = 11.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
 
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = "Open",
-                tint = TextMuted,
+                tint = colors.mutedText,
                 modifier = Modifier.size(18.dp)
             )
         }

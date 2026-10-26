@@ -57,23 +57,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun OnboardingScreen(
     onFinishOnboarding: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     var currentStep by remember { mutableIntStateOf(1) }
     val totalSteps = 6
 
@@ -88,7 +79,7 @@ fun OnboardingScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -104,7 +95,7 @@ fun OnboardingScreen(
                 text = "STEP $currentStep OF $totalSteps",
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Bold,
-                color = PrimaryViolet,
+                color = colors.primaryAccent,
                 letterSpacing = 1.sp
             )
             if (currentStep < totalSteps) {
@@ -112,7 +103,7 @@ fun OnboardingScreen(
                     onClick = onFinishOnboarding,
                     modifier = Modifier.testTag("onboarding_skip_button")
                 ) {
-                    Text("Skip", color = TextSecondary, fontSize = 14.sp)
+                    Text("Skip", color = colors.secondaryText, fontSize = 14.sp)
                 }
             }
         }
@@ -131,7 +122,7 @@ fun OnboardingScreen(
                         .height(4.dp)
                         .clip(RoundedCornerShape(2.dp))
                         .background(
-                            if (step <= currentStep) PrimaryViolet else DarkElevatedSurface
+                            if (step <= currentStep) colors.primaryAccent else colors.elevatedSurface
                         )
                 )
             }
@@ -174,10 +165,10 @@ fun OnboardingScreen(
                     onClick = { currentStep-- },
                     modifier = Modifier.testTag("onboarding_back_button"),
                     border = ButtonDefaults.outlinedButtonBorder.copy(
-                        brush = Brush.horizontalGradient(listOf(DarkBorder, DarkBorder))
+                        brush = Brush.horizontalGradient(listOf(colors.border, colors.border))
                     )
                 ) {
-                    Text("Back", color = TextSecondary)
+                    Text("Back", color = colors.secondaryText)
                 }
             } else {
                 Spacer(modifier = Modifier.width(1.dp))
@@ -193,7 +184,7 @@ fun OnboardingScreen(
                 },
                 modifier = Modifier.testTag("onboarding_next_button"),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryViolet,
+                    containerColor = colors.primaryAccent,
                     contentColor = Color.White
                 ),
                 shape = RoundedCornerShape(12.dp)
@@ -210,6 +201,7 @@ fun OnboardingScreen(
 
 @Composable
 private fun Step1Welcome() {
+    val colors = QuestlyThemeTokens.colors
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -218,13 +210,13 @@ private fun Step1Welcome() {
             modifier = Modifier
                 .size(90.dp)
                 .clip(CircleShape)
-                .background(Brush.radialGradient(listOf(PrimaryViolet.copy(alpha = 0.35f), Color.Transparent))),
+                .background(Brush.radialGradient(listOf(colors.primaryAccent.copy(alpha = 0.35f), Color.Transparent))),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.AutoAwesome,
                 contentDescription = "Welcome",
-                tint = GoldAchievement,
+                tint = colors.gold,
                 modifier = Modifier.size(52.dp)
             )
         }
@@ -235,7 +227,7 @@ private fun Step1Welcome() {
             text = "Your next level\nstarts today.",
             fontSize = 32.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary,
+            color = colors.primaryText,
             textAlign = TextAlign.Center,
             lineHeight = 38.sp
         )
@@ -245,7 +237,7 @@ private fun Step1Welcome() {
         Text(
             text = "Turn your goals into quests, build lasting habits, and watch your progress evolve through RPG progression.",
             fontSize = 15.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             textAlign = TextAlign.Center,
             lineHeight = 22.sp,
             modifier = Modifier.padding(horizontal = 16.dp)
@@ -255,6 +247,7 @@ private fun Step1Welcome() {
 
 @Composable
 private fun Step2FocusAreas(selected: MutableList<String>) {
+    val colors = QuestlyThemeTokens.colors
     val areas = listOf(
         Pair("Coding & Development", Icons.Default.Code),
         Pair("Study & Learning", Icons.Default.School),
@@ -270,12 +263,12 @@ private fun Step2FocusAreas(selected: MutableList<String>) {
             text = "Choose your focus areas",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
         Text(
             text = "Select all realms you want to advance in",
             fontSize = 14.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             modifier = Modifier.padding(top = 6.dp, bottom = 20.dp)
         )
 
@@ -287,8 +280,8 @@ private fun Step2FocusAreas(selected: MutableList<String>) {
             items(areas) { (title, icon) ->
                 val isSelected = selected.contains(title)
                 QuestlyCard(
-                    backgroundColor = if (isSelected) PrimaryViolet.copy(alpha = 0.18f) else DarkCardSurface,
-                    borderColor = if (isSelected) PrimaryViolet else DarkBorder,
+                    backgroundColor = if (isSelected) colors.primaryAccent.copy(alpha = 0.18f) else colors.cardSurface,
+                    borderColor = if (isSelected) colors.primaryAccent else colors.border,
                     onClick = {
                         if (isSelected) selected.remove(title) else selected.add(title)
                     }
@@ -300,7 +293,7 @@ private fun Step2FocusAreas(selected: MutableList<String>) {
                         Icon(
                             imageVector = icon,
                             contentDescription = title,
-                            tint = if (isSelected) PrimaryViolet else TextSecondary,
+                            tint = if (isSelected) colors.primaryAccent else colors.secondaryText,
                             modifier = Modifier.size(20.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
@@ -308,7 +301,7 @@ private fun Step2FocusAreas(selected: MutableList<String>) {
                             text = title,
                             fontSize = 12.sp,
                             fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
-                            color = if (isSelected) TextPrimary else TextSecondary,
+                            color = if (isSelected) colors.primaryText else colors.secondaryText,
                             maxLines = 2
                         )
                     }
@@ -320,6 +313,7 @@ private fun Step2FocusAreas(selected: MutableList<String>) {
 
 @Composable
 private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
+    val colors = QuestlyThemeTokens.colors
     val options = listOf(25, 45, 60, 90, 120)
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -327,12 +321,12 @@ private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
             text = "Set your daily focus goal",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
         Text(
             text = "Choose a sustainable target for daily deep work",
             fontSize = 14.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             modifier = Modifier.padding(top = 6.dp, bottom = 24.dp)
         )
 
@@ -343,8 +337,8 @@ private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
             options.forEach { minutes ->
                 val isSelected = current == minutes
                 QuestlyCard(
-                    backgroundColor = if (isSelected) SecondaryBlue.copy(alpha = 0.15f) else DarkCardSurface,
-                    borderColor = if (isSelected) SecondaryBlue else DarkBorder,
+                    backgroundColor = if (isSelected) colors.secondaryAccent.copy(alpha = 0.15f) else colors.cardSurface,
+                    borderColor = if (isSelected) colors.secondaryAccent else colors.border,
                     onClick = { onSelect(minutes) }
                 ) {
                     Row(
@@ -359,7 +353,7 @@ private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
                                 text = "$minutes minutes / day",
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = TextPrimary
+                                color = colors.primaryText
                             )
                             Text(
                                 text = when (minutes) {
@@ -370,7 +364,7 @@ private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
                                     else -> "Intense craft: 2 hours daily"
                                 },
                                 fontSize = 12.sp,
-                                color = TextSecondary
+                                color = colors.secondaryText
                             )
                         }
 
@@ -379,13 +373,13 @@ private fun Step3DailyGoal(current: Int, onSelect: (Int) -> Unit) {
                                 modifier = Modifier
                                     .size(24.dp)
                                     .clip(CircleShape)
-                                    .background(SecondaryBlue),
+                                    .background(colors.secondaryAccent),
                                 contentAlignment = Alignment.Center
                             ) {
                                 Icon(
                                     imageVector = Icons.Default.Check,
                                     contentDescription = "Selected",
-                                    tint = DarkBackground,
+                                    tint = Color.White,
                                     modifier = Modifier.size(16.dp)
                                 )
                             }
@@ -404,29 +398,31 @@ private fun Step4TimerConfig(
     onWorkChanged: (Int) -> Unit,
     onBreakChanged: (Int) -> Unit
 ) {
+    val colors = QuestlyThemeTokens.colors
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
             text = "Configure focus intervals",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
         Text(
             text = "Standard Pomodoro balance promotes high endurance",
             fontSize = 14.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             modifier = Modifier.padding(top = 6.dp, bottom = 24.dp)
         )
 
         QuestlyCard(
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = DarkCardSurface
+            backgroundColor = colors.cardSurface,
+            borderColor = colors.border
         ) {
             Column(modifier = Modifier.padding(20.dp)) {
                 Text(
                     text = "Focus Block Duration",
                     fontSize = 14.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -436,7 +432,7 @@ private fun Step4TimerConfig(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) PrimaryViolet else DarkElevatedSurface)
+                                .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface)
                                 .clickable { onWorkChanged(mins) }
                                 .padding(vertical = 10.dp),
                             contentAlignment = Alignment.Center
@@ -444,7 +440,7 @@ private fun Step4TimerConfig(
                             Text(
                                 text = "${mins}m",
                                 fontWeight = FontWeight.Bold,
-                                color = if (isSelected) Color.White else TextSecondary
+                                color = if (isSelected) Color.White else colors.secondaryText
                             )
                         }
                     }
@@ -455,7 +451,7 @@ private fun Step4TimerConfig(
                 Text(
                     text = "Break Duration",
                     fontSize = 14.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
                 Spacer(modifier = Modifier.height(10.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -465,15 +461,15 @@ private fun Step4TimerConfig(
                             modifier = Modifier
                                 .weight(1f)
                                 .clip(RoundedCornerShape(8.dp))
-                                .background(if (isSelected) SuccessGreen else DarkElevatedSurface)
-                                .clickable { onBreakChanged(mins) }
+                                .background(if (isSelected) colors.success else colors.elevatedSurface)
+                            .clickable { onBreakChanged(mins) }
                                 .padding(vertical = 10.dp),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
                                 text = "${mins}m",
                                 fontWeight = FontWeight.Bold,
-                                color = if (isSelected) DarkBackground else TextSecondary
+                                color = if (isSelected) Color.White else colors.secondaryText
                             )
                         }
                     }
@@ -485,6 +481,7 @@ private fun Step4TimerConfig(
 
 @Composable
 private fun Step5Avatar(current: String, onSelect: (String) -> Unit) {
+    val colors = QuestlyThemeTokens.colors
     val avatars = listOf(
         Triple("mage", "Arcane Scholar", "Master of deep study and logic quests"),
         Triple("knight", "Focus Guardian", "Resilient habit builder with unshakable streak"),
@@ -497,62 +494,60 @@ private fun Step5Avatar(current: String, onSelect: (String) -> Unit) {
             text = "Select your adventurer persona",
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
         Text(
-            text = "Your avatar evolves as you reach new progression stages",
+            text = "Your avatar represents you in the Living World",
             fontSize = 14.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             modifier = Modifier.padding(top = 6.dp, bottom = 20.dp)
         )
 
-        Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            verticalArrangement = Arrangement.spacedBy(10.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
             avatars.forEach { (id, name, desc) ->
                 val isSelected = current == id
                 QuestlyCard(
-                    backgroundColor = if (isSelected) PrimaryViolet.copy(alpha = 0.15f) else DarkCardSurface,
-                    borderColor = if (isSelected) PrimaryViolet else DarkBorder,
+                    backgroundColor = if (isSelected) colors.primaryAccent.copy(alpha = 0.15f) else colors.cardSurface,
+                    borderColor = if (isSelected) colors.primaryAccent else colors.border,
                     onClick = { onSelect(id) }
                 ) {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
+                            .padding(14.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Box(
                             modifier = Modifier
                                 .size(44.dp)
                                 .clip(CircleShape)
-                                .background(if (isSelected) PrimaryViolet else DarkElevatedSurface),
+                                .background(if (isSelected) colors.primaryAccent else colors.elevatedSurface),
                             contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = name.take(2).uppercase(),
+                                text = name.take(1),
+                                fontSize = 18.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color.White
+                                color = if (isSelected) Color.White else colors.secondaryText
                             )
                         }
+
                         Spacer(modifier = Modifier.width(14.dp))
+
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = name,
                                 fontSize = 15.sp,
-                                fontWeight = FontWeight.SemiBold,
-                                color = TextPrimary
+                                fontWeight = FontWeight.Bold,
+                                color = colors.primaryText
                             )
                             Text(
                                 text = desc,
-                                fontSize = 12.sp,
-                                color = TextSecondary
-                            )
-                        }
-                        if (isSelected) {
-                            Icon(
-                                imageVector = Icons.Default.Check,
-                                contentDescription = "Selected",
-                                tint = PrimaryViolet,
-                                modifier = Modifier.size(20.dp)
+                                fontSize = 11.sp,
+                                color = colors.secondaryText
                             )
                         }
                     }
@@ -564,6 +559,7 @@ private fun Step5Avatar(current: String, onSelect: (String) -> Unit) {
 
 @Composable
 private fun Step6Ready(dailyTarget: Int, focusAreasCount: Int) {
+    val colors = QuestlyThemeTokens.colors
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -572,24 +568,24 @@ private fun Step6Ready(dailyTarget: Int, focusAreasCount: Int) {
             modifier = Modifier
                 .size(80.dp)
                 .clip(CircleShape)
-                .background(Brush.linearGradient(listOf(SuccessGreen, PrimaryViolet))),
+                .background(colors.success.copy(alpha = 0.2f)),
             contentAlignment = Alignment.Center
         ) {
             Icon(
                 imageVector = Icons.Default.RocketLaunch,
                 contentDescription = "Ready",
-                tint = Color.White,
-                modifier = Modifier.size(42.dp)
+                tint = colors.success,
+                modifier = Modifier.size(44.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(20.dp))
 
         Text(
-            text = "Your Realm Awaits!",
+            text = "Your Realm Awaits",
             fontSize = 28.sp,
             fontWeight = FontWeight.Bold,
-            color = TextPrimary
+            color = colors.primaryText
         )
 
         Spacer(modifier = Modifier.height(10.dp))
@@ -597,7 +593,7 @@ private fun Step6Ready(dailyTarget: Int, focusAreasCount: Int) {
         Text(
             text = "You're configured as an Explorer with a daily goal of $dailyTarget minutes across $focusAreasCount active domains.",
             fontSize = 14.sp,
-            color = TextSecondary,
+            color = colors.secondaryText,
             textAlign = TextAlign.Center,
             lineHeight = 20.sp,
             modifier = Modifier.padding(horizontal = 20.dp)
@@ -607,14 +603,15 @@ private fun Step6Ready(dailyTarget: Int, focusAreasCount: Int) {
 
         QuestlyCard(
             modifier = Modifier.fillMaxWidth(),
-            backgroundColor = DarkCardSurface
+            backgroundColor = colors.cardSurface,
+            borderColor = colors.border
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "STARTER MISSION INITIALIZED",
                     fontSize = 11.sp,
                     fontWeight = FontWeight.Bold,
-                    color = GoldAchievement,
+                    color = colors.gold,
                     letterSpacing = 1.sp
                 )
                 Spacer(modifier = Modifier.height(4.dp))
@@ -622,12 +619,12 @@ private fun Step6Ready(dailyTarget: Int, focusAreasCount: Int) {
                     text = "Welcome to Questly: Explore the Realm",
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold,
-                    color = TextPrimary
+                    color = colors.primaryText
                 )
                 Text(
                     text = "3 subtasks waiting for you on your dashboard. Reward: +25 XP",
                     fontSize = 12.sp,
-                    color = TextSecondary
+                    color = colors.secondaryText
                 )
             }
         }

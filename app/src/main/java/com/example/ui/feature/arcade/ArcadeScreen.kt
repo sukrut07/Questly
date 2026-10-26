@@ -41,16 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.ui.MainViewModel
 import com.example.ui.components.QuestlyCard
-import com.example.ui.theme.DarkBackground
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
-import com.example.ui.theme.GoldAchievement
-import com.example.ui.theme.PrimaryViolet
-import com.example.ui.theme.SecondaryBlue
-import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
+import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
 fun ArcadeScreen(
@@ -61,6 +52,7 @@ fun ArcadeScreen(
     onLaunchMemory: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val colors = QuestlyThemeTokens.colors
     val defenderBest by viewModel.defenderHighScore.collectAsState()
     val mazeBest by viewModel.mazeHighScore.collectAsState()
     val snakeBest by viewModel.snakeHighScore.collectAsState()
@@ -69,7 +61,7 @@ fun ArcadeScreen(
     LazyColumn(
         modifier = modifier
             .fillMaxSize()
-            .background(DarkBackground)
+            .background(colors.background)
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
@@ -79,12 +71,12 @@ fun ArcadeScreen(
                 text = "Questly Arcade",
                 fontSize = 24.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = colors.primaryText
             )
             Text(
-                text = "Recreational games for your scheduled break intervals. Gaming time is strictly separated from productive focus duration.",
+                text = "Recreational retro breaks for scheduled downtime. Break play is strictly isolated from productive focus time.",
                 fontSize = 13.sp,
-                color = TextSecondary,
+                color = colors.secondaryText,
                 lineHeight = 18.sp,
                 modifier = Modifier.padding(top = 4.dp, bottom = 4.dp)
             )
@@ -95,9 +87,9 @@ fun ArcadeScreen(
             FeaturedGameCard(
                 title = "Quest Defender",
                 subtitle = "Galaga-inspired space arcade shooter",
-                description = "Pilot your starfighter against descending geometric alien swarms. Dodge enemy plasma, time your volleys, and clear escalating waves.",
+                description = "Pilot your starfighter against descending alien formations. Dodge enemy plasma, collect weapon capsules, and survive diving commander swoops.",
                 icon = Icons.Default.RocketLaunch,
-                accentColor = PrimaryViolet,
+                accentColor = colors.primaryAccent,
                 bestScore = defenderBest,
                 scoreLabel = "Best: $defenderBest pts",
                 buttonText = "Deploy Defender",
@@ -110,10 +102,10 @@ fun ArcadeScreen(
         item {
             FeaturedGameCard(
                 title = "Crystal Maze",
-                subtitle = "Arcane maze chase & crystal collection",
-                description = "Navigate glowing subterranean labyrinth corridors, gathering energy crystal pellets while outmaneuvering spectral chasers.",
+                subtitle = "Pac-Man-inspired maze chase & crystal hunt",
+                description = "Navigate neon labyrinth corridors gathering energy crystals. Grab super power crystals to turn chasers vulnerable and banish them for bonus points.",
                 icon = Icons.Default.GridView,
-                accentColor = SecondaryBlue,
+                accentColor = colors.secondaryAccent,
                 bestScore = mazeBest,
                 scoreLabel = "Best: $mazeBest pts",
                 buttonText = "Enter Maze",
@@ -128,7 +120,7 @@ fun ArcadeScreen(
                 text = "Classic Retro Chamber",
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary,
+                color = colors.primaryText,
                 modifier = Modifier.padding(top = 8.dp)
             )
         }
@@ -142,7 +134,7 @@ fun ArcadeScreen(
                     title = "Cyber Snake",
                     best = "Best: $snakeBest",
                     icon = Icons.Default.SportsEsports,
-                    color = SuccessGreen,
+                    color = colors.success,
                     modifier = Modifier.weight(1f),
                     onClick = onLaunchSnake
                 )
@@ -150,7 +142,7 @@ fun ArcadeScreen(
                     title = "Rune Memory",
                     best = "Best: $memoryBest",
                     icon = Icons.Default.DashboardCustomize,
-                    color = GoldAchievement,
+                    color = colors.gold,
                     modifier = Modifier.weight(1f),
                     onClick = onLaunchMemory
                 )
@@ -161,7 +153,8 @@ fun ArcadeScreen(
         item {
             QuestlyCard(
                 modifier = Modifier.fillMaxWidth(),
-                backgroundColor = DarkElevatedSurface
+                backgroundColor = colors.elevatedSurface,
+                borderColor = colors.border
             ) {
                 Row(
                     modifier = Modifier.padding(14.dp),
@@ -170,14 +163,14 @@ fun ArcadeScreen(
                     Icon(
                         imageVector = Icons.Default.Info,
                         contentDescription = "Info",
-                        tint = SecondaryBlue,
+                        tint = colors.secondaryAccent,
                         modifier = Modifier.size(20.dp)
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
                         text = "Gaming sessions never inflate focus time or fake productivity metrics. Play to recharge and return sharp.",
                         fontSize = 12.sp,
-                        color = TextSecondary,
+                        color = colors.secondaryText,
                         lineHeight = 16.sp
                     )
                 }
@@ -203,13 +196,14 @@ private fun FeaturedGameCard(
     testTag: String,
     onPlay: () -> Unit
 ) {
+    val colors = QuestlyThemeTokens.colors
     QuestlyCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable { onPlay() }
             .testTag(testTag),
-        backgroundColor = DarkCardSurface,
-        borderColor = accentColor.copy(alpha = 0.4f)
+        backgroundColor = colors.cardSurface,
+        borderColor = accentColor.copy(alpha = 0.45f)
     ) {
         Column(modifier = Modifier.padding(18.dp)) {
             Row(
@@ -222,7 +216,7 @@ private fun FeaturedGameCard(
                         modifier = Modifier
                             .size(46.dp)
                             .clip(CircleShape)
-                            .background(accentColor.copy(alpha = 0.2f)),
+                            .background(accentColor.copy(alpha = 0.18f)),
                         contentAlignment = Alignment.Center
                     ) {
                         Icon(
@@ -238,12 +232,12 @@ private fun FeaturedGameCard(
                             text = title,
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary
+                            color = colors.primaryText
                         )
                         Text(
                             text = subtitle,
                             fontSize = 12.sp,
-                            color = TextSecondary
+                            color = colors.secondaryText
                         )
                     }
                 }
@@ -251,14 +245,14 @@ private fun FeaturedGameCard(
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(GoldAchievement.copy(alpha = 0.15f))
+                        .background(colors.gold.copy(alpha = 0.15f))
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = scoreLabel,
                         fontSize = 12.sp,
                         fontWeight = FontWeight.Bold,
-                        color = GoldAchievement
+                        color = colors.gold
                     )
                 }
             }
@@ -268,7 +262,7 @@ private fun FeaturedGameCard(
             Text(
                 text = description,
                 fontSize = 13.sp,
-                color = TextSecondary,
+                color = colors.secondaryText,
                 lineHeight = 18.sp
             )
 
@@ -280,7 +274,11 @@ private fun FeaturedGameCard(
                 shape = RoundedCornerShape(10.dp),
                 modifier = Modifier.align(Alignment.End)
             ) {
-                Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Play", modifier = Modifier.size(16.dp))
+                Icon(
+                    imageVector = Icons.Default.PlayArrow,
+                    contentDescription = "Play",
+                    modifier = Modifier.size(16.dp)
+                )
                 Spacer(modifier = Modifier.width(4.dp))
                 Text(buttonText, fontWeight = FontWeight.Bold)
             }
@@ -297,9 +295,11 @@ private fun MiniGameQuickCard(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
+    val colors = QuestlyThemeTokens.colors
     QuestlyCard(
         modifier = modifier.clickable { onClick() },
-        backgroundColor = DarkCardSurface
+        backgroundColor = colors.cardSurface,
+        borderColor = colors.border
     ) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(
@@ -308,11 +308,11 @@ private fun MiniGameQuickCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(imageVector = icon, contentDescription = title, tint = color, modifier = Modifier.size(20.dp))
-                Text(text = best, fontSize = 10.sp, color = GoldAchievement, fontWeight = FontWeight.Bold)
+                Text(text = best, fontSize = 10.sp, color = colors.gold, fontWeight = FontWeight.Bold)
             }
             Spacer(modifier = Modifier.height(6.dp))
-            Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
-            Text(text = "Quick Break", fontSize = 11.sp, color = TextSecondary)
+            Text(text = title, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = colors.primaryText)
+            Text(text = "Quick Break", fontSize = 11.sp, color = colors.secondaryText)
         }
     }
 }

@@ -46,18 +46,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.core.model.StreakInfo
 import com.example.core.model.WorldStage
-import com.example.ui.theme.DarkBorder
-import com.example.ui.theme.DarkCardSurface
-import com.example.ui.theme.DarkElevatedSurface
 import com.example.ui.theme.GoldAchievement
 import com.example.ui.theme.PrimaryViolet
 import com.example.ui.theme.SecondaryBlue
 import com.example.ui.theme.SuccessGreen
-import com.example.ui.theme.TextMuted
-import com.example.ui.theme.TextPrimary
-import com.example.ui.theme.TextSecondary
 import com.example.ui.theme.WarningOrange
-
 import com.example.ui.theme.QuestlyThemeTokens
 
 @Composable
