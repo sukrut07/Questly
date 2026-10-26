@@ -1,0 +1,1208 @@
+Since you're using Google AI Studio → New app → Build an Android app, the prompt should explicitly instruct Gemini to build Questly as a native Android application using Kotlin and Jetpack Compose, rather than generating just a web dashboard. We'll design the architecture so that a Chrome extension and a web application can be added later without rewriting the core productivity logic.
+
+Below is the detailed master prompt you can paste directly into the Google AI Studio prompt box shown in your screenshot.
+
+# Questly — Complete Android App Build Prompt
+
+# PROJECT: QUESTLY — A GAMIFIED PRODUCTIVITY AND PERSONAL GROWTH PLATFORM
+
+Build a polished, functional, production-oriented native Android application named **Questly**.
+
+Tagline: **Turn your goals into quests. Build your streak. Level up your life.**
+
+Questly is a gamified productivity platform inspired by Duolingo's engagement loops, Strava's progress tracking, RPG progression systems, and the polished UX of modern indie games.
+
+The app transforms daily productivity into a rewarding progression experience. Users create tasks called quests, track real focused work sessions, develop consistent habits, earn experience points, unlock achievements, evolve their personal interface, improve their skill tree, and play integrated mini-games during breaks.
+
+This must be a genuine Android application, not a website displayed inside a WebView and not merely a collection of static UI mockups.
+
+Use native Android technologies, appropriate persistence, functional navigation, reusable components, real state management, and robust business logic.
+
+Build the application incrementally, but ensure the core features are connected and functional.
+
+---
+
+# 1. PLATFORM AND TECHNOLOGY REQUIREMENTS
+
+Build a native Android app using:
+
+- Kotlin.
+- Jetpack Compose for the complete UI.
+- Material 3 as the component foundation, with a custom Questly design system.
+- Navigation Compose for navigation.
+- ViewModel and StateFlow for UI state.
+- Kotlin Coroutines for asynchronous operations.
+- Room for persistent local storage.
+- DataStore for user preferences.
+- A repository pattern separating the UI, business logic, and storage.
+- WorkManager for appropriate scheduled background work.
+- Jetpack Glance for a future Android home-screen widget.
+- Android notification APIs for optional reminders.
+- Canvas or a suitable lightweight rendering approach for mini-games.
+- Gradle Kotlin DSL for build configuration.
+
+Use the versions compatible with the Android SDK and project template available in the development environment. Do not introduce unnecessary dependencies or incompatible libraries.
+
+Organize the code into maintainable packages or modules such as:
+
+- app
+- core/designsystem
+- core/database
+- core/model
+- core/domain
+- feature/onboarding
+- feature/home
+- feature/quests
+- feature/focus
+- feature/analytics
+- feature/arcade
+- feature/achievements
+- feature/profile
+- feature/settings
+
+If a multi-module setup is too heavy for the initial build, use a well-organized single application module with clear feature packages.
+
+The app must compile. Do not leave missing imports, unresolved symbols, placeholder implementations, or nonfunctional buttons.
+
+If the environment supports project inspection, inspect the existing files before editing. Preserve useful code and avoid generating duplicate projects.
+
+---
+
+# 2. PRODUCT VISION
+
+Questly should feel like a combination of:
+
+1. A premium personal productivity application.
+2. An RPG character progression system.
+3. A focus timer and habit tracker.
+4. A personal analytics dashboard.
+5. A lightweight arcade.
+6. A personalized growth journey.
+
+The core interaction loop is:
+
+Set a goal → Create a quest → Focus and execute → Complete work → Earn XP → Unlock rewards → Analyze progress → Improve the next session.
+
+The application should reward sustainable consistency, meaningful work, and progress toward goals.
+
+Do not make users feel guilty for missing a day. Support realistic targets, rest days, and personal schedules.
+
+Do not equate app usage, time spent gaming, or simply opening the app with productive work.
+
+---
+
+# 3. VISUAL DESIGN AND DESIGN SYSTEM
+
+Create a distinctive, premium, dark-mode-first design.
+
+The app should feel like a modern indie RPG combined with a sophisticated productivity tracker.
+
+## Color palette
+
+Primary background: #0D0F17
+
+Secondary background: #151824
+
+Card surface: #1B1F2E
+
+Elevated surface: #22273A
+
+Primary accent: #8B7CFF
+
+Secondary accent: #67B8FF
+
+Success: #69D8A5
+
+Achievement gold: #F5C96A
+
+Warning: #FFB86B
+
+Error: #FF6B7D
+
+Primary text: #F5F5FA
+
+Secondary text: #A5A9BD
+
+Borders: subtle blue-gray with restrained contrast.
+
+Use these colors consistently through a custom Compose MaterialTheme.
+
+## Visual principles
+
+- Dark backgrounds with layered surfaces.
+- Clean typography and clear visual hierarchy.
+- Rounded cards with approximately 16–24 dp corner radii.
+- Consistent 8 dp spacing increments.
+- Subtle gradients only for special rewards and progression.
+- Thin progress indicators and elegant circular progress rings.
+- Soft shadows and restrained glow effects.
+- Small, purposeful motion.
+- Smooth transitions between screens.
+- Delightful but brief completion animations.
+- Readable typography and accessible contrast.
+- Comfortable touch targets.
+- Proper support for different Android screen sizes and system insets.
+
+Avoid generic dashboard templates, excessive neon, noisy backgrounds, too many gradients, tiny text, excessive card nesting, and animations that make the app feel slow.
+
+Support a light theme as an optional setting, but launch in dark mode.
+
+Respect system font scaling, accessibility settings, and reduced-motion preferences.
+
+---
+
+# 4. APP NAVIGATION
+
+Use a native bottom navigation bar with five primary destinations:
+
+1. Home
+2. Quests
+3. Focus
+4. Arcade
+5. Profile
+
+The Analytics, Achievements, Skill Tree, and Settings screens can be reached from the Home screen or Profile.
+
+Use a Navigation Compose navigation graph with clearly defined destinations and predictable back-stack behavior.
+
+Navigation must preserve relevant screen state where appropriate.
+
+Do not create a separate activity for every screen unless technically justified.
+
+Provide empty states, loading states, and error states for screens that depend on data.
+
+---
+
+# 5. ONBOARDING AND FIRST-LAUNCH EXPERIENCE
+
+Create an elegant onboarding flow.
+
+Screen 1: Welcome to Questly.
+
+Headline: "Your next level starts today."
+
+Supporting text: "Turn your goals into quests, build lasting habits, and watch your progress evolve."
+
+Include a primary Get Started button.
+
+Screen 2: Choose your focus areas.
+
+Options:
+
+- Coding and Development.
+- Study and Learning.
+- Health and Fitness.
+- Career and Work.
+- Reading.
+- Creativity.
+- Personal Goals.
+- Custom.
+
+Allow multiple selections.
+
+Screen 3: Set your daily goal.
+
+Let users choose a realistic daily focus target, initially suggesting 60 minutes.
+
+Allow options such as 25, 45, 60, 90, and 120 minutes, plus a custom duration.
+
+Screen 4: Configure the focus timer.
+
+Default to 25 minutes of focus and 5 minutes of break.
+
+Allow customization.
+
+Screen 5: Choose an avatar and theme.
+
+Provide a small selection of original, simple avatar illustrations or icon-based avatars.
+
+Screen 6: Ready to begin.
+
+Show a personalized starter quest and the user's initial Explorer profile.
+
+Allow optional onboarding steps to be skipped.
+
+Persist onboarding completion and settings. Do not show onboarding on every app launch.
+
+The user must be able to change all preferences later.
+
+---
+
+# 6. HOME DASHBOARD
+
+Build a visually compelling home screen that immediately communicates what the user should do next.
+
+The layout should contain:
+
+## A. Greeting and profile header
+
+- Time-appropriate greeting.
+- User avatar.
+- Display name.
+- Notification icon, if notifications are enabled.
+- Current level badge.
+
+## B. XP and level card
+
+Display:
+
+- Current level.
+- Current XP.
+- XP needed for the next level.
+- Animated horizontal progression bar.
+- Next unlock preview.
+
+Example:
+
+LEVEL 05 — APPRENTICE
+
+1,250 / 1,500 XP
+
+Progress: 83.3%
+
+Use real derived values rather than hardcoded values.
+
+## C. Streak card
+
+Show:
+
+- Current streak.
+- Longest streak.
+- Seven-day activity visualization.
+- Active days.
+- A subtle flame icon.
+
+Example: "7-day streak — You're building a habit."
+
+## D. Daily quest section
+
+Display today's quests with:
+
+- Title.
+- Category icon.
+- Priority.
+- Estimated duration.
+- Completion state.
+- XP reward.
+- Optional deadline.
+
+Include an Add Quest action.
+
+Allow a user to complete a quest directly from the dashboard.
+
+## E. Focus card
+
+Display:
+
+- Focus time today.
+- Daily target.
+- Circular or linear progress.
+- Start Focus Session button.
+
+## F. Productivity summary
+
+Include:
+
+- Tasks completed today.
+- Focus minutes.
+- Weekly goal progress.
+- Small weekly activity chart.
+
+## G. Achievement preview
+
+Show recently unlocked achievements and a link to the full collection.
+
+## H. Arcade preview
+
+Show one compact card featuring a game and its best score.
+
+The dashboard should be scrollable and responsive.
+
+Prioritize the next action rather than displaying every available metric simultaneously.
+
+---
+
+# 7. QUEST MANAGEMENT SYSTEM
+
+Implement a complete quest management feature.
+
+Users must be able to create, edit, delete, archive, filter, sort, complete, and reopen quests where appropriate.
+
+Each quest should include:
+
+- Unique ID.
+- Title.
+- Description.
+- Category.
+- Difficulty.
+- Priority.
+- Estimated duration.
+- Actual tracked duration.
+- Creation timestamp.
+- Optional due date.
+- Status.
+- XP reward.
+- Optional subtasks.
+- Optional notes.
+- Optional recurrence.
+- Completion timestamp.
+- Optional quest-chain ID.
+
+Supported categories:
+
+Coding, Study, Work, Fitness, Reading, Creativity, Personal, and Custom.
+
+Supported difficulty levels:
+
+Easy, Medium, Hard, Epic.
+
+Supported statuses:
+
+Not Started, In Progress, Completed, Archived.
+
+## Quest creation screen
+
+Include:
+
+- Title input.
+- Description input.
+- Category selector.
+- Difficulty selector.
+- Priority selector.
+- Estimated duration selector.
+- Optional deadline.
+- Optional recurring schedule.
+- Optional subtasks.
+- Save Quest button.
+
+Validate input and provide clear error messages.
+
+## Quest list
+
+Provide:
+
+- Today.
+- Upcoming.
+- All Quests.
+- Completed.
+- Archived.
+
+Add category filters and sorting by priority, deadline, creation date, and estimated duration.
+
+Use a visually clear completed state.
+
+## Quest completion
+
+When a quest is completed:
+
+1. Validate that the quest exists and belongs to the current user profile.
+2. Update its completion state.
+3. Record a completion event.
+4. Grant its configured XP exactly once.
+5. Evaluate achievements and quest-chain progress.
+6. Refresh relevant dashboard statistics.
+7. Display a concise completion animation.
+8. Offer an optional short reflection.
+
+Prevent duplicate rewards when a user taps repeatedly or the application is restarted.
+
+Use a transaction or an equivalent reliable mechanism to persist the quest update and reward event together.
+
+---
+
+# 8. FOCUS TIMER AND TIME TRACKING
+
+Build a fully functional focus timer.
+
+Supported modes:
+
+- Pomodoro.
+- Stopwatch.
+- Custom duration.
+
+Default Pomodoro:
+
+- 25 minutes of work.
+- 5 minutes of break.
+- Optional long break after a configurable number of sessions.
+
+## Timer interface
+
+Create a dedicated focus screen with:
+
+- Large circular countdown.
+- Current session mode.
+- Linked quest title.
+- Start, Pause, Resume, End, and Cancel actions.
+- Session progress ring.
+- Ambient visual treatment that remains subtle.
+- Optional sound and haptic feedback.
+- Break completion screen.
+- Session summary.
+
+Use clear distinctions between stopping a session, completing it, and canceling it.
+
+## Reliable timer implementation
+
+Never rely only on a coroutine or a continuously decrementing variable to determine elapsed time.
+
+Persist:
+
+- Session ID.
+- Start timestamp.
+- Pause timestamp, if applicable.
+- Accumulated paused duration.
+- End timestamp.
+- Status.
+- Linked quest ID.
+- Actual focused duration.
+
+Derive elapsed time from timestamps and saved state.
+
+Recover correctly after:
+
+- Activity recreation.
+- Screen rotation.
+- App backgrounding.
+- Process death.
+- Device restart where practical.
+
+Use lifecycle-aware observation and avoid unnecessarily running a permanent background service.
+
+If a timer is active when the app returns to the foreground, reconstruct its state and show the correct remaining time.
+
+Do not continue counting paused time as productive time.
+
+## Session completion
+
+At the end of a session, show:
+
+- Completed focus duration.
+- Linked quest.
+- Session XP earned.
+- Optional notes.
+- Optional difficulty or distraction reflection.
+- Continue, Take a Break, and Finish actions.
+
+Only qualifying focus time counts toward productivity analytics.
+
+Game time and idle time must never be included in focus duration.
+
+---
+
+# 9. XP, LEVELS, AND REWARD ENGINE
+
+Implement a central progression engine in the domain layer.
+
+Initial configurable reward suggestions:
+
+- Easy quest: 10–25 XP.
+- Medium quest: 25–50 XP.
+- Hard quest: 50–75 XP.
+- Epic quest: 75–100 XP.
+- Valid focus session: 10–30 XP.
+- Weekly goal milestone: configurable bonus.
+- Quest-chain completion: achievement and bonus reward.
+
+These values are starting defaults, not hardcoded universal rules.
+
+Create a configurable level progression curve. A level-up should require a meaningful increase in total XP.
+
+Display:
+
+- Current level.
+- Total XP.
+- XP within current level.
+- XP needed for next level.
+- Unlocked rewards.
+- Next milestone.
+
+Store total earned XP and a reward ledger.
+
+Use unique event identifiers and atomic persistence to prevent duplicate XP.
+
+Do not award arbitrary XP from client-controlled inputs.
+
+Do not grant unlimited rewards simply because a timer runs for an unusually long period. Define sensible session validation and configurable reward caps.
+
+Do not remove earned XP when users miss a day.
+
+---
+
+# 10. STREAKS AND HABIT SYSTEM
+
+Build a reliable streak engine.
+
+Track:
+
+- Current streak.
+- Longest streak.
+- Last qualifying activity date.
+- Active days.
+- Daily target completion.
+- Weekly goal completion.
+- Rest days, where configured.
+
+A qualifying day should require a meaningful event, such as meeting the user's configured focus goal or completing a qualifying quest.
+
+Use the user's selected timezone for day boundaries.
+
+Handle:
+
+- App launches near midnight.
+- Timezone changes.
+- Duplicate completion events.
+- Days with no activity.
+- Optional rest days.
+- Local date changes.
+
+Do not increase streaks merely because the user opens the application.
+
+Do not reset streaks incorrectly after a device restart.
+
+Provide a calendar heatmap or seven-day activity strip.
+
+Make streak protection optional. Do not use guilt-driven notifications or punish users for choosing to rest.
+
+---
+
+# 11. ADAPTIVE UI AND VISUAL PROGRESSION
+
+This is Questly's signature feature.
+
+The user's interface should evolve as they build consistent habits and complete meaningful milestones.
+
+Create four progression stages.
+
+## Stage 1: Explorer
+
+- Minimal dashboard.
+- Basic avatar.
+- Starter quests.
+- Simple XP bar.
+- Basic theme.
+- First achievements.
+
+## Stage 2: Builder
+
+- Additional dashboard visualizations.
+- Expanded streak animations.
+- New avatar cosmetics.
+- Additional theme options.
+- More detailed activity summaries.
+
+## Stage 3: Strategist
+
+- Advanced analytics.
+- Skill tree access.
+- Quest chains.
+- New visual environments.
+- More profile customization.
+
+## Stage 4: Master
+
+- Prestige achievements.
+- Advanced historical insights.
+- Rare cosmetic effects.
+- Expanded skill tree.
+- Personalized milestone showcase.
+
+Progression must be driven by persisted milestones and actual user behavior.
+
+Do not merely change a label when the level increases. Change selected interface elements, unlocked cosmetic options, achievement displays, and progression visuals.
+
+Implement an explicit progression configuration that defines:
+
+- Stage.
+- Eligibility requirements.
+- Unlocks.
+- Required milestones.
+- Visual theme.
+- Available customizations.
+
+The core task manager and focus timer must remain usable at every level.
+
+Do not force users to grind XP to access essential features.
+
+Use a concise level-up animation with a Skip option and a reduced-motion alternative.
+
+If custom artwork is unavailable, create original illustrations using simple vector-style Compose drawings, gradients, and icons rather than using copyrighted game assets.
+
+---
+
+# 12. SKILL TREE
+
+Create an interactive skill tree with six branches:
+
+1. Focus.
+2. Consistency.
+3. Planning.
+4. Learning.
+5. Creativity.
+6. Execution.
+
+Each branch contains progression nodes.
+
+Each node should have:
+
+- Name.
+- Description.
+- Requirements.
+- Current progress.
+- Unlock state.
+- Optional cosmetic reward.
+
+Show three visual states:
+
+- Locked.
+- Available to unlock.
+- Unlocked.
+
+Connect related nodes visually.
+
+Unlock nodes through achievements, sustained activity, or defined progression milestones.
+
+Ensure the skill tree reflects recorded behavior. Do not claim to measure a user's actual mastery without evidence.
+
+For the MVP, a scrollable skill tree with functional node details and unlock logic is sufficient.
+
+---
+
+# 13. MINI-GAME ARCADE
+
+Build an integrated Arcade section with two polished, fully playable games.
+
+These are genuine games, not static screenshots.
+
+## Game A: Snake
+
+Features:
+
+- Grid-based movement.
+- Keyboard controls where available.
+- Touch or swipe controls on Android.
+- Food collection.
+- Score calculation.
+- Increasing difficulty.
+- Pause and resume.
+- Game-over screen.
+- Restart action.
+- Personal best.
+- Session history.
+
+Ensure game logic runs independently from productivity tracking.
+
+## Game B: Memory Match
+
+Features:
+
+- Configurable grid sizes.
+- Card-flipping animations.
+- Pair matching.
+- Move counter.
+- Completion timer.
+- Accuracy calculation.
+- Completion screen.
+- Personal best.
+- Restart action.
+
+Use original, visually consistent card artwork or simple shapes and icons.
+
+## Arcade rewards
+
+Track:
+
+- Game ID.
+- Score.
+- Duration.
+- Completion state.
+- Best score.
+- Number of attempts.
+- Timestamp.
+
+Games may unlock cosmetic rewards through optional achievements.
+
+Do not count game duration as productive time.
+
+Do not make users play games to preserve their productivity streak.
+
+Allow short breaks without overwhelming the user with leaderboards or notifications.
+
+---
+
+# 14. ACHIEVEMENTS AND COSMETICS
+
+Create an achievement collection with visually distinct badges.
+
+Initial achievements:
+
+- First Quest.
+- First Focus Session.
+- Three-Day Streak.
+- Seven-Day Streak.
+- First Quest Chain.
+- Five Hours Focused.
+- Weekly Goal Complete.
+- Personal Best.
+- Consistency Milestone.
+- First Game High Score.
+
+Each achievement must have:
+
+- Name.
+- Description.
+- Icon.
+- Unlock requirements.
+- Unlock timestamp.
+- Optional XP reward.
+- Optional cosmetic reward.
+
+Display locked and unlocked achievements.
+
+Show progress toward achievements where possible.
+
+Ensure achievements are unlocked only once.
+
+Cosmetics can include:
+
+- Avatar frames.
+- Accent themes.
+- Background styles.
+- XP animation effects.
+- Profile badges.
+
+Keep essential functionality independent of cosmetic unlocks.
+
+---
+
+# 15. ANALYTICS AND PRODUCTIVITY INSIGHTS
+
+Build a native analytics screen with readable charts and summaries.
+
+Track:
+
+- Total focus hours.
+- Daily focus duration.
+- Weekly focus duration.
+- Task completion rate.
+- Tasks completed by category.
+- Estimated versus actual duration.
+- Focus-session completion rate.
+- Current and longest streak.
+- Weekly goal progress.
+- Daily activity history.
+- Personal records.
+- Game statistics in a separate section.
+
+Provide time filters:
+
+- Seven days.
+- Thirty days.
+- Ninety days.
+
+Display clear empty states when there is insufficient data.
+
+Do not show fabricated charts as if they represent the current user.
+
+If demo data is used, label it clearly.
+
+## Productivity score
+
+Implement an explainable productivity score using configurable weights.
+
+Initial formula:
+
+P = 0.35C + 0.30F + 0.20G + 0.15S
+
+Where:
+
+- C is the normalized task completion score.
+- F is progress toward the daily focus target.
+- G is progress toward the user's defined goals.
+- S is consistency relative to the user's schedule.
+
+Normalize each component to 0–100 and cap the final score at 100.
+
+Handle missing data without dividing by zero or generating misleading scores.
+
+Document the formula in the UI.
+
+Compare the user against their own goals rather than other people's productivity.
+
+Avoid framing the score as a judgment of personal worth.
+
+---
+
+# 16. PROFILE AND SETTINGS
+
+Create a profile screen with:
+
+- Avatar.
+- Display name.
+- Current level.
+- Total XP.
+- Current streak.
+- Longest streak.
+- Total focus time.
+- Completed quests.
+- Achievements.
+- Favorite category.
+- Activity history.
+- Unlocked cosmetics.
+
+Settings should include:
+
+- Display name.
+- Avatar.
+- Theme selection.
+- Daily focus target.
+- Work and break durations.
+- Sound preferences.
+- Haptic feedback.
+- Notification preferences.
+- Timezone preference.
+- Rest-day configuration.
+- Data export.
+- Data reset.
+- Privacy information.
+
+Require confirmation before destructive actions.
+
+Make data reset behavior clear and ensure it cannot accidentally delete unrelated device data.
+
+---
+
+# 17. LOCAL PERSISTENCE AND DATA MODEL
+
+Use Room as the primary local persistence layer for the first Android MVP.
+
+Create entities and DAOs for:
+
+- UserProfile.
+- UserSettings.
+- Quest.
+- QuestSubtask.
+- QuestEvent.
+- FocusSession.
+- DailyActivity.
+- StreakRecord.
+- XPEvent.
+- AchievementDefinition.
+- UserAchievement.
+- SkillNode.
+- UserSkillProgress.
+- GameSession.
+- CosmeticUnlock.
+
+Use appropriate:
+
+- Primary keys.
+- Foreign keys.
+- Indices.
+- Type converters.
+- Database migrations.
+- Repository interfaces.
+
+Use DataStore for simple settings and preferences.
+
+Use Flow or StateFlow to expose reactive data to ViewModels.
+
+All essential functionality must work after the app is closed and reopened.
+
+Do not use in-memory collections as the only permanent storage.
+
+The first version can operate entirely locally without requiring account creation.
+
+Design repository interfaces so a remote synchronization backend can be added later.
+
+Do not claim cross-device synchronization until a real remote backend has been implemented.
+
+---
+
+# 18. ARCHITECTURE AND CODE QUALITY
+
+Separate the following responsibilities:
+
+UI:
+
+- Compose screens.
+- Reusable composables.
+- Theme.
+- Navigation.
+- UI state rendering.
+
+Presentation:
+
+- ViewModels.
+- StateFlow.
+- User interaction handling.
+- Screen-specific state.
+
+Domain:
+
+- Quest completion.
+- Timer calculations.
+- XP calculation.
+- Level progression.
+- Streak calculation.
+- Achievement evaluation.
+- Analytics aggregation.
+
+Data:
+
+- Room entities and DAOs.
+- Repository implementations.
+- DataStore.
+- Database migrations.
+- Optional synchronization interfaces.
+
+Implement business logic as testable Kotlin classes or use cases.
+
+Use dependency injection if supported by the existing project structure, but do not introduce excessive architectural complexity.
+
+Avoid:
+
+- Giant single-file implementations.
+- Duplicated business logic.
+- Direct database operations inside composables.
+- Hardcoded user progress.
+- Fake backend calls.
+- Placeholder navigation.
+- Empty click handlers.
+- Unsafe global mutable state.
+
+Use clear naming and meaningful comments for non-obvious logic.
+
+---
+
+# 19. SECURITY, PRIVACY, AND PERMISSIONS
+
+Request only permissions necessary for the implemented features.
+
+The initial MVP should not require:
+
+- Accessibility Service access.
+- Screen recording.
+- Continuous location.
+- Contacts.
+- Microphone.
+- Camera.
+- Background surveillance.
+
+Keep productivity tracking explicit and user-controlled.
+
+Do not secretly track other applications or claim to measure activity outside Questly.
+
+If notifications are supported, make them optional.
+
+If cloud synchronization is added later, implement authentication, authorization, secure transport, and appropriate server-side validation.
+
+Never place private server credentials in the Android application.
+
+Clearly explain what data is stored locally and what is transmitted remotely.
+
+---
+
+# 20. ANDROID HOME-SCREEN WIDGET READINESS
+
+Design the data and business logic so an Android home-screen widget can be added.
+
+The planned widget should show:
+
+- Current streak.
+- Today's goal progress.
+- Current level.
+- XP progress.
+- A quick action to open a quest.
+- A quick action to start a focus session.
+
+Use Jetpack Glance or the appropriate Android widget APIs when implementing this phase.
+
+A widget must read persisted data and open the correct application destination.
+
+Do not merely draw a widget-like card inside the app and call it a home-screen widget.
+
+Prioritize the core app first, then implement a real widget if the environment supports it.
+
+---
+
+# 21. CHROME EXTENSION AND CROSS-PLATFORM READINESS
+
+The Chrome extension is a future deliverable, not a reason to compromise the native Android MVP.
+
+Keep domain models and progression rules well-defined and documented.
+
+Design future API contracts for:
+
+- Quest retrieval.
+- Quest creation and completion.
+- Focus-session events.
+- XP summaries.
+- Streak status.
+- Achievement history.
+- Game statistics.
+
+Avoid tying the entire domain layer to Android-specific UI classes.
+
+A future web app can use Next.js and React, while the Chrome extension can use React with Chrome Manifest V3.
+
+A shared backend can synchronize the same user's tasks and progress once authentication and cloud persistence are implemented.
+
+Do not claim that the Android MVP already includes a Chrome extension or synchronized web application.
+
+---
+
+# 22. TESTING REQUIREMENTS
+
+Write unit tests for critical business logic.
+
+At minimum, test:
+
+1. Creating and editing quests.
+2. Completing a quest.
+3. Preventing duplicate XP rewards.
+4. Correct level progression.
+5. XP calculation.
+6. Focus timer pause and resume.
+7. Timer recovery after process recreation.
+8. Excluding paused time.
+9. Daily streak calculation.
+10. Timezone boundaries.
+11. Achievement unlocking.
+12. Productivity score calculation.
+13. Snake collision and scoring.
+14. Memory Match pair matching.
+15. Local data persistence.
+
+Add UI tests for:
+
+- Onboarding.
+- Navigation.
+- Quest creation.
+- Quest completion.
+- Focus timer controls.
+- Arcade restart flows.
+
+Fix compilation and test errors before considering a phase complete.
+
+---
+
+# 23. BUILD ORDER
+
+Implement the app in this order.
+
+Phase 1:
+
+- Project structure.
+- Design system.
+- Navigation.
+- Onboarding.
+- Room database.
+- Profile and settings.
+
+Phase 2:
+
+- Quest CRUD.
+- Quest completion.
+- Focus timer.
+- XP ledger.
+- Level progression.
+- Streak calculation.
+
+Phase 3:
+
+- Home dashboard.
+- Analytics.
+- Achievement collection.
+- Adaptive visual progression.
+- Skill tree.
+
+Phase 4:
+
+- Snake.
+- Memory Match.
+- Game history.
+- Cosmetic rewards.
+
+Phase 5:
+
+- Android home-screen widget.
+- Notifications.
+- Offline reliability.
+- Accessibility.
+- Performance improvements.
+- Tests and documentation.
+
+If the build environment has execution limits, complete Phase 1 and the essential features of Phase 2 first, then continue in subsequent iterations.
+
+Do not sacrifice compilation or core functionality merely to create more screens.
+
+---
+
+# 24. FINAL ACCEPTANCE CRITERIA
+
+The app is ready for the first MVP review when:
+
+- It builds and launches on Android.
+- The UI is native Jetpack Compose.
+- Onboarding works and persists.
+- Users can create, edit, and complete quests.
+- Quest state persists after closing the app.
+- The focus timer works and recovers correctly.
+- Paused time is excluded from focused duration.
+- XP is awarded exactly once for each qualifying event.
+- Levels update correctly.
+- Streaks use local dates and configured targets.
+- Achievements unlock from actual recorded events.
+- The dashboard reflects real persisted data.
+- Visual progression reacts to actual milestones.
+- Both mini-games are playable.
+- Game time is separate from productive time.
+- Analytics use actual recorded activity.
+- The app handles empty and error states.
+- The code is organized and testable.
+- No important button is decorative or nonfunctional.
+- There are no fake synchronization claims.
+- The README explains how to build, run, and test the app.
+
+Begin by inspecting the Android project environment and establishing the project structure. Then implement the design system and a fully navigable foundation before moving into the persistence and progression logic.
+
+**The ultimate goal is to make Questly feel like a personal productivity RPG where every completed quest contributes to visible, meaningful growth — without sacrificing usability, privacy, reliability, or sustainable habits.**
+
+## 11. How I would build this in Google AI Studio
+
+Don't ask the builder to implement every advanced feature in one massive generation if it starts producing incomplete code. Use the master prompt first, then give it these follow-up prompts in order.
+
+Step 1 — Foundation
+
+First
+
+Generate the native Android project, Compose design system, navigation, onboarding, Room schema, and initial dashboard. Ensure the app compiles.
+
+&#x20; Copy follow-up prompt&#x20;
+
+Step 2 — Productivity engine
+
+Implement quests, reliable timer persistence, XP, levels, streaks, and achievement rules. Add unit tests before proceeding.
+
+&#x20; Copy follow-up prompt&#x20;
+
+Step 3 — Gamification
+
+Build the evolving UI, achievements, skill tree, and reward animations driven by real progression data.
+
+&#x20; Copy follow-up prompt&#x20;
+
+Step 4 — Arcade
+
+Add two playable games with score persistence and separate game analytics.
+
+&#x20; Copy follow-up prompt&#x20;
+
+Step 5 — Polish and verification
+
+Resolve build errors, test persistence, verify all interactions, improve accessibility, and prepare the app for the widget phase.
+
+&#x20; Copy follow-up prompt&#x20;
+
+One important implementation decision: prioritize a robust local-first Android app initially, then add authentication and cloud sync when you are ready to share the same progress with the Chrome extension and web app. That will make Questly much easier to build, test, and maintain than attempting three clients and a backend simultaneously.

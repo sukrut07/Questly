@@ -1,0 +1,793 @@
+Your current Questly UI already has a solid foundation: the dark theme, XP bar, streak card, focus timer, quest list, and bottom navigation are all useful. But right now, it looks more like a conventional productivity dashboard with RPG labels than a genuinely immersive productivity game.
+
+I'd take it in a different direction: Questly should feel like a productivity RPG with a living world, arcade games, evolving environments, and rewards tied to actual consistency.
+
+Your reference images suggest three things worth combining: the character-driven onboarding from the ghost game cards, the clean card hierarchy and whitespace from the financial UI, and the existing Questly RPG interface.
+
+Here is the detailed prompt I'd give Google AI Studio to improve your existing app without unnecessarily rebuilding the entire project.
+
+# Questly 2.0 — UI/UX transformation
+
+[GYM RPG — The Fitness app that doesn't feel like one.](https://images.openai.com/static-rsc-4/vJ7TN9HsNxJYEKiPnVj6ypjliof4eoPOZ9RyA95F0dTY3CF2Nl9wlx1NSQ51_jvLIOFPLCekVfoS-YBPJ7E1eSpM6pWUhM9HfX2mqs94rPGJ2oOWb6-Mf6TzIqcXrFbtQMZmJA32vGJzbkNIfT6I3KRuzv5igIuVIHLO9qA36YQ?purpose=inline)
+
+01\. An evolving RPG dashboard
+
+A personalized home screen with a character, world progression, animated streaks, quest cards, and level-based visual evolution.
+
+[Volnyn Dashboard](https://images.openai.com/static-rsc-4/Y7MrZdH6_rH1K2CUdkwK3jr-up03VeRgbbmq0puvB5853V6bS4Ei9I5VUZV29gZbu4QKoiOoIwRenl9keyZXysFc4kcqHJYrBeLUyMyZtOFdpTAG8rpQtyPnp9vXVcqajxaqz9gJ9zFhP9E_-U97xZCDbMT0u8i1Dj2mFF2Za2E?purpose=inline)
+
+02\. A real arcade
+
+Playable Galaga-inspired space shooter and Pac-Man-inspired maze game, with scores, high scores, levels, and a separate game progression system.
+
+[Habit forming mobile app by Ulvin Omarov on Dribbble](https://images.openai.com/static-rsc-4/E5493RffhbqD6B_YXVTRUqA380KBkpxEWMu_zl25AIO7u6P5VsVwklhVyxWx4Khr2wVuvXRSeMc04i-kHQX-ADSON6LBhBTAH505-cqm1CKYPrhL6jQO3sje42nBQ_zMmQEnrtDQx_-ttQfchIs1B_S-fKLifORjofkAXE0kf1Q?purpose=inline)
+
+03\. Light and dark themes
+
+Dark mode for immersive gameplay, light mode for clean everyday productivity, with a consistent visual identity across both.
+
+[pixelart fountain at the center of Pixel Art | pxlart](https://images.openai.com/static-rsc-4/7ZesPmmMdXGF7Up50d6mKZVnez1eQCqhxAV3rgeGsldOJnZU-aOPkjiK4VqZa-4HGzsYmVPL0Y_NfZiVoqk7J1jIWpbXzCMOpclkdFI7pSVGzBn7HEIlD3qgfB8PeYI0I7SIFT9jgQ2nl6LpaztVvVPlDUfshxtMIv3iULNRHeo?purpose=inline)
+
+04\. A world that grows with your streak
+
+A visible world that changes as users build consistent habits, complete weekly goals, and unlock milestones.
+
+# Copy-paste prompt for Google AI Studio
+
+Paste this into the “Make changes, add new features, ask for anything” input in your existing Questly project. Do not start a new app; this prompt instructs Gemini to improve the current one.
+
+# QUESTLY 2.0 — COMPLETE UI/UX REDESIGN AND GAMIFICATION UPGRADE
+
+You are a senior mobile product designer, game UX designer, Android engineer, and gamification systems architect.
+
+I already have an existing Android application called Questly generated in Google AI Studio. It currently has a dark dashboard, an XP/level card, a streak card, a focus timer, active quests, skill branches, achievements, and bottom navigation.
+
+Your task is to significantly improve the existing application, transforming it into a polished, premium, interactive productivity RPG.
+
+IMPORTANT: This is an iterative improvement of an existing project. Inspect the current project, identify its existing architecture and components, preserve functional features, and modify the existing code. Do not discard working functionality or generate a separate unrelated app.
+
+The app should feel like a combination of:
+
+- Duolingo's habit-forming progression.
+- Strava's meaningful activity tracking.
+- An indie RPG's character and world progression.
+- A polished arcade game's immediate interactivity.
+- A modern productivity application's clarity.
+
+The central idea is:
+
+**REAL PRODUCTIVITY POWERS YOUR PROGRESSION. YOUR STREAK EVOLVES YOUR WORLD. GAMES PROVIDE ENTERTAINMENT, NOT FAKE PRODUCTIVITY.**
+
+Prioritize a beautiful, coherent experience, functional interactions, maintainable code, and meaningful rewards.
+
+# 1. REDESIGN THE VISUAL IDENTITY
+
+Create a distinctive visual system called the Questly Living World design system.
+
+The current UI is too dashboard-heavy and contains repetitive quest cards. Make the experience more immersive, expressive, and visually hierarchical without sacrificing usability.
+
+## Dark theme
+
+Use:
+
+- Background: #0B0D14
+- Secondary background: #121522
+- Card surface: #181D2C
+- Elevated surface: #20263A
+- Primary violet: #8B7CFF
+- Electric blue: #67B8FF
+- Success green: #69D8A5
+- Achievement gold: #F5C96A
+- Primary text: #F5F6FC
+- Secondary text: #A6ADC4
+
+Use subtle gradients, layered surfaces, restrained glows, and clean typography.
+
+## Light theme
+
+Use:
+
+- Background: #F5F6FB
+- Surface: #FFFFFF
+- Secondary surface: #ECEFFA
+- Primary violet: #7056E8
+- Primary text: #202238
+- Secondary text: #72758D
+- Success green: #18895B
+- Achievement gold: #A87414
+
+Light mode should feel like a polished modern productivity application, not merely a dark background inverted to white.
+
+## Design rules
+
+- Use an 8 dp spacing system.
+- Use consistent 16–24 dp corner radii.
+- Use subtle borders rather than excessive shadows.
+- Use typography with clear hierarchy.
+- Use large, readable numbers for XP, streaks, and focus time.
+- Use custom icon treatments for quest categories.
+- Use consistent animation timing and easing.
+- Respect Android system insets and navigation.
+- Maintain readable text sizes and accessible touch targets.
+- Support light, dark, and system theme preferences.
+- Respect reduced-motion settings.
+
+Do not overuse neon, gradients, glassmorphism, or decorative borders.
+
+The UI must look intentional and production-quality at multiple Android screen sizes.
+
+# 2. RESTRUCTURE THE HOME SCREEN
+
+Rework the home screen into a visually rich, personalized productivity command center.
+
+The first screen should communicate:
+
+1. Who the user is in their Questly journey.
+2. Their current streak.
+3. What they should work on next.
+4. How much progress they have made today.
+5. How their world is evolving.
+
+## A. Hero section: The Living World
+
+At the top, create a compact profile header containing:
+
+- Personalized greeting.
+- Avatar or character illustration.
+- Current level and rank.
+- Streak indicator.
+- Settings or profile shortcut.
+
+Below it, introduce a large visual hero card called "YOUR WORLD".
+
+This should contain an original illustrated scene that evolves through progression. It could represent a magical island, a futuristic outpost, a space station, or a pixel-art settlement.
+
+Display:
+
+- Current world stage.
+- Current streak.
+- A short contextual message.
+- A visible next milestone.
+- A small progression indicator.
+
+Example:
+
+"YOUR WORLD"\
+"THE EXPLORER'S OUTPOST"\
+"Day 7 of your journey"\
+"Complete 3 more qualifying days to unlock the next environment."
+
+The illustration must correspond to the user's actual progression stage.
+
+Use Compose Canvas, custom vector illustrations, locally available assets, or lightweight original artwork. If the project supports image assets, use a consistent art direction.
+
+Do not use random unrelated stock images for each state.
+
+If custom art is unavailable, build a cohesive illustrated scene from reusable shapes, layered terrain, crystals, stars, buildings, and animated environmental details.
+
+## B. XP and level progression
+
+Redesign the XP section into a polished progression card.
+
+Show:
+
+- Current level.
+- Rank name.
+- Current XP.
+- XP required for the next level.
+- Progress bar.
+- Next reward preview.
+
+Use animated progression when XP is earned.
+
+Example:
+
+LEVEL 05 — APPRENTICE\
+1,250 / 1,500 XP
+
+"250 XP until your next evolution."
+
+Never hardcode these values. Derive them from the existing progression service or implement a proper one if absent.
+
+## C. Daily progress
+
+Combine redundant dashboard cards into a single visual daily progress section.
+
+Show:
+
+- Daily focus target.
+- Focus minutes completed.
+- Quests completed.
+- Daily target percentage.
+- Current streak.
+
+Use a prominent circular progress indicator or a clean set of progress rings.
+
+Example:
+
+TODAY'S MOMENTUM
+
+45 / 60 minutes focused\
+3 / 5 quests completed\
+75% of daily target
+
+Use actual persisted data.
+
+## D. Quest of the day
+
+Feature one recommended quest prominently.
+
+Include:
+
+- Quest category.
+- Difficulty.
+- Estimated duration.
+- Reward.
+- Start Focus button.
+- Completion state.
+
+Use a stronger visual treatment for the primary quest, while rendering other tasks as compact cards or rows.
+
+Do not display the same quest repeatedly in multiple dashboard sections.
+
+## E. Recent achievements
+
+Display up to three recent achievements with distinct icons and concise descriptions.
+
+Provide a View All action.
+
+## F. Arcade entry
+
+Create a visually engaging arcade card showing:
+
+- Game artwork.
+- Game title.
+- User's best score.
+- A Play Now action.
+- A short indication that game time is separate from productivity time.
+
+The arcade should be easy to discover without overpowering the productivity dashboard.
+
+# 3. THE SIGNATURE FEATURE: THE UI EVOLVES WITH STREAKS
+
+This is the most important requirement.
+
+The app's visual experience must genuinely evolve as the user's consistency improves.
+
+Do not implement this as a simple streak number, a badge change, or an XP bar.
+
+Create a dedicated World Progression Engine driven by persisted activity records.
+
+## World stages
+
+### Stage 1: The Forgotten Outpost
+
+Eligibility: new user or fewer than three qualifying activity days.
+
+Visual experience:
+
+- Dark, quiet environment.
+- Small starter camp.
+- Dim crystals.
+- Minimal environmental animation.
+- Starter character and simple UI.
+
+The purpose is to establish a starting point without making the user feel unsuccessful.
+
+### Stage 2: The Awakening
+
+Eligibility: three qualifying activity days within the configured progression window.
+
+Visual experience:
+
+- Glowing crystals.
+- A small campfire.
+- Newly visible structures.
+- More active environmental particles.
+- A subtle change in the world palette.
+
+### Stage 3: The Growing Realm
+
+Eligibility: seven qualifying activity days, subject to progression rules.
+
+Visual experience:
+
+- Expanded settlement.
+- More illuminated structures.
+- New world elements.
+- More detailed progression cards.
+- New cosmetic choices.
+
+### Stage 4: The Radiant Citadel
+
+Eligibility: fourteen qualifying activity days or a configurable equivalent.
+
+Visual experience:
+
+- A visually richer environment.
+- Glowing landmarks.
+- Distinctive avatar effects.
+- More expressive level-up transitions.
+- Additional theme and customization options.
+
+### Stage 5: The Celestial Kingdom
+
+Eligibility: thirty qualifying activity days or a configurable long-term milestone.
+
+Visual experience:
+
+- A fully developed illustrated world.
+- Rare environmental effects.
+- A prestigious profile treatment.
+- Advanced milestone displays.
+- Additional optional cosmetic unlocks.
+
+These are illustrative stages, not arbitrary mandatory thresholds.
+
+Allow the progression engine to use qualifying activity days, completed weekly goals, and sustained consistency.
+
+## Important progression behavior
+
+- Derive progression from recorded activity, not app launches.
+- Use the user's local timezone for daily activity.
+- Preserve earned cosmetics and historical achievements.
+- Never delete a user's earned progress when a streak ends.
+- Allow rest days and optional streak protection.
+- Provide a gentle visual transition when a stage changes.
+- Avoid punishing or humiliating the user after a missed day.
+- Do not require users to spend excessive time in the app to unlock essential functionality.
+
+Create a reusable component for each world stage and a central progression configuration.
+
+The dashboard, profile, avatar cosmetics, and world illustration should read from the same progression state.
+
+# 4. BUILD A REAL ARCADE
+
+Implement a dedicated Arcade screen with playable games.
+
+The initial release should include two original games:
+
+1. A Galaga-inspired space shooter called QUEST DEFENDER.
+2. A Pac-Man-inspired maze game called CRYSTAL MAZE.
+
+The games must be genuinely playable, not static illustrations, video previews, or fake buttons.
+
+Use original artwork and mechanics inspired by classic arcade genres. Do not copy copyrighted characters, sprites, music, or branding.
+
+## GAME A: QUEST DEFENDER
+
+Create a polished top-down or vertically scrolling space shooter.
+
+### Visual direction
+
+- Deep space background.
+- Starfield with subtle parallax.
+- Original player spacecraft.
+- Geometric enemy ships.
+- Energy projectiles.
+- Explosions made from particles and simple shapes.
+- Shield and health indicators.
+- Score display.
+- Wave progression.
+- Game-over screen.
+
+Use a consistent violet, cyan, and blue palette.
+
+The game should feel like a premium retro arcade game adapted for mobile.
+
+### Gameplay
+
+- The player controls a spacecraft near the bottom of the screen.
+- The player can move horizontally using touch dragging or a virtual control.
+- A clearly labeled fire control or configurable auto-fire mode allows shooting.
+- Enemies spawn in waves.
+- Enemy movement patterns become more difficult over time.
+- Projectiles collide correctly with enemies.
+- Enemy attacks can damage the player's ship.
+- The player has limited health or lives.
+- Destroying enemies increases the score.
+- Collectible power-ups can temporarily improve firing or shields.
+- The game ends when the player loses all lives or reaches a defined completion condition.
+- Include pause, resume, restart, and exit controls.
+
+### Technical requirements
+
+Implement real collision detection, game state, movement, firing cooldowns, enemy spawning, scoring, and difficulty progression.
+
+Use an appropriate frame update loop or game rendering approach. Do not rebuild the entire Compose UI on every frame.
+
+Keep the game engine isolated from the surrounding application UI.
+
+Handle Android lifecycle events so the game pauses when the app is backgrounded.
+
+Avoid unnecessary battery usage while paused.
+
+### Game-end screen
+
+Display:
+
+- Final score.
+- Enemies destroyed.
+- Time survived.
+- Highest wave reached.
+- Personal best.
+- Retry button.
+- Back to Arcade button.
+
+Persist the result and update the user's personal best.
+
+Do not award productivity XP merely for spending more time playing.
+
+Optional cosmetic rewards may be awarded for defined game achievements, but gaming time must never count toward focus hours or productivity streaks.
+
+## GAME B: CRYSTAL MAZE
+
+Create an original maze-chase arcade game inspired by the broad mechanics of classic maze games.
+
+Do not use the Pac-Man character, ghosts, maze layouts, logos, or other copyrighted assets.
+
+### Visual direction
+
+- Dark maze.
+- Glowing corridors.
+- Small luminous collectibles.
+- Original player character or energy orb.
+- Distinct original enemy designs.
+- Violet, cyan, and gold accents.
+- Smooth movement and responsive controls.
+
+### Gameplay
+
+- Generate a valid maze containing corridors, collectibles, and a starting location.
+- The player navigates the maze using swipe gestures or a virtual directional pad.
+- Collecting crystals increases the game score.
+- Enemies patrol the maze and pursue the player using simple pathfinding or predictable movement rules.
+- Collisions trigger a life loss or game-over state.
+- A level is completed when all required collectibles are collected.
+- Higher levels introduce new layouts or greater difficulty.
+- Provide pause, restart, and exit controls.
+
+### Technical requirements
+
+Implement:
+
+- Maze representation.
+- Valid movement and wall collision.
+- Collectible tracking.
+- Enemy movement.
+- Player and enemy collision.
+- Score updates.
+- Lives.
+- Level progression.
+- Game-over and victory states.
+
+Keep the game logic separate from the UI layer.
+
+Persist game scores and personal bests.
+
+## Arcade lobby
+
+Create a dedicated game selection screen with:
+
+- Featured game card.
+- Play button.
+- Personal best.
+- Last played.
+- Total games played.
+- Optional game-specific achievements.
+
+Provide short, skippable tutorials before a game begins.
+
+Use large touch-friendly controls.
+
+# 5. SEPARATE PRODUCTIVITY XP FROM GAME SCORES
+
+Create two independent progression systems.
+
+## Productivity progression
+
+Earned through:
+
+- Qualifying completed quests.
+- Valid focused work sessions.
+- Weekly goals.
+- Quest chains.
+- Sustained activity milestones.
+
+## Arcade progression
+
+Tracked through:
+
+- Game score.
+- Personal best.
+- Levels cleared.
+- Enemies defeated.
+- Accuracy where applicable.
+- Game achievements.
+
+Arcade achievements may unlock cosmetics, but playing for a longer period must not automatically increase the user's productivity score, focus time, or work streak.
+
+Avoid giving unlimited rewards for repeated trivial actions.
+
+Use server-side validation if a remote backend is implemented. If the current app is local-first, use a reliable domain layer and atomic local database operations.
+
+# 6. IMPROVE QUEST CARDS AND TASK INTERACTIONS
+
+The existing task list is repetitive.
+
+Create more visual distinction without making cards unnecessarily large.
+
+Use:
+
+- Compact quest rows for routine tasks.
+- A larger highlighted card for the recommended quest.
+- Small category icons.
+- Difficulty indicators.
+- Clear deadlines.
+- Actual progress indicators for subtasks.
+- XP labels with consistent styling.
+- Subtle completion animations.
+
+Use distinct but restrained category treatments for coding, study, fitness, reading, work, and personal goals.
+
+Support quick completion, edit, archive, and start-focus actions.
+
+Do not use an XP badge as the only meaningful distinction between quests.
+
+Make overdue, due-today, in-progress, and completed states visually clear and accessible.
+
+Avoid showing duplicate quests in the home screen.
+
+# 7. MAKE THE FOCUS EXPERIENCE FEEL LIKE GAMEPLAY
+
+Redesign the focus screen as a dedicated focus chamber.
+
+Before a session starts, show:
+
+- Selected quest.
+- Intended duration.
+- Daily goal progress.
+- A Start Focus Session action.
+
+During focus:
+
+- Large readable timer.
+- Calm animated background.
+- Subtle progress ring.
+- Current quest name.
+- Pause and finish controls.
+- Optional ambient sound setting.
+
+After completion:
+
+- Session summary.
+- Valid focus minutes.
+- Quest progress.
+- XP earned.
+- Optional reflection.
+- Next suggested action.
+
+Use persisted timestamps to calculate elapsed time and recover after app backgrounding or process recreation.
+
+Paused time must not count as focus time.
+
+Do not force users to navigate through multiple screens to stop or complete a session.
+
+Use calm animation rather than the arcade's energetic visual effects.
+
+# 8. ADD A DEDICATED ANALYTICS EXPERIENCE
+
+Create a polished analytics page with:
+
+- Daily focus time.
+- Weekly focus time.
+- Monthly activity heatmap.
+- Completed quests.
+- Goal completion.
+- Category distribution.
+- Focus-session completion.
+- Streak history.
+- Estimated versus actual task duration.
+- Personal records.
+
+Provide readable charts and useful empty states.
+
+Only use persisted user data. If sample data is shown, clearly label it as demonstration data.
+
+Create a personal productivity score using transparent, documented metrics. Do not present it as an objective judgment of the user's worth.
+
+Provide small, actionable observations based on actual recorded activity.
+
+# 9. LIGHT AND DARK THEME
+
+Implement a proper theme system.
+
+Settings:
+
+- Dark.
+- Light.
+- System default.
+
+Dark mode should be optimized for the arcade and immersive world.
+
+Light mode should be optimized for readability and everyday task management.
+
+Persist the selected preference.
+
+Use semantic theme colors rather than hardcoding dark colors inside individual components.
+
+Check:
+
+- Text contrast.
+- Cards.
+- Buttons.
+- Charts.
+- Progress indicators.
+- Dialogs.
+- Bottom navigation.
+- Focus timer.
+- Arcade controls.
+- Achievement states.
+
+Every screen must work correctly in both themes.
+
+# 10. MOTION AND MICRO-INTERACTIONS
+
+Implement purposeful animations:
+
+- XP bar fills when a reward is earned.
+- Level-up celebration when crossing a level threshold.
+- Small burst effect when a quest is completed.
+- Subtle environmental animation in the world card.
+- Smooth navigation transitions.
+- Achievement reveal animation.
+- Arcade hit effects and enemy destruction.
+- Gentle progression when the streak increases.
+
+Animations must be brief and should never block interaction.
+
+Provide a reduced-motion option.
+
+Do not animate every card independently or use constant flashing effects.
+
+# 11. ANDROID HOME-SCREEN WIDGET
+
+If the existing project structure and environment support it, add a real Android home-screen widget using Jetpack Glance or the appropriate Android widget APIs.
+
+The widget should show:
+
+- Current streak.
+- Daily goal progress.
+- Current level.
+- XP progress.
+- A quick action to open a quest.
+- A quick action to start the focus timer.
+
+Read actual persisted data.
+
+Ensure the widget opens the correct app destination and updates appropriately.
+
+Do not implement a widget merely as a card inside the app.
+
+If native widget support cannot be completed during this iteration, prepare the data layer and document the remaining work.
+
+# 12. CODE QUALITY AND PROJECT PRESERVATION
+
+Before changing code:
+
+- Inspect the existing project structure.
+- Identify existing navigation.
+- Identify the current persistence strategy.
+- Reuse the current quest and XP models.
+- Locate existing timer logic.
+- Preserve functioning features.
+- Identify any duplicated or hardcoded UI data.
+
+Implement reusable Compose components, ViewModels, repositories, and domain services consistent with the current architecture.
+
+If the existing project uses native Kotlin and Jetpack Compose, continue using that architecture.
+
+If the actual generated project uses a different framework, do not blindly replace it. First determine what is already implemented, then adapt the design and architecture to the existing codebase.
+
+Do not introduce a second independent state system.
+
+Do not store permanent progression only in UI state.
+
+Do not generate duplicate source files.
+
+Do not leave empty click handlers, decorative-only buttons, fake game interactions, or hardcoded XP changes.
+
+Add or update tests for:
+
+- Streak progression.
+- World-stage unlocks.
+- XP calculation.
+- Duplicate reward prevention.
+- Game scoring.
+- Game collisions.
+- Maze completion.
+- Timer pause and resume.
+- Persistence after app restart.
+
+# 13. IMPLEMENTATION ORDER
+
+Make changes in this order:
+
+1. Audit the current app and preserve the existing architecture.
+2. Improve typography, spacing, card hierarchy, and theme support.
+3. Redesign the home dashboard and world progression card.
+4. Implement persisted streak-driven visual evolution.
+5. Improve quests and focus-session UX.
+6. Implement the arcade lobby and Quest Defender.
+7. Implement Crystal Maze.
+8. Add arcade score history and personal bests.
+9. Improve analytics and achievements.
+10. Add the Android widget if supported.
+11. Test functionality, responsiveness, accessibility, and persistence.
+12. Resolve build errors and broken interactions.
+
+Work incrementally. If all features cannot be implemented reliably in one iteration, finish the first group of changes and then continue in subsequent prompts.
+
+# 14. FINAL QUALITY BAR
+
+The final app must look and behave like a cohesive, polished productivity RPG.
+
+The home screen must immediately communicate progression and the next productive action.
+
+The world must visibly evolve when a user builds a streak.
+
+The arcade must contain genuinely playable games.
+
+Focus time must remain separate from game time.
+
+The light and dark themes must both look intentionally designed.
+
+All important buttons must work.
+
+Progress must persist.
+
+The interface must remain fast, accessible, and readable.
+
+Most importantly, the experience should make users feel that completing meaningful work changes their world, while the arcade provides enjoyable entertainment during breaks.
+
+Begin by inspecting and improving the existing Questly project, not by creating an unrelated replacement application.
+
+## What I'd change first in your current screenshot
+
+Your current screen already has a working-looking foundation, so I wouldn't throw it away. I'd prioritize these changes in order.
+
+1\. Replace the top XP card with a world card
+
+Show the user's evolving environment, streak, level, and next unlock. This immediately communicates what makes Questly different.
+
+2\. Give Arcade its own dedicated destination
+
+The bottom navigation already includes Arcade. Use it for a proper game lobby with game artwork, Play buttons, high scores, and playable games rather than a placeholder page.
+
+3\. Make streaks visually meaningful
+
+A seven-day streak should change the world, not just increase a counter. Use the same persisted progression state across the dashboard, profile, and unlock screen.
+
+4\. Simplify the dashboard
+
+Show one primary quest, one daily progress module, one world card, and recent achievements. Move detailed analytics and the complete quest list into their respective screens.
+
+5\. Make both themes first-class
+
+Dark mode should feel immersive and game-like. Light mode should feel calm, clean, and productivity-focused. Both should share the same components and progression logic.
+
+## One important implementation tip
+
+Your Google AI Studio screenshot shows the Android app builder with a working preview. After submitting the master prompt, inspect the changes in the preview and test the actual interactions. Then send this shorter follow-up if Gemini focuses on visuals but fails to make the games or streak progression functional:
+
+Audit the Questly changes you just made. Prioritize functionality over additional visual polish.
+
+Verify that Quest Defender is genuinely playable with working movement, shooting, enemy spawning, collision detection, scoring, lives, pause, and restart. Verify that Crystal Maze has valid maze navigation, collectible items, enemy interactions, scoring, and level completion.
+
+Verify that streaks are calculated from persisted qualifying activity and that world stages change based on actual progression. Ensure game sessions never count as focus time or productivity streaks.
+
+Verify that theme selection persists and that every screen works in light and dark modes.
+
+Fix broken controls, fake data, duplicate rewards, timer lifecycle bugs, missing persistence, and compilation errors. Preserve the existing architecture and functioning features. Do not add new features until these acceptance criteria pass.
+
+My strongest recommendation: make the evolving world the emotional center of Questly and the arcade the entertainment layer. The productivity system should remain the foundation, while the games and evolving visuals make people want to return.

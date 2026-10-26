@@ -1,0 +1,6 @@
+{
+  "name": "Questly",
+  "description": "Turn your goals into quests. Build your streak. Level up your life.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

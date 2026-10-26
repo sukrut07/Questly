@@ -1,0 +1,1069 @@
+For Questly, I’d recommend building it as more than a conventional to-do list. The core idea should be a gamified personal growth platform where productivity is the gameplay — users complete real-world tasks, build streaks, earn XP, unlock new visual experiences, play short in-app games, and see tangible evidence of their progress.
+
+The key differentiator: Questly should reward actual effort and consistency, not just the number of tasks a user checks off.
+
+Below is a detailed, copy-paste-ready product brief and development prompt for Google AI Studio or another AI app builder.
+
+# Questly — Turn Your Goals Into Quests
+
+[Gamification Habit Tracker Application | Motivo 👾 by Mohadeseh Ahmadi Nejad on Dribbble](https://images.openai.com/static-rsc-4/kdZJF_FfLarCZ-X0GEe6S8rbIEfutPpRH5VyS7JI4pPJ9DfcAqj9nSESP_58j5twcQykJQ3WGwipdTKlUrNb6iJ-XqRpZR77pWTqU_bjbM6ivqzB4LYvdvbf1tbwUpDIau831CGwCoCcCoLiZGjrlL2Ev45EwMmjaD68TbK7rwM?purpose=inline)
+
+[Pixel Quest - Gamified Task & Project · Built with Blink](https://images.openai.com/static-rsc-4/PLcfT84fgHLgMkZwyM3cQmOMnM1WOnL3hvKKuOkFrFnOyX5r95IX__X0MgRadu2d2PoF-Z06a88EfXalkHYHJjMkT3m6K59p2RV1qIZQZKXlW_XEGtrfUubeX4LSM-Z9R0axPeuCeXnztIfkISgO9bvrDJu9-imGeHN5sf1tOsM?purpose=inline)
+
+[Duolingo - Gamified Learning Progress UI by Sadekur Rahman on Dribbble](https://images.openai.com/static-rsc-4/sITouTzTYma0SnsM043KGeOz1CM5yfXJuTjouQ7BzYgI-0ahHYkHdBm08R5e9TPnVnrOSMfg60__9Utmzq2eOEEdp1W1WVYRXNPwODoIJOvr4_7XV14Zo3FrEc27FDxKtj1YNmmT-Q3vPUqmNFh7kaDQBwCmQwhcAgOTB1VpXVA?purpose=inline)
+
+17
+
+Gamification
+
+Cross-platform
+
+Personal analytics
+
+Product concept · Web app + mobile app + Chrome extension
+
+## 1. The core vision
+
+Questly is a gamified productivity and personal development platform that transforms daily work into an interactive progression system.
+
+Users create goals, break them into quests, track time spent working, complete tasks, build streaks, earn experience points, unlock achievements, and improve their personal productivity profile.
+
+Inspired by the engagement loops of Duolingo, the activity tracking of Strava, and RPG progression systems, Questly combines task management, focus tracking, habit building, analytics, and mini-games into one cohesive experience.
+
+The product should feel like a combination of:
+
+- A personal productivity dashboard.
+- An RPG character progression system.
+- A focus timer and time-tracking tool.
+- A habit-building application.
+- A lightweight gaming platform.
+- A personal growth analytics engine.
+
+The central product loop:
+
+1\. Set a goal
+
+Define what you want to accomplish.
+
+2\. Focus and execute
+
+Work, track time, and complete tasks.
+
+3\. Earn XP and rewards
+
+Gain experience, achievements, and streaks.
+
+4\. Analyze progress
+
+Discover patterns and improve your routine.
+
+5\. Unlock new experiences
+
+Access cosmetics, character upgrades, and mini-games.
+
+The loop repeats as the user's skills and consistency grow.
+
+## 2. The unique feature: productivity changes the UI
+
+This should be Questly's signature mechanic.
+
+Rather than giving users the same static dashboard forever, the app evolves visually as they build habits and make progress.
+
+[Mandragora: Whispers of the Witch Tree 【マンドラゴラ】攻略　スペルバインダー｜草](https://images.openai.com/static-rsc-4/w9Ml1d59EmSyscnS8fdr60Culf5Fn5LAK6_3H0N-kE-Fe0CxNKo_fsnYUVzPzybu1GTVUy0OiIL8HDa5GKXTIjVCaZk1pgRoH95aEcmbYW2A_xUhx6MLoODCJua84Z-q_HeU6VvVwQoHKMxGQP9LD9OQOttpaljMK4-wHsm8diQ?purpose=inline)
+
+[JGSW – Gamified Cybersecurity Training Platform by Taras Oliinyk for U1CORE - Product Design Bureau on Dribbble](https://images.openai.com/static-rsc-4/hDkJyWc_qBx4rc9_wdNlJP7Knhb2QLJTmVWqkH6Lpx7xoclY1EOEyW0VebXoVuVpClkbm5_1dDTUhF8lBq7kTJW0Rl8Wi3OZ_BRW0Evzvfz368svOxbpZ9BEUu-sltJFJFoBVELgJwFMJpjtl8UYxGMzI9NAD7WVNzJgAhBJ58M?purpose=inline)
+
+[Sioly Routines](https://images.openai.com/static-rsc-4/Dl4dUb2sOVaYQCCYXB9sK1ZoPyz7aZMKDKoUQH6-SvggXtxuETfCqulmFEnbRPWCu57lCLXigd0d52-qu7VrmvqmCEe4qQYHPJhn9D5Yzx6ZLEwJV4MHCtn7aeCtHhxJEX4S29_ckqa6eBOMkEobg3v4i_-b8viH0jE2Zf0j6Ps?purpose=inline)
+
+12
+
+### The Questly evolution system
+
+[Pixel Art Campfire Night: Cool Wallpaper for Your Laptop | Creative desktop wallpaper, Pixel art background, Desktop wallpaper art](https://images.openai.com/static-rsc-4/FasAOU003U0WbVSGO7--1vsXqSmWU0TPAcESEzk7ix13o6QTMtWdoCwy-d9_ylwd3ylw79i6eDHimcbSjOcRu9f0QOIuy-13fjIFUq_4u9zr2aMjrwDJRd2swco9mk4RGgbKdGpL6BlAquTLOgWUI1XK5pcHvMTaMdB58pohwLo?purpose=inline)
+
+Level 1 — The Explorer
+
+Getting started
+
+A clean, minimal dashboard with a basic avatar, simple progress bar, daily quests, and a starter workspace. The objective is to make starting feel easy.
+
+Unlock: basic themes, starter quests, and the first achievement.
+
+[Dawnfolk brings minimalist survival city-building to mobile on August 3 | News - Gameforce Mobile](https://images.openai.com/static-rsc-4/7_wDIWJv63bLJccM6GK8aTPT8uZioIweIVXgBWsoPZTyNQ8hklf1QoFqV_0HL0ctTdI7cMa0V5ASTS6awhepSbxTkcup4H3iWjujAon8QlaR1GkP8AHtwibAOjrF8CYbVJrZ6akkGmcebr4AqTu2ygzpuQtE1LEppDCEgYjTFIU?purpose=inline)
+
+Level 2 — The Builder
+
+Consistent progress
+
+After building a reliable work routine, users unlock a richer dashboard, new avatar items, streak visuals, animated XP rewards, and additional analytics.
+
+Unlock: custom task categories, new environments, and more detailed statistics.
+
+[Astrael Lumina - Character Life Simulation by Jabali AI](https://images.openai.com/static-rsc-4/2FP9MLpZlzgASn9OgyA7H8x2hXC7pP5eTnriWIZpFCvD5lVxvScLYFKYYc9opwIFL41E3PoqUrme3oIaNhDosGwVQMZQw1PhRdfCXYh2k87t6Wm_5YW6sJMsRx14LUM_x7ynP-PfMgMm2Y-T5mXmd5HmSsxxV9ltBAzgHcJ2O5k?purpose=inline)
+
+Level 3 — The Strategist
+
+Advanced progression
+
+Users unlock advanced productivity insights, a personalized skill tree, quest chains, additional game modes, and deeper customization.
+
+Unlock: advanced reports, skill specializations, and premium-looking cosmetic themes earned through play.
+
+[World of Classes | Friends & Fables - AI RPG World](https://images.openai.com/static-rsc-4/4pgMB4G4gYRvNVYXzSkJwW-GVniaM4TdS89thV9s_VsYW2qGHICDRMxSDO2O23IJsHvgYhHz1hIk5PwNEIcgFGuLiJStDoVNakUjDvlWM0A6J8JpVNXCgjDz_uCPNLwt24MNwX0RGj5QnNdyoC51Wtd9v6VH7B2VpbO3KWrE1Ng?purpose=inline)
+
+Level 4 — The Master
+
+Long-term mastery
+
+A fully personalized workspace, prestigious achievements, mastery maps, advanced historical analytics, and a visually evolved home environment.
+
+Unlock: rare cosmetic effects, mastery badges, and personal milestone showcases.
+
+These are illustrative progression stages, not mandatory XP thresholds.
+
+### How the UI should evolve technically
+
+The interface must be driven by the user's actual progression data.
+
+| Trigger                  | UI/UX change                                    |
+| ------------------------ | ----------------------------------------------- |
+| First completed task     | XP animation and first achievement              |
+| Three-day active streak  | Streak indicator gains a new visual state       |
+| First focus milestone    | Focus statistics become available               |
+| Weekly goal completed    | Weekly celebration and summary                  |
+| New level reached        | Avatar animation and unlock screen              |
+| New skill mastered       | Skill tree node activates                       |
+| Long-term consistency    | New environments, themes, and profile cosmetics |
+| Personal record achieved | Record badge and progress comparison            |
+
+Important: keep the core interface usable from day one. New levels should add depth and personalization, not hide essential productivity tools behind a grind.
+
+# 3. Main features and modules
+
+## A. Home dashboard — Your command center
+
+[Pixel Quest - Gamified Task & Project · Built with Blink](https://images.openai.com/static-rsc-4/PLcfT84fgHLgMkZwyM3cQmOMnM1WOnL3hvKKuOkFrFnOyX5r95IX__X0MgRadu2d2PoF-Z06a88EfXalkHYHJjMkT3m6K59p2RV1qIZQZKXlW_XEGtrfUubeX4LSM-Z9R0axPeuCeXnztIfkISgO9bvrDJu9-imGeHN5sf1tOsM?purpose=inline)
+
+[Gamified AI Productivity Tools : BeeDone](https://images.openai.com/static-rsc-4/gLwt4X-7DAC2AY7yHUG0Cc_OdjDu1LWgKpdRazCVAOgpYJQLEu2VrkyHXBvZ7GM-43zBhg60CS9Gdqxs2-3E8WK3iXUM_uJVSj-bOHt9w-sYvuSPzyRioYKrMbhr3-_cBGSGGLR9EatX4L24pxaWMf2j9EuhVFD7qMb4cdWxjA4?purpose=inline)
+
+[Habitica Analitycs CRM Dashboard redesign :: Behance](https://images.openai.com/static-rsc-4/8O2mgA500hl4LGn3T4ArgeJUHMtZ54m5NzGooKZaJxgGrKCnYTIpcGiUwXFaYXinmZP1dvUa9EPj_1Wc_44XlBCljdbanXxnvQKALTWrbwYHQY4yc3ucbU2QBSRiibLmPZYwpi5MwmvISs25s20HoR_yJrPvq6cav7_fCEeUkWo?purpose=inline)
+
+13
+
+The dashboard should provide an immediate overview of what matters today.
+
+Components:
+
+- Welcome message and current character level.
+- Daily XP and weekly XP.
+- Current streak and best streak.
+- Tasks completed versus remaining.
+- Total focus time today.
+- Daily productivity score.
+- Today's quests and upcoming deadlines.
+- A weekly activity heatmap.
+- Quick-start focus timer.
+- Recently unlocked achievements.
+- Continue-playing card for in-app games.
+- A compact weekly progress chart.
+
+Include a prominent Start Focus Session button and an Add Quest button.
+
+The dashboard should be customizable: users can reorder widgets, hide irrelevant cards, and choose compact or expanded layouts.
+
+## B. Quest management — Tasks become missions
+
+Instead of ordinary task cards, use a flexible quest system.
+
+Each quest should contain:
+
+- Title and description.
+- Category: Study, Coding, Fitness, Work, Reading, Personal, or Custom.
+- Priority and deadline.
+- Estimated duration.
+- Actual tracked duration.
+- Difficulty.
+- Status: Not started, In progress, Completed, or Archived.
+- Recurrence schedule.
+- Optional subtasks.
+- Optional notes or evidence.
+- XP reward and completion history.
+
+Example:
+
+## Complete a coding challenge
+
+Development · Medium difficulty
+
++50 XP
+
+Estimated time
+
+45 minutes
+
+Actual time
+
+38 minutes
+
+Quest progress
+
+3 of 4 steps
+
+Focus session
+
+Ready to start
+
+### Quest chains
+
+Let users link multiple tasks to a larger objective.
+
+For example:
+
+Master React Development
+
+1. Complete the fundamentals.
+2. Build a reusable component.
+3. Create a full application.
+4. Deploy the project.
+5. Review the completed project.
+
+Completing all five tasks unlocks a mastery achievement and a larger reward.
+
+## C. Focus timer and time tracking
+
+This module records how users spend their time.
+
+Required features:
+
+- Pomodoro timer with configurable work and break intervals.
+- Stopwatch and custom-duration sessions.
+- Link each session to a quest.
+- Pause, resume, and end sessions.
+- Record start time, end time, and active duration.
+- Optional distraction tracking through user-entered events.
+- Session notes and post-session reflection.
+- Daily and weekly focus reports.
+- Session history and productivity trends.
+
+Example reward logic:
+
+- Completing a 25-minute focused session: base XP.
+- Completing the linked quest: completion XP.
+- Meeting a weekly focus target: milestone bonus.
+- Completing a longer quest chain: additional achievement.
+
+Avoid awarding unlimited XP simply for leaving a timer running. Use capped rewards and validate session duration to discourage farming.
+
+For the MVP, track focus time explicitly through the app's timer rather than claiming to measure all computer activity automatically.
+
+## D. Streaks, XP, levels, and achievements
+
+This is the primary engagement engine.
+
+# 7 days
+
+Current streak
+
+# 1,250 XP
+
+Experience earned
+
+# 12
+
+Achievements
+
+# 18.5 h
+
+Focus time this week
+
+Example level progression
+
+Level 5 · Apprentice
+
+1,250 / 1,500 XP
+
+Illustrative sample profile — not live user data.
+
+### Proposed progression system
+
+| Action                            | Suggested reward       |
+| --------------------------------- | ---------------------- |
+| Complete a small quest            | 10–25 XP               |
+| Complete a medium quest           | 25–50 XP               |
+| Complete a major quest            | 50–100 XP              |
+| Complete a verified focus session | 10–30 XP               |
+| Reach a weekly goal               | Milestone bonus        |
+| Finish a quest chain              | Achievement + bonus XP |
+
+Treat these as initial balancing values. Rewards should be configurable and calibrated through testing.
+
+The reward engine should prevent duplicate rewards, task-completion farming, and accidental double counting. XP should be calculated server-side and recorded in an immutable event ledger.
+
+### Make streaks humane
+
+- Count an active day based on a meaningful completed goal or focus session.
+- Allow users to define their own daily target.
+- Use local time zones for streak calculations.
+- Provide rest days or optional streak protection.
+- Avoid punishing users for sickness, holidays, or taking breaks.
+- Track consistency and personal bests separately from total XP.
+
+The goal is sustainable productivity, not guilt.
+
+## E. Inbuilt mini-games
+
+Questly should include a built-in arcade where users can play short games during breaks.
+
+[Jeux de la catégorie "Vitesse"](https://images.openai.com/static-rsc-4/2EvrgF8It5rfiikeHXbX4Rqb-sRUCmR26hyjsT-OvaEr9CSRLkiCjxC5COUENZ77pKQ3gRhTEdmtwFGocMSgytZ6UVrI2gPLR-aLKjjsthoQ-4FHHBna4-rMRobjuiRF-lcDHhbM_UTl1AeRbEId2-P1Qa5aWraBYc_6DFWEHaE?purpose=inline)
+
+[Snake game. Digital snakes mobile app pixel gaming retro phone, cellphone display fun play screen geometric shape minimal puzzle old telephone 2d ui, ingenious vector illustration](https://images.openai.com/static-rsc-4/tg410h_wb1Sp0kv6cRkkKdNe-lZbLxfE47NuKxvB8ore88LvwPqepn4qcAsKYfwmqr2UKrszM5Noi11l9Znxw83ulvQvXlLgTDaoIgolyjjMUVFnUojWg0ekmr2DZpOz5JxHidrG6AW-NbziYjUtcKRmTT4ewu7gWPjT_rAauX7xQ_w-VvG8soZ4XFFE3aRl?purpose=inline)
+
+[Nova Drift: Release Date, Platforms and Game Details - Ensigame](https://images.openai.com/static-rsc-4/udg0opBTCP2eQilqh9zcaGNov6gNB6ORDg3Tak4_vgG-S2zRMqjDvsdzpZ4u0UnlhzdOsoOBbTyMJHXiMKJDr3ck--SvhQNWCCYaBpoxWaPCXMPs2GZ1TJ61X0qkgylcPRYbVX1W9TrjYIvOkR2bzDXS4ngIaiMP9DV4GM3lGWQ?purpose=inline)
+
+9
+
+Recommended starter games:
+
+[Atomic Arcade](https://images.openai.com/static-rsc-4/zJUR4kjsRTFBkNn520DHkiiZ4mgbmW84iRYja_hXZi1msMTrcNh91YS2AFllfKyDwCdnGkdi4sA-9CCQviv6DtJUUUKSLw5JhZ6H8zxxQVua_ecUl5cjftzlwi5oepbgFgSPm9DjOpKdFGnVbihiUqgHkGKUWIueDwfCYu-nblc?purpose=inline)
+
+1\. Snake
+
+A classic arcade game for quick breaks. Track high scores, reaction to game difficulty, and personal bests.
+
+[Free Animated Hero Section Code Snippet (GSAP)](https://images.openai.com/static-rsc-4/sV5Yi44mzC-aEsEb9gP5w2SHlYd8g4sYUXXBOaCn6HwgPwqIzRww2Qbr8Ud2oxwQpznfNKDMBoXgYSZzwgV5XAwB8IN0sAaQDNoayNwM1eOdYQBaFTFB7nGWKPJv8hs_boo17M90c_AL56MYfdVoc82NvN_3KVUxh2TUJuyDCts?purpose=inline)
+
+2\. Brick Breaker
+
+Short sessions with increasing difficulty, score history, and level progression.
+
+[Galaxiga MOD APK 25.74 \[Mod Menu/Unlimited Money\] Free Download](https://images.openai.com/static-rsc-4/bpynBw1KXPtwaKs71IiU2WfLTJWUJ09frEknQEpgk28rnFsXXCXGZ0uTjzM7eaRlZCIZz9m8E3O2yyfnHbWmNOroS6sau9VHHws2zmUQDhLxKxA7wPSQ3yTsf4dloj9CwH_g_PDsSizqRxPnFk-e-BI1MNdhnXM9K8DXMLoZcxI?purpose=inline)
+
+3\. Space Defender
+
+An arcade survival game with waves, collectible cosmetics, and high-score tracking.
+
+[I Built a Memory Card Game with jQuery — Here’s What I Learned | by Shahzamannaveed | Mar, 2026 | Medium](https://images.openai.com/static-rsc-4/oAuEW46QOLBoUmaQ7iSET1X6DqWzRWJ500GnH7l1cusBgo6P7X8S5ZWeiEQiaP55cpyyaRxjujikA41fTa7kg1SuOfrPIPsOv520VA5vFhjQo2oz4sDfBEB2Qzx4cBVX-soZdMMEcHOWG-BklWUk7dzp1xmgQXTmUTiP-OzXz8s?purpose=inline)
+
+4\. Memory Match
+
+A quick cognitive puzzle with completion times, accuracy, and difficulty settings.
+
+### How games connect to productivity
+
+The game system should complement the main app rather than compete with it.
+
+- Games are accessible without completing tasks.
+- Short games can be recommended during scheduled breaks.
+- Game scores and personal bests appear on the user's profile.
+- Achievements can unlock cosmetic items.
+- Optional weekly challenges can connect focus goals to game achievements.
+- Game sessions are tracked separately from productive focus time.
+- Playing games must never count as productive work time.
+
+For the MVP, implement two polished games rather than four unfinished ones. Snake and Memory Match would be a sensible starting pair.
+
+# 4. Productivity analytics — Measure real progress
+
+Questly should show users what they actually accomplish, not just how many tasks they complete.
+
+[Project Management Dashboard | Web Design by Artspire on Dribbble](https://images.openai.com/static-rsc-4/XjIJZaW55GCkxw-nc30yr0EAbcTCEEqUoJX6JxF1fm_H3j65g9auEswxouIipADOLrCfGkhMPHM1gCXLYNdABzw2PvbmT8tMp2GeCkdi-nbXOhGLwUxW0mHduCFTpnkGHc3_Cf7tdACQFcpogdF_VjjgYnFyJKQJU64JfGU9xw8?purpose=inline)
+
+[Stats | Flocus](https://images.openai.com/static-rsc-4/XZi5lYXtt9XOFjq5YPQDcm5qCjHbGYKF0SKlEpQP6qiKbbwcnglIQi3e-vvAjWiVTrUl5k0a2xDg6klhz75K8GU6mLX8hQuqWNBtpJthxvmb41L-fsjgcvTqKuj3xZtnlPrtv0SfXiXSO9bdoFi3EiMMRq08qpmGbh8_9gY_SHo?purpose=inline)
+
+[Habit tracker App by Vitaly Belousov on Dribbble](https://images.openai.com/static-rsc-4/U01oh4UGdGMxA4lw1Fy22LQ6j1b8f-8SvXo01OrOoscFoUtKH0NLLQ4UPAYWcejRKJEtHYEQ_EdL-ADY85oB5VK68PqqcqU4P0kpSOiVVIzwsqj9-mzcsX9gYIT0kAxrGo4lNEVRHT5wiHqpP2HlypGL3IwlNS2sJJz0tXSB9sk?purpose=inline)
+
+12
+
+### Metrics to track
+
+| Metric                   | What it measures                             |
+| ------------------------ | -------------------------------------------- |
+| Task completion rate     | Completed tasks divided by planned tasks     |
+| Focus hours              | Time recorded in valid focus sessions        |
+| Time estimation accuracy | Estimated versus actual task duration        |
+| Streak consistency       | Days meeting the user's activity goal        |
+| Goal completion          | Progress toward weekly and monthly goals     |
+| Category distribution    | How time is divided among activities         |
+| Focus-session completion | Sessions completed versus started            |
+| Personal records         | Best days, longest streaks, and milestones   |
+| Game performance         | Scores, completion times, and personal bests |
+
+### Personal productivity score
+
+Use a transparent, explainable score rather than an opaque AI-generated number.
+
+One possible initial model:
+
+\\[ P = 0.35C + 0.30F + 0.20G + 0.15S \\]
+
+Where:
+
+- \\(C\\) = task completion score.
+- \\(F\\) = progress toward the user's focus-time target.
+- \\(G\\) = goal progress score.
+- \\(S\\) = consistency score.
+
+Each component is normalized to a 0–100 scale, and the total score is capped at 100.
+
+These weights are illustrative and should be user-adjustable or validated during testing. The score should compare users against their own goals rather than rank their worth against other people.
+
+### AI-powered weekly review
+
+A future AI coach can generate a review such as:
+
+> You completed 14 of your 17 planned quests this week. Coding accounted for 6.2 hours of focus time, and your most consistent period was Tuesday through Thursday. Your next improvement opportunity is to estimate larger tasks more accurately.
+
+The system should base these observations on recorded data, clearly distinguish observations from suggestions, and avoid inventing activity or claiming to know what happened outside the app.
+
+# 5. Mobile app, home-screen widget, and Chrome extension
+
+Questly should share one underlying user account and productivity data model across platforms.
+
+[FocusMinny — Focus Timer & AI Planner That Keeps a Record](https://images.openai.com/static-rsc-4/JJgHd7DEjlS7jbyLIYsKdxsFR0ub1COd7Sw4420yW8Ov0Cv-IJpboOD-5Z9inWQQFm1HXun_Ogfc8O-4YppeF3ezh1Ijcl7UZyhBFe0FqRdN3xUdkC-Hxc47Ygzs6ffCEGb1mYpb7y_NyS7PsqtYt9deTbrpXUqTpsOBPZBsWfs?purpose=inline)
+
+Mobile app
+
+Core experience
+
+- Full dashboard and quest manager.
+- Focus timer with notifications.
+- Daily streak and XP tracking.
+- Game arcade and analytics.
+- Quick-add tasks.
+- Home-screen widgets.
+- Offline-friendly task updates.
+
+[Show Goals at Top of Chrome Extension (Parity with Android App) - Product Feedback - Toggl Community](https://images.openai.com/static-rsc-4/pASmAQUy26zw1Jzv_cussyK9JEd6BJDn25-P4o7ch1a1AVlKiNTnaG9gllRIur0zujywHTagmwb7GkhSkDE6S46YBbdAMj0UZ_saKhTJCruQZJemfcA6-3vgjJ2WB9MAOq2wrWB3BFMzzM39TEphl-tmzWbmEM12Stsppg7b7ho?purpose=inline)
+
+Chrome extension
+
+Fast access
+
+- View today's quests.
+- Start or stop a focus timer.
+- Mark tasks complete.
+- See streaks and XP.
+- Add a task from the current page.
+- Optional website distraction controls.
+- Daily summary popup.
+
+[Solo Focus Quest](https://images.openai.com/static-rsc-4/QA9gEPONmKZZSRCBlZsnWafv9Y4pY6U59D2HrKYKFjUV-mM9HmNWMaCysrsPOf-iuzGnoudzphxw3qyH3Fq2CpgIcmPMix3l8S7GwG9Dz40Y1PUxUn0_JvMpL06vDxCBuxyEZTyO46mEL5NXMkP3jxkzyb8HPgwkLgCltSUKx_I?purpose=inline)
+
+Home-screen widget
+
+At-a-glance
+
+- Current streak.
+- Daily goal progress.
+- Quick task completion.
+- Start focus session.
+- Current level and XP progress.
+
+Android widgets and iOS widgets require platform-specific implementations. A Chrome extension is a separate browser deliverable.
+
+## Recommended technical architecture
+
+For a polished MVP, use a web-first architecture with reusable UI and shared business logic.
+
+Client applications
+
+Next.js web app · Chrome extension · React Native mobile app
+
+Shared services and API
+
+Authentication · Tasks · Timer sessions · XP engine · Streaks · Achievements
+
+Database and storage
+
+PostgreSQL · User profiles · Quest history · Focus sessions · Game scores · Event ledger
+
+Optional supporting services
+
+Push notifications · Scheduled jobs · Analytics · AI coaching · Offline sync
+
+### Suggested stack
+
+| Layer             | Recommendation                            |
+| ----------------- | ----------------------------------------- |
+| Web application   | Next.js + TypeScript                      |
+| UI                | Tailwind CSS + shadcn/ui                  |
+| Animations        | Framer Motion                             |
+| Charts            | Recharts                                  |
+| Mobile            | React Native + Expo                       |
+| Browser extension | Chrome Manifest V3 + React                |
+| Backend           | Next.js API or a dedicated TypeScript API |
+| Database          | PostgreSQL via Supabase                   |
+| Authentication    | Supabase Auth                             |
+| Validation        | Zod                                       |
+| Game rendering    | Canvas API or Phaser                      |
+| State management  | Zustand + TanStack Query                  |
+| Testing           | Vitest + Playwright                       |
+
+You do not have to implement all three clients immediately. Build the responsive web application first, design the API and data model for cross-platform use, and then develop the extension and mobile clients against the same services.
+
+# 6. Complete data model
+
+Ask the app builder to create a real database schema rather than relying on browser local storage as the permanent data source.
+
+Recommended core entities
+
+| Entity            | Important fields                                                     |
+| ----------------- | -------------------------------------------------------------------- |
+| Users             | id, email, timezone, created_at                                      |
+| Profiles          | user_id, display_name, avatar, theme, level                          |
+| Quests            | id, user_id, title, category, priority, difficulty, deadline, status |
+| Quest events      | quest_id, event_type, timestamp                                      |
+| Focus sessions    | id, user_id, quest_id, started_at, ended_at, duration, status        |
+| Daily summaries   | user_id, date, completed_tasks, focus_minutes, XP                    |
+| Streak records    | user_id, current_streak, longest_streak, last_active_date            |
+| XP ledger         | user_id, event_id, amount, reason, created_at                        |
+| Achievements      | id, name, criteria, reward                                           |
+| User achievements | user_id, achievement_id, unlocked_at                                 |
+| Game sessions     | user_id, game_id, score, duration, played_at                         |
+| User settings     | user_id, daily_target, notifications, privacy_options                |
+
+Every user-owned record should be protected by authorization rules. If Supabase is used, implement and test Row Level Security policies.
+
+Use an idempotent reward system so retries, duplicate requests, or offline synchronization cannot award XP twice.
+
+For accurate timer tracking, persist session start times and reconcile elapsed time when the application resumes. Do not depend on an in-memory countdown alone.
+
+# 7. UI/UX design system
+
+The interface should be premium, playful, and responsive — not a generic admin dashboard with badges added to it.
+
+## Visual direction
+
+Midnight
+
+Primary dark surfaces
+
+\#0D0F17
+
+Arcane Violet
+
+XP and active states
+
+\#8B7CFF
+
+Quest Green
+
+Completed tasks
+
+\#69D8A5
+
+Legend Gold
+
+Achievements and rewards
+
+\#F5C96A
+
+### Layout requirements
+
+- Desktop: collapsible left sidebar and flexible multi-column dashboard.
+- Mobile: bottom navigation with Home, Quests, Focus, Games, and Profile.
+- Tablet: responsive grid with no horizontal overflow.
+- Use a consistent spacing scale, rounded cards, subtle borders, and restrained glow effects.
+- Use lightweight micro-interactions for XP gains, quest completion, and level-ups.
+- Provide reduced-motion settings and respect system preferences.
+- Use accessible contrast, keyboard navigation, readable text, and clear focus indicators.
+- Include loading, empty, error, offline, and success states.
+- Support light and dark themes, with dark mode as the default.
+
+Avoid excessive animations, noisy gradients, and constant notifications. The visual evolution should feel earned and intentional.
+
+# 8. The development roadmap
+
+Build Questly in phases so that the core experience is functional before adding integrations.
+
+Phase 1 — Core MVP
+
+Build first
+
+Authentication, onboarding, quests, focus timer, XP, levels, streaks, achievements, dashboard, and basic analytics.
+
+Deliverable: a fully working responsive web app backed by a real database.
+
+Phase 2 — Game progression
+
+Add Snake, Memory Match, game statistics, cosmetic unlocks, quest chains, and evolving dashboard themes.
+
+Deliverable: the signature gamified experience.
+
+Phase 3 — Chrome extension
+
+Quick-add tasks, timer controls, streaks, and synchronization with the user's web account.
+
+Deliverable: productivity tools available while browsing.
+
+Phase 4 — Mobile app and widgets
+
+Mobile navigation, notifications, offline sync, native home-screen widgets, and app distribution.
+
+Deliverable: a consistent cross-platform productivity ecosystem.
+
+Phase 5 — Intelligent coaching
+
+Weekly AI reviews, schedule suggestions, realistic goal planning, personalized insights, and optional calendar integrations.
+
+Deliverable: a more adaptive personal productivity assistant.
+
+# 9. Copy-paste master prompt for Google AI Studio
+
+The following prompt is designed to guide an AI app builder toward a real, functional MVP instead of a static UI prototype.
+
+# Build Questly — A Gamified Productivity Platform
+
+## Product Overview
+
+Build a polished, production-oriented MVP called **Questly**, a gamified productivity and personal growth platform inspired by Duolingo, Strava, RPG progression systems, and modern indie games.
+
+Questly turns real-world work into quests. Users create tasks, track their focused work time, build streaks, earn XP, unlock achievements, level up, play mini-games, and visualize their personal progress.
+
+The defining feature is an adaptive interface that evolves visually as the user demonstrates consistent productivity and achieves milestones.
+
+Do not build a static dashboard or a superficial UI mockup. Implement functional interactions, persistent data, correct business logic, loading and error states, and a maintainable architecture.
+
+## 1. Technical Requirements
+
+Use:
+
+- Next.js with React and TypeScript for the web app.
+- Tailwind CSS and shadcn/ui for reusable components.
+- Framer Motion for subtle, purposeful animations.
+- Recharts for analytics.
+- Supabase Auth and PostgreSQL for authentication and persistence.
+- Zustand and TanStack Query where useful for state and server data.
+- Zod for input validation.
+- Canvas or a lightweight game framework for mini-games.
+- A modular architecture that supports a future React Native mobile app and Chrome Manifest V3 extension.
+
+If the environment does not provide configured Supabase credentials, implement a clearly separated development adapter with seeded demo data. Do not fabricate successful backend persistence or hardcode a fake logged-in user in the production flow.
+
+Keep business logic independent of UI components. Create reusable services for quests, timer sessions, XP, streaks, achievements, analytics, and game scores.
+
+## 2. Visual Design
+
+Use a premium dark-mode-first aesthetic.
+
+Visual style:
+
+- Midnight navy backgrounds.
+- Restrained violet and indigo accents.
+- Emerald green for successful completion.
+- Warm gold for achievements.
+- Subtle borders and layered surfaces.
+- Rounded cards, clean typography, generous spacing, and responsive grids.
+- Small, polished animations for XP gains, quest completion, streak milestones, and level-ups.
+
+Avoid excessive neon, generic SaaS templates, visual clutter, oversized gradients, and unnecessary animation.
+
+Include light mode as an optional theme.
+
+The app must be responsive on mobile, tablet, and desktop, with keyboard accessibility, accessible contrast, reduced-motion support, and complete loading, empty, offline, and error states.
+
+## 3. Core Navigation
+
+Desktop sidebar:
+
+- Home
+- Quests
+- Focus
+- Analytics
+- Skill Tree
+- Arcade
+- Achievements
+- Profile and Settings
+
+Mobile navigation:
+
+- Home
+- Quests
+- Focus
+- Games
+- Profile
+
+Include a collapsible sidebar on desktop, a responsive mobile layout, a global quick-add task action, and an accessible keyboard shortcut for creating a quest.
+
+## 4. Onboarding
+
+Create a short onboarding flow that asks the user to:
+
+- Choose a display name and avatar.
+- Select their main productivity categories.
+- Set a realistic daily focus goal.
+- Choose a preferred work/break timer.
+- Select a theme.
+- Choose an initial difficulty preference.
+
+Create a personalized starter dashboard and a few example quests.
+
+Allow users to skip optional steps. Persist completed onboarding so it is not repeated unnecessarily.
+
+## 5. Dashboard
+
+Build a real dashboard containing:
+
+- Welcome message and avatar.
+- Current level, XP, and progress to the next level.
+- Current streak and longest streak.
+- Focus minutes today and this week.
+- Tasks completed and remaining.
+- Daily goal progress.
+- Today's quests and upcoming deadlines.
+- Weekly activity heatmap.
+- Focus-time trend chart.
+- Category breakdown.
+- Recent achievements.
+- Recommended next quest.
+- A prominent Start Focus Session button.
+- A prominent Add Quest button.
+- A Continue Playing card for the arcade.
+
+Use real persisted data and derived calculations. Demo data must be explicitly identified as demo data.
+
+Allow dashboard widgets to be hidden or rearranged when practical.
+
+## 6. Quest Management
+
+Implement complete create, read, update, delete, archive, filter, search, sort, and completion functionality.
+
+Each quest should support:
+
+- Title and description.
+- Category.
+- Priority.
+- Difficulty.
+- Estimated duration.
+- Deadline.
+- Optional recurring schedule.
+- Optional subtasks.
+- Optional notes.
+- Current status.
+- Actual tracked duration.
+- Completion timestamp.
+- XP reward.
+- Quest-chain membership.
+
+Statuses: Not Started, In Progress, Completed, Archived.
+
+Provide list and board views, filters by category and status, deadline indicators, and a detail panel.
+
+Create quest chains that let users group smaller tasks under a larger objective.
+
+Completing a quest should show a concise reward animation and update the dashboard immediately.
+
+## 7. Focus Timer
+
+Implement a reliable focus timer with:
+
+- Pomodoro mode.
+- Stopwatch mode.
+- Custom-duration mode.
+- Configurable work and break intervals.
+- Start, pause, resume, cancel, and complete actions.
+- Optional linking to a quest.
+- Session notes and post-session reflection.
+- Session history and reports.
+
+Persist session start time, end time, status, and duration.
+
+Calculate elapsed time from persisted timestamps rather than relying solely on a ticking browser interval. Recover correctly after refresh, tab suspension, and application restart.
+
+Prevent accidental duplicate sessions and duplicate rewards.
+
+Only completed, valid focus sessions should earn session XP. Make reward rules transparent.
+
+Track focus time separately from time spent playing games.
+
+## 8. XP and Progression Engine
+
+Create a central XP service with configurable reward values.
+
+Initial examples:
+
+- Small quest: 10–25 XP.
+- Medium quest: 25–50 XP.
+- Major quest: 50–100 XP.
+- Valid focus session: 10–30 XP.
+- Weekly milestone: a configurable bonus.
+- Quest chain completion: an achievement and bonus XP.
+
+These values are defaults, not fixed product rules.
+
+Calculate rewards on the trusted server side. Use a unique event identifier, database transaction or equivalent atomic operation, and idempotency protection to prevent duplicate rewards.
+
+Record XP events in an immutable ledger. Do not allow the client to directly assign itself arbitrary XP or levels.
+
+Build a configurable level curve. Show the user's current level, progress toward the next level, and newly unlocked rewards.
+
+Do not grant unlimited XP for a running timer, repeated completion requests, or replaying the same event.
+
+## 9. Streaks and Achievements
+
+Implement:
+
+- Current streak.
+- Longest streak.
+- Daily activity history.
+- Weekly targets.
+- Personal milestones.
+- Achievement definitions.
+- Achievement unlock history.
+- Optional rest days and streak protection.
+
+Use the user's timezone for daily boundaries and handle daylight-saving transitions where applicable.
+
+Let users configure a meaningful daily target. A day counts as active only when the configured qualifying goal is met.
+
+Create achievements such as:
+
+- First Quest.
+- First Focus Session.
+- Three-Day Streak.
+- Seven-Day Streak.
+- First Quest Chain.
+- Five Focus Hours.
+- Weekly Goal Achieved.
+- Personal Record.
+
+Prevent duplicate achievement unlocks. Make streak rules transparent and avoid punitive loss of progress.
+
+## 10. Adaptive UI and World Progression
+
+Make visual progression a core product feature.
+
+Create four configurable stages:
+
+- Explorer.
+- Builder.
+- Strategist.
+- Master.
+
+Progression should be based on sustained behavior and milestone achievements, not simply the number of times a user opens the app.
+
+As users advance, progressively unlock:
+
+- New dashboard themes.
+- Avatar cosmetics.
+- Profile effects.
+- Skill tree nodes.
+- More detailed analytics.
+- Quest-chain capabilities.
+- Additional visual environments.
+- Achievement displays.
+
+Essential productivity features must remain accessible at every stage.
+
+Build a progression service that evaluates achievement criteria and unlocks rewards. The UI should derive the current visual stage from persisted progression data.
+
+Include clear unlock previews, level-up animations, and an accessible reduced-motion alternative.
+
+## 11. Skill Tree
+
+Build a visual skill tree with categories such as:
+
+- Focus.
+- Consistency.
+- Planning.
+- Learning.
+- Creativity.
+- Execution.
+
+Display unlocked, available, and locked nodes.
+
+Unlock nodes using defined achievements, milestones, or earned progression points. Show requirements and progress clearly.
+
+The skill tree should reflect actual recorded behavior and should not claim to measure real-world mastery without supporting evidence.
+
+## 12. Arcade
+
+Build a separate arcade section with two fully functional, polished mini-games for the MVP:
+
+A. Snake:
+
+- Keyboard controls.
+- Mobile touch controls.
+- Score and game-over states.
+- Difficulty levels.
+- Personal bests.
+- Restart functionality.
+
+B. Memory Match:
+
+- Configurable grid size.
+- Card-flipping animations.
+- Move count.
+- Completion time.
+- Accuracy statistics.
+- Restart functionality.
+
+Persist game scores and sessions for authenticated users.
+
+Separate game metrics from productivity metrics. Game time must never count toward focus hours or productive work.
+
+Allow cosmetic unlocks through achievements and milestones, but do not make essential productivity functions depend on game performance.
+
+## 13. Analytics
+
+Build a comprehensive analytics page with:
+
+- Daily and weekly focus time.
+- Monthly activity heatmap.
+- Task completion rate.
+- Focus-session completion rate.
+- Estimated versus actual task duration.
+- Category distribution.
+- Weekly goal progress.
+- Streak history.
+- Personal records.
+- Game scores and trends.
+
+Provide date filters and useful empty states.
+
+Use an explainable productivity score based on configurable weights for task completion, focus goals, goal progress, and consistency. Normalize components to a 0–100 scale and cap the score at 100.
+
+Clearly document the formula and avoid presenting the score as an objective measure of a person's worth or overall ability.
+
+Generate a weekly review from recorded metrics. Do not fabricate insights or claim to track activity that the app has not measured.
+
+## 14. Database
+
+Create appropriate PostgreSQL tables and migrations for:
+
+- Users and profiles.
+- User settings.
+- Quests.
+- Quest subtasks.
+- Quest events.
+- Focus sessions.
+- Daily summaries.
+- Streak records.
+- XP ledger.
+- Achievements.
+- User achievement unlocks.
+- Skill tree nodes and user progression.
+- Game definitions and game sessions.
+- Quest chains.
+- Cosmetic unlocks.
+
+Add foreign keys, indexes, appropriate constraints, timestamps, and data ownership rules.
+
+Use Supabase Row Level Security to prevent users from reading or modifying another user's private data.
+
+Do not expose privileged server credentials to the browser.
+
+## 15. Chrome Extension Readiness
+
+Keep business logic and API contracts reusable so a Chrome Manifest V3 extension can later support:
+
+- Today's quests.
+- Quick task creation.
+- Starting and stopping focus sessions.
+- Current streak and XP.
+- Task completion.
+- Synchronization with the same user account.
+
+Use minimal permissions and request optional permissions only when necessary.
+
+Do not implement intrusive browsing surveillance. Any website-blocking or distraction-tracking feature must be transparent and user-controlled.
+
+## 16. Mobile Readiness
+
+Prepare the product for a React Native and Expo client with:
+
+- Shared TypeScript types.
+- Reusable validation schemas.
+- Documented API contracts.
+- Cross-platform authentication.
+- Server-side progression logic.
+- Offline-friendly synchronization.
+- Push notification support.
+- Native widget integration as a future phase.
+
+Do not pretend a responsive website is already a native mobile app or a home-screen widget.
+
+## 17. Security and Reliability
+
+Implement:
+
+- Authentication and authorization.
+- Input validation.
+- Ownership checks on every user-specific operation.
+- Server-side reward validation.
+- Idempotent quest completion.
+- Atomic XP updates.
+- Database migrations.
+- Safe error handling.
+- Environment-variable configuration.
+- Automated tests for critical business rules.
+
+Include tests for:
+
+- XP being granted only once.
+- Streak boundaries and timezone changes.
+- Timer recovery after refresh.
+- Quest completion.
+- Achievement unlocking.
+- User data isolation.
+- Level progression.
+- Game score persistence.
+
+## 18. Delivery Requirements
+
+Build the app incrementally, but make each delivered phase functional.
+
+Start with:
+
+1. Project structure and design system.
+2. Authentication and onboarding.
+3. Database schema and data access.
+4. Quest management.
+5. Focus timer.
+6. XP and streak engine.
+7. Dashboard and analytics.
+8. Adaptive UI progression.
+9. Arcade games.
+10. Tests, error states, and responsive polish.
+
+First inspect the available development environment and existing files. Reuse suitable existing code instead of creating unnecessary duplicates.
+
+Provide a clear README, setup instructions, environment-variable template, database migrations, and test commands.
+
+Do not leave nonfunctional buttons, fake analytics, decorative-only controls, hardcoded user progress, or unimplemented placeholder pages.
+
+Prioritize correctness, accessibility, a polished dark-mode experience, and a cohesive gamification loop over the number of features.
+
+The final result should feel like a premium productivity game that users genuinely want to return to because they can see their real progress.
+
+# 10. What makes Questly stand out?
+
+The strongest positioning is not simply “a productivity app with XP.” Many habit trackers already offer points, streaks, and badges.
+
+Questly should differentiate itself through the combination of these five mechanics:
+
+1\. An interface that grows with you
+
+Your workspace evolves based on your milestones and consistency, giving progress a visible, personalized representation.
+
+2\. Evidence-based progression
+
+Rewards are based on recorded tasks, valid focus sessions, and sustained goals — not merely opening the app.
+
+3\. Productivity and entertainment in one ecosystem
+
+Mini-games provide genuine entertainment during breaks while keeping gaming statistics separate from productive work.
+
+4\. One system across devices
+
+The same tasks, XP, streaks, and progress follow users from the web app to their browser extension and mobile app.
+
+5\. Personal productivity intelligence
+
+Over time, Questly can identify realistic patterns in focus time, task duration, and consistency, then help users improve their own routines.
+
+## My recommendation
+
+Start with the web MVP: quests + focus timer + XP/streak engine + evolving UI + analytics + two mini-games. Make these features excellent before adding the Chrome extension, native widgets, and AI coach.
+
+That combination is already substantial enough to demonstrate a distinctive product. The adaptive UI and trustworthy progression system are the two areas I would prioritize most heavily because they give Questly an identity beyond a conventional task manager.
