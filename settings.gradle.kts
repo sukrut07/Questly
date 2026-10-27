@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "Questly"
 
 include(":app")
+project(":app").projectDir = file("android-app")
