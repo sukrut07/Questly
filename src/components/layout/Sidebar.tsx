@@ -181,7 +181,7 @@ export function Sidebar() {
                 </span>
                 <span>{item.label}</span>
               </div>
-              {item.badge !== undefined && item.badge > 0 && (
+              {item.badge !== undefined && (typeof item.badge === 'number' ? item.badge > 0 : Boolean(item.badge)) && (
                 <span
                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
                     isActive

@@ -2,7 +2,8 @@
 
 import React, { useState } from 'react';
 import { useQuestly } from '@/lib/store';
-import { WORLD_STAGES, WorldStageNumber } from '@/lib/progressionEngine';
+import { WORLD_STAGES } from '@/lib/progressionEngine';
+import { WorldStageNumber, WorldStageInfo } from '@/lib/types';
 import {
   Sparkles,
   Flame,
@@ -21,9 +22,9 @@ export function LivingWorldCard() {
   const [interactiveMode, setInteractiveMode] = useState<'day' | 'night' | 'auto'>('auto');
   const [inspectedLandmark, setInspectedLandmark] = useState<string | null>(null);
 
-  const stage = WORLD_STAGES[streak.worldStage] || WORLD_STAGES[1];
-  const nextStageNum = Math.min(6, (streak.worldStage + 1) as WorldStageNumber);
-  const nextStage = WORLD_STAGES[nextStageNum as WorldStageNumber];
+  const stage = (WORLD_STAGES as Record<number, WorldStageInfo>)[streak.worldStage] || WORLD_STAGES[1];
+  const nextStageNum = Math.min(6, streak.worldStage + 1);
+  const nextStage = (WORLD_STAGES as Record<number, WorldStageInfo>)[nextStageNum] || WORLD_STAGES[6];
 
   // Calculate days progress to next stage
   const currentDays = streak.currentStreak;

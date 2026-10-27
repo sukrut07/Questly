@@ -2,7 +2,8 @@
 
 import React from 'react';
 import { useQuestly } from '@/lib/store';
-import { WORLD_STAGES, WorldStageNumber } from '@/lib/progressionEngine';
+import { WORLD_STAGES } from '@/lib/progressionEngine';
+import { WorldStageNumber, WorldStageInfo } from '@/lib/types';
 import { X, Sparkles, Flame, Shield, CheckCircle2, Lock, Landmark, HeartHandshake } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 
@@ -63,7 +64,7 @@ export function WorldModal() {
         {/* 6 Stages Timeline */}
         <div className="p-6 overflow-y-auto space-y-4 flex-1">
           {([1, 2, 3, 4, 5, 6] as WorldStageNumber[]).map((stageNum) => {
-            const stg = WORLD_STAGES[stageNum];
+            const stg = (WORLD_STAGES as Record<number, WorldStageInfo>)[stageNum] || WORLD_STAGES[1];
             const isCurrent = stageNum === currentStageNum;
             const isUnlocked = stageNum <= currentStageNum;
 
