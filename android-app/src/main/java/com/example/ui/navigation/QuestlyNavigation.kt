@@ -3,6 +3,7 @@ package com.example.ui.navigation
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.FormatListBulleted
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -32,6 +33,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.ui.MainViewModel
+import com.example.ui.feature.adventure.AdventureMapScreen
 import com.example.ui.feature.arcade.ArcadeScreen
 import com.example.ui.feature.arcade.CrystalMazeScreen
 import com.example.ui.feature.arcade.MemoryMatchScreen
@@ -46,10 +48,10 @@ import com.example.ui.feature.profile.ProfileScreen
 import com.example.ui.feature.profile.SkillTreeScreen
 import com.example.ui.feature.quests.QuestsScreen
 
-
 sealed class Screen(val route: String, val title: String, val icon: ImageVector? = null) {
     object Home : Screen("home", "Home", Icons.Default.Home)
     object Quests : Screen("quests", "Quests", Icons.Default.FormatListBulleted)
+    object Adventure : Screen("adventure", "Adventure", Icons.Default.Explore)
     object Focus : Screen("focus", "Focus", Icons.Default.Timer)
     object Arcade : Screen("arcade", "Arcade", Icons.Default.SportsEsports)
     object Profile : Screen("profile", "Profile", Icons.Default.Person)
@@ -68,14 +70,15 @@ sealed class Screen(val route: String, val title: String, val icon: ImageVector?
 val bottomNavItems = listOf(
     Screen.Home,
     Screen.Quests,
+    Screen.Adventure,
     Screen.Focus,
-    Screen.Arcade,
-    Screen.Profile
+    Screen.Arcade
 )
 
 @Composable
 fun QuestlyNavHost(
     viewModel: MainViewModel,
+    initialDestination: String? = null,
     modifier: Modifier = Modifier
 ) {
     val navController = rememberNavController()
@@ -90,6 +93,12 @@ fun QuestlyNavHost(
         toastMessage?.let {
             snackbarHostState.showSnackbar(it)
             viewModel.clearToast()
+        }
+    }
+
+    LaunchedEffect(initialDestination) {
+        if (!initialDestination.isNullOrBlank() && initialDestination != Screen.Home.route && isOnboardingCompleted) {
+            navController.navigate(initialDestination)
         }
     }
 
@@ -173,14 +182,24 @@ fun QuestlyNavHost(
                     viewModel = viewModel,
                     onNavigateToQuests = { navController.navigate(Screen.Quests.route) },
                     onNavigateToFocus = { navController.navigate(Screen.Focus.route) },
+                    onNavigateToAdventure = { navController.navigate(Screen.Adventure.route) },
                     onNavigateToArcade = { navController.navigate(Screen.Arcade.route) },
                     onNavigateToAchievements = { navController.navigate(Screen.Achievements.route) },
-                    onNavigateToAnalytics = { navController.navigate(Screen.Analytics.route) }
+                    onNavigateToAnalytics = { navController.navigate(Screen.Analytics.route) },
+                    onNavigateToProfile = { navController.navigate(Screen.Profile.route) }
                 )
             }
 
             composable(Screen.Quests.route) {
                 QuestsScreen(viewModel = viewModel)
+            }
+
+            composable(Screen.Adventure.route) {
+                AdventureMapScreen(
+                    viewModel = viewModel,
+                    onNavigateToFocus = { navController.navigate(Screen.Focus.route) },
+                    onNavigateToQuests = { navController.navigate(Screen.Quests.route) }
+                )
             }
 
             composable(Screen.Focus.route) {

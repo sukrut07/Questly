@@ -16,6 +16,10 @@ import com.example.core.domain.XpProgressionEngine
 import com.example.core.model.Achievement
 import com.example.core.model.AchievementCategory
 import com.example.core.model.AnalyticsSummary
+import com.example.core.database.AdventureLevelEntity
+import com.example.core.model.AdventureLevel
+import com.example.core.model.AdventureLevelStatus
+import com.example.core.model.AdventureLevelType
 import com.example.core.model.FocusMode
 import com.example.core.model.FocusSession
 import com.example.core.model.GameRecord
@@ -50,11 +54,33 @@ class QuestlyRepository(
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            if (database.profileDao().getProfileSync() == null) {
+            if (database.profileDao().getProfileSync() == null || database.adventureDao().countLevels() == 0) {
                 QuestlyDatabase.seedInitialData(database)
             }
         }
     }
+
+    // --- Adventure Levels ---
+    val adventureLevels: Flow<List<AdventureLevel>> = database.adventureDao().getAllLevels().map { entities ->
+        entities.map { it.toModel() }
+    }
+
+    suspend fun completeAdventureLevel(levelNumber: Int, stars: Int = 3): Boolean = withContext(Dispatchers.IO) {
+        val level = database.adventureDao().getLevel(levelNumber) ?: return@withContext false
+        if (level.status == AdventureLevelStatus.COMPLETED || level.status == AdventureLevelStatus.PERFECT) {
+            return@withContext false
+        }
+        val now = System.currentTimeMillis()
+        val finalStatus = if (stars >= 3) AdventureLevelStatus.PERFECT else AdventureLevelStatus.COMPLETED
+        database.adventureDao().updateCompletion(levelNumber, finalStatus, stars, now)
+        database.adventureDao().unlockLevel(levelNumber + 1)
+        awardXp(level.xpReward, "ADVENTURE", "Conquered Adventure Level $levelNumber: ${level.title}")
+        level.badgeReward?.let { badgeName ->
+            unlockCosmetic(badgeName)
+        }
+        true
+    }
+
 
     // --- Quests ---
     val allQuests: Flow<List<Quest>> = database.questDao().getAllQuests().map { entities ->
@@ -472,6 +498,23 @@ class QuestlyRepository(
             visualTheme = visualTheme,
             title = title,
             createdAt = createdAt
+        )
+    private fun AdventureLevelEntity.toModel(): AdventureLevel {
+        return AdventureLevel(
+            levelNumber = levelNumber,
+            zoneId = zoneId,
+            zoneName = zoneName,
+            title = title,
+            description = description,
+            levelType = levelType,
+            difficulty = difficulty,
+            targetRequirement = targetRequirement,
+            requirementDescription = requirementDescription,
+            xpReward = xpReward,
+            badgeReward = badgeReward,
+            starsEarned = starsEarned,
+            status = status,
+            completedAt = completedAt
         )
     }
 

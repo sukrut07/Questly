@@ -27,7 +27,8 @@ import kotlinx.coroutines.launch
         AchievementEntity::class,
         SkillNodeEntity::class,
         GameRecordEntity::class,
-        CosmeticItemEntity::class
+        CosmeticItemEntity::class,
+        AdventureLevelEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -42,6 +43,7 @@ abstract class QuestlyDatabase : RoomDatabase() {
     abstract fun skillDao(): SkillDao
     abstract fun gameDao(): GameDao
     abstract fun xpDao(): XpDao
+    abstract fun adventureDao(): AdventureDao
 
     companion object {
         @Volatile
@@ -297,6 +299,27 @@ abstract class QuestlyDatabase : RoomDatabase() {
                 CosmeticItemEntity("theme_gold", "theme", "Legend Gold", "Prestige gilded aura unlocked at Stage Master", false, false, 0xFFF5C96A)
             )
             database.profileDao().insertCosmetics(starterCosmetics)
+
+            // 7. Initial 20 Adventure Levels across 4 biomes
+            val starterLevels = com.example.core.model.DefaultAdventureLevels.getInitialLevels().map { level ->
+                AdventureLevelEntity(
+                    levelNumber = level.levelNumber,
+                    zoneId = level.zoneId,
+                    zoneName = level.zoneName,
+                    title = level.title,
+                    description = level.description,
+                    levelType = level.levelType,
+                    difficulty = level.difficulty,
+                    targetRequirement = level.targetRequirement,
+                    requirementDescription = level.requirementDescription,
+                    xpReward = level.xpReward,
+                    badgeReward = level.badgeReward,
+                    starsEarned = level.starsEarned,
+                    status = level.status,
+                    completedAt = level.completedAt
+                )
+            }
+            database.adventureDao().insertAll(starterLevels)
         }
     }
 }

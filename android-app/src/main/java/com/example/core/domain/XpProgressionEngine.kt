@@ -75,7 +75,8 @@ object XpProgressionEngine {
     }
 
     fun calculateFocusXp(elapsedMinutes: Int): Int {
+        if (elapsedMinutes <= 0) return 0
         // Capped rewards to avoid infinite farming: 1 XP per minute, max 40 XP per session
-        return (elapsedMinutes).coerceIn(5, 40)
+        return elapsedMinutes.coerceIn(1, 40)
     }
 }

@@ -23,20 +23,26 @@ object ProductivityScoreEngine {
         targetStreak: Int = 7
     ): ProductivityScoreBreakdown {
         val c = if (totalTasks <= 0) {
-            if (completedTasks > 0) 100f else 60f
+            if (completedTasks > 0) 100f else 0f
         } else {
             (completedTasks.toFloat() / totalTasks.toFloat() * 100f).coerceIn(0f, 100f)
         }
 
-        val f = if (targetFocusMinutes <= 0) 100f else {
+        val f = if (targetFocusMinutes <= 0) {
+            if (todayFocusMinutes > 0) 100f else 0f
+        } else {
             (todayFocusMinutes.toFloat() / targetFocusMinutes.toFloat() * 100f).coerceIn(0f, 100f)
         }
 
         val g = if (completedTasks > 0 || todayFocusMinutes > 0) {
-            (((completedTasks * 20f) + (todayFocusMinutes * 1.5f)) / 2f).coerceIn(20f, 100f)
-        } else 30f
+            (((completedTasks * 20f) + (todayFocusMinutes * 1.5f)) / 2f).coerceIn(10f, 100f)
+        } else 0f
 
-        val s = ((currentStreak.toFloat() / targetStreak.toFloat()) * 100f).coerceIn(20f, 100f)
+        val s = if (targetStreak <= 0 || currentStreak <= 0) {
+            0f
+        } else {
+            ((currentStreak.toFloat() / targetStreak.toFloat()) * 100f).coerceIn(0f, 100f)
+        }
 
         val total = (0.35f * c + 0.30f * f + 0.20f * g + 0.15f * s).roundToInt().coerceIn(0, 100)
 

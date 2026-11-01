@@ -20,16 +20,48 @@ import com.example.core.model.QuestPriority
 import com.example.core.model.SkillNode
 import com.example.core.model.StreakInfo
 import com.example.core.model.UserProfile
+import com.example.ui.widget.QuestlyWidgetData
+import com.example.ui.widget.QuestlyWidgetUpdater
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     val repository = QuestlyRepository.getInstance(application)
+
+    init {
+        // Automatically sync persistent widget snapshot whenever core productivity stats update
+        viewModelScope.launch {
+            combine(
+                repository.levelInfo,
+                repository.streak,
+                repository.analyticsSummary,
+                repository.activeQuests
+            ) { lvl, stk, anl, quests ->
+                val nextQuest = quests.maxByOrNull { it.priority.level }
+                QuestlyWidgetData(
+                    level = lvl.currentLevel,
+                    currentXp = lvl.currentLevelXp,
+                    requiredXp = lvl.requiredLevelXp,
+                    currentStreak = stk.currentStreak,
+                    worldStage = stk.worldStage.title,
+                    todayFocusMins = anl?.dailyFocusMinutes ?: 0,
+                    targetFocusMins = 60,
+                    todayCompletedQuests = anl?.completedQuestsCount ?: 0,
+                    targetQuests = 3,
+                    recommendedQuestTitle = nextQuest?.title ?: "Complete Daily Focus Session",
+                    recommendedQuestMins = nextQuest?.estimatedMinutes ?: 25
+                )
+            }.collect { widgetData ->
+                QuestlyWidgetUpdater.syncAndRefresh(application, widgetData)
+            }
+        }
+    }
 
     val isOnboardingCompleted: StateFlow<Boolean> = repository.prefs.isOnboardingCompleted
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), true)
@@ -83,9 +115,21 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val cosmetics: StateFlow<List<CosmeticItemEntity>> = repository.cosmetics
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    val adventureLevels: StateFlow<List<com.example.core.model.AdventureLevel>> = repository.adventureLevels
+        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     // Feedback message state
     private val _toastMessage = MutableStateFlow<String?>(null)
     val toastMessage: StateFlow<String?> = _toastMessage.asStateFlow()
+
+    fun claimAdventureLevel(level: com.example.core.model.AdventureLevel, stars: Int = 3) {
+        viewModelScope.launch {
+            val success = repository.completeAdventureLevel(level.levelNumber, stars)
+            if (success) {
+                showToast("Level ${level.levelNumber} Conquered! +${level.xpReward} XP awarded!")
+            }
+        }
+    }
 
     fun showToast(message: String) {
         _toastMessage.value = message

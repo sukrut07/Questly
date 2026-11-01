@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Questly</string>
+    <string name="widget_compact_name">Questly Quick Progress</string>
+    <string name="widget_compact_desc">View your current Questly level, streak, and launch focus sessions directly.</string>
+    <string name="widget_expanded_name">Questly Living World</string>
+    <string name="widget_expanded_desc">Displays your living kingdom stage, streak, daily focus minutes, and next recommended quest.</string>
 </resources>

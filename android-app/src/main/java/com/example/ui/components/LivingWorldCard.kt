@@ -25,10 +25,14 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalFireDepartment
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
+import com.example.core.model.WorldPresentationMode
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -56,7 +60,8 @@ import com.example.ui.theme.QuestlyThemeTokens
 @Composable
 fun LivingWorldCard(
     streakInfo: StreakInfo,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onExploreWorld: (() -> Unit)? = null
 ) {
     val worldStage = streakInfo.worldStage
     val colors = QuestlyThemeTokens.colors
@@ -89,10 +94,11 @@ fun LivingWorldCard(
         backgroundColor = colors.cardSurface,
         borderColor = when (worldStage) {
             WorldStage.FORGOTTEN_OUTPOST -> colors.border
-            WorldStage.THE_AWAKENING -> colors.primaryAccent.copy(alpha = 0.5f)
-            WorldStage.THE_GROWING_REALM -> colors.secondaryAccent.copy(alpha = 0.6f)
-            WorldStage.THE_RADIANT_CITADEL -> colors.gold.copy(alpha = 0.7f)
-            WorldStage.THE_CELESTIAL_KINGDOM -> colors.primaryAccent.copy(alpha = 0.9f)
+            WorldStage.FIRST_SPARKS -> colors.warning.copy(alpha = 0.5f)
+            WorldStage.AWAKENING -> colors.primaryAccent.copy(alpha = 0.5f)
+            WorldStage.GROWING_REALM -> colors.secondaryAccent.copy(alpha = 0.6f)
+            WorldStage.RADIANT_CITADEL -> colors.gold.copy(alpha = 0.7f)
+            WorldStage.CELESTIAL_KINGDOM -> colors.primaryAccent.copy(alpha = 0.9f)
         }
     ) {
         Column {
@@ -107,16 +113,19 @@ fun LivingWorldCard(
                             WorldStage.FORGOTTEN_OUTPOST -> Brush.verticalGradient(
                                 listOf(Color(0xFF0D101C), Color(0xFF141A2E))
                             )
-                            WorldStage.THE_AWAKENING -> Brush.verticalGradient(
+                            WorldStage.FIRST_SPARKS -> Brush.verticalGradient(
+                                listOf(Color(0xFF0F1224), Color(0xFF22162E))
+                            )
+                            WorldStage.AWAKENING -> Brush.verticalGradient(
                                 listOf(Color(0xFF12142B), Color(0xFF221A44))
                             )
-                            WorldStage.THE_GROWING_REALM -> Brush.verticalGradient(
+                            WorldStage.GROWING_REALM -> Brush.verticalGradient(
                                 listOf(Color(0xFF0F1B2E), Color(0xFF183350))
                             )
-                            WorldStage.THE_RADIANT_CITADEL -> Brush.verticalGradient(
+                            WorldStage.RADIANT_CITADEL -> Brush.verticalGradient(
                                 listOf(Color(0xFF24163B), Color(0xFF452B1E))
                             )
-                            WorldStage.THE_CELESTIAL_KINGDOM -> Brush.verticalGradient(
+                            WorldStage.CELESTIAL_KINGDOM -> Brush.verticalGradient(
                                 listOf(Color(0xFF1A0E38), Color(0xFF38155A), Color(0xFF10284A))
                             )
                         }
@@ -129,10 +138,11 @@ fun LivingWorldCard(
                     // 1. Stars / Stardust
                     val starCount = when (worldStage) {
                         WorldStage.FORGOTTEN_OUTPOST -> 12
-                        WorldStage.THE_AWAKENING -> 22
-                        WorldStage.THE_GROWING_REALM -> 32
-                        WorldStage.THE_RADIANT_CITADEL -> 45
-                        WorldStage.THE_CELESTIAL_KINGDOM -> 65
+                        WorldStage.FIRST_SPARKS -> 18
+                        WorldStage.AWAKENING -> 25
+                        WorldStage.GROWING_REALM -> 35
+                        WorldStage.RADIANT_CITADEL -> 48
+                        WorldStage.CELESTIAL_KINGDOM -> 65
                     }
                     for (i in 0 until starCount) {
                         val sx = (i * 47) % w
@@ -161,10 +171,11 @@ fun LivingWorldCard(
                         path = backMountainPath,
                         color = when (worldStage) {
                             WorldStage.FORGOTTEN_OUTPOST -> Color(0xFF111524)
-                            WorldStage.THE_AWAKENING -> Color(0xFF1D1B36)
-                            WorldStage.THE_GROWING_REALM -> Color(0xFF132238)
-                            WorldStage.THE_RADIANT_CITADEL -> Color(0xFF301E3E)
-                            WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF281347)
+                            WorldStage.FIRST_SPARKS -> Color(0xFF16152B)
+                            WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> Color(0xFF1D1B36)
+                            WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> Color(0xFF132238)
+                            WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> Color(0xFF301E3E)
+                            WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF281347)
                         }
                     )
 
@@ -181,10 +192,11 @@ fun LivingWorldCard(
                         path = foreTerrainPath,
                         color = when (worldStage) {
                             WorldStage.FORGOTTEN_OUTPOST -> Color(0xFF171D2F)
-                            WorldStage.THE_AWAKENING -> Color(0xFF242247)
-                            WorldStage.THE_GROWING_REALM -> Color(0xFF182C49)
-                            WorldStage.THE_RADIANT_CITADEL -> Color(0xFF3B254E)
-                            WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF321858)
+                            WorldStage.FIRST_SPARKS -> Color(0xFF1D1B36)
+                            WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> Color(0xFF242247)
+                            WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> Color(0xFF182C49)
+                            WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> Color(0xFF3B254E)
+                            WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF321858)
                         }
                     )
 
@@ -209,6 +221,48 @@ fun LivingWorldCard(
                                 radius = 7f,
                                 center = Offset(cx + 42f, cy - 2f)
                             )
+                        }
+                        WorldStage.FIRST_SPARKS -> {
+                            // Campfire lit with warming embers, and the central crystal begins glowing
+                            val cx = w * 0.46f
+                            val cy = h * 0.74f
+
+                            // Small timber cabin
+                            drawRoundRect(
+                                color = Color(0xFF2C324B),
+                                topLeft = Offset(cx - 32f, cy - 30f),
+                                size = Size(42f, 30f),
+                                cornerRadius = CornerRadius(4f, 4f)
+                            )
+                            val roofPath = Path().apply {
+                                moveTo(cx - 36f, cy - 30f)
+                                lineTo(cx - 11f, cy - 46f)
+                                lineTo(cx + 14f, cy - 30f)
+                                close()
+                            }
+                            drawPath(roofPath, Color(0xFF3E4663))
+
+                            // Glowing warm campfire
+                            drawCircle(
+                                color = WarningOrange.copy(alpha = pulseGlow * 0.85f),
+                                radius = 10f,
+                                center = Offset(cx + 34f, cy - 4f)
+                            )
+                            drawCircle(
+                                color = GoldAchievement.copy(alpha = pulseGlow * 0.95f),
+                                radius = 5f,
+                                center = Offset(cx + 34f, cy - 5f)
+                            )
+
+                            // First Sparks glowing crystal beginning to awaken
+                            val crystalPath = Path().apply {
+                                moveTo(cx + 70f, cy - 20f + floatOffset)
+                                lineTo(cx + 78f, cy - 8f + floatOffset)
+                                lineTo(cx + 70f, cy + 2f + floatOffset)
+                                lineTo(cx + 62f, cy - 8f + floatOffset)
+                                close()
+                            }
+                            drawPath(crystalPath, PrimaryViolet.copy(alpha = pulseGlow * 0.75f))
                         }
                         WorldStage.THE_AWAKENING -> {
                             // Campfire with bright embers and glowing crystals
@@ -386,13 +440,21 @@ fun LivingWorldCard(
                             }
                         }
                     }
+
+                    // Peaceful resting mist overlay if in recovery/resting mode
+                    if (streakInfo.presentationMode == WorldPresentationMode.RESTING) {
+                        drawRect(
+                            color = Color(0xFF0A0C14).copy(alpha = 0.34f),
+                            size = size
+                        )
+                    }
                 }
 
-                // Overlay pill for Stage badge & Streak
+                // Overlay pills for Stage, Presentation Mode & Streak
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(14.dp),
+                        .padding(12.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -401,24 +463,45 @@ fun LivingWorldCard(
                             .clip(RoundedCornerShape(8.dp))
                             .background(colors.cardSurface.copy(alpha = 0.90f))
                             .border(1.dp, colors.border.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(
                                 imageVector = Icons.Default.AutoAwesome,
                                 contentDescription = "Stage",
                                 tint = colors.gold,
-                                modifier = Modifier.size(14.dp)
+                                modifier = Modifier.size(13.dp)
                             )
-                            Spacer(modifier = Modifier.width(6.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "MY WORLD • STAGE ${worldStage.stageNumber}",
-                                fontSize = 11.sp,
+                                text = "STAGE ${worldStage.stageNumber}",
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.primaryText,
                                 letterSpacing = 0.5.sp
                             )
                         }
+                    }
+
+                    // Presentation mode indicator
+                    val (modeColor, modeText) = when (streakInfo.presentationMode) {
+                        WorldPresentationMode.FLOURISHING -> Pair(colors.success, "✨ Flourishing")
+                        WorldPresentationMode.STABLE -> Pair(colors.secondaryAccent, "Steady")
+                        WorldPresentationMode.RESTING -> Pair(colors.mutedText, "🌙 Resting")
+                    }
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(modeColor.copy(alpha = 0.16f))
+                            .border(1.dp, modeColor.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 8.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            text = modeText,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = modeColor
+                        )
                     }
 
                     Box(
@@ -433,12 +516,12 @@ fun LivingWorldCard(
                                 imageVector = Icons.Default.LocalFireDepartment,
                                 contentDescription = "Streak",
                                 tint = colors.warning,
-                                modifier = Modifier.size(14.dp)
+                                modifier = Modifier.size(13.dp)
                             )
-                            Spacer(modifier = Modifier.width(4.dp))
+                            Spacer(modifier = Modifier.width(3.dp))
                             Text(
                                 text = "${streakInfo.currentStreak}d Streak",
-                                fontSize = 11.sp,
+                                fontSize = 10.sp,
                                 fontWeight = FontWeight.Bold,
                                 color = colors.warning
                             )
@@ -467,16 +550,27 @@ fun LivingWorldCard(
                     text = worldStage.description,
                     fontSize = 12.sp,
                     color = colors.secondaryText,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 12.dp)
+                    modifier = Modifier.padding(top = 4.dp, bottom = 8.dp)
                 )
+
+                if (streakInfo.presentationMode == WorldPresentationMode.RESTING) {
+                    Text(
+                        text = "Your world is in tranquil rest mode. Complete a quick quest today to restore vibrant daylight!",
+                        fontSize = 11.sp,
+                        color = colors.warning,
+                        fontWeight = FontWeight.Medium,
+                        modifier = Modifier.padding(bottom = 10.dp)
+                    )
+                }
 
                 // Progress to next stage
                 val nextThreshold = when (worldStage) {
-                    WorldStage.FORGOTTEN_OUTPOST -> 3
-                    WorldStage.THE_AWAKENING -> 7
-                    WorldStage.THE_GROWING_REALM -> 14
-                    WorldStage.THE_RADIANT_CITADEL -> 30
-                    WorldStage.THE_CELESTIAL_KINGDOM -> 30
+                    WorldStage.FORGOTTEN_OUTPOST -> 2
+                    WorldStage.FIRST_SPARKS -> 4
+                    WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> 7
+                    WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> 14
+                    WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> 30
+                    WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> 60
                 }
                 val prevThreshold = worldStage.minStreakDays
                 val streakProgress = if (nextThreshold > prevThreshold) {
@@ -510,6 +604,32 @@ fun LivingWorldCard(
                         fontWeight = FontWeight.Bold,
                         color = colors.secondaryAccent
                     )
+                }
+
+                if (onExploreWorld != null) {
+                    Spacer(modifier = Modifier.height(14.dp))
+                    Button(
+                        onClick = onExploreWorld,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("explore_adventure_button"),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = colors.primaryAccent
+                        ),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Explore,
+                            contentDescription = "Explore",
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Explore Adventure Map",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp
+                        )
+                    }
                 }
             }
         }

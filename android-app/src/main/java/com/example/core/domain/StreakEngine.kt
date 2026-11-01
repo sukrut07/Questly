@@ -59,16 +59,24 @@ object StreakEngine {
                 )
             }
             daysDifference == 2L -> {
-                // Missed one day — humane grace period if within 2 days, maintains or resets gracefully
-                val newStreak = 1
-                currentRecord.copy(
-                    currentStreak = newStreak,
-                    lastActiveDate = today.toString(),
-                    activeDaysCount = currentRecord.activeDaysCount + 1
-                )
+                // Missed one day — freeze shield protects streak if available
+                if (currentRecord.freezesRemaining > 0) {
+                    currentRecord.copy(
+                        currentStreak = currentRecord.currentStreak,
+                        freezesRemaining = currentRecord.freezesRemaining - 1,
+                        lastActiveDate = today.toString(),
+                        activeDaysCount = currentRecord.activeDaysCount + 1
+                    )
+                } else {
+                    currentRecord.copy(
+                        currentStreak = 1,
+                        lastActiveDate = today.toString(),
+                        activeDaysCount = currentRecord.activeDaysCount + 1
+                    )
+                }
             }
             else -> {
-                // Streak broken
+                // Streak broken after extended inactivity
                 currentRecord.copy(
                     currentStreak = 1,
                     lastActiveDate = today.toString(),

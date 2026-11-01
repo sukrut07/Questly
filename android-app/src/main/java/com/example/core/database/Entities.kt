@@ -92,7 +92,8 @@ data class StreakRecordEntity(
     val currentStreak: Int,
     val longestStreak: Int,
     val lastActiveDate: String,
-    val activeDaysCount: Int
+    val activeDaysCount: Int,
+    val freezesRemaining: Int = 1
 )
 
 @Entity(
@@ -158,3 +159,25 @@ data class CosmeticItemEntity(
     val isEquipped: Boolean,
     val previewColor: Long
 )
+
+@Entity(
+    tableName = "adventure_levels",
+    indices = [Index("zoneId"), Index("status")]
+)
+data class AdventureLevelEntity(
+    @PrimaryKey val levelNumber: Int,
+    val zoneId: String,
+    val zoneName: String,
+    val title: String,
+    val description: String,
+    val levelType: com.example.core.model.AdventureLevelType,
+    val difficulty: String,
+    val targetRequirement: Int,
+    val requirementDescription: String,
+    val xpReward: Int,
+    val badgeReward: String?,
+    val starsEarned: Int,
+    val status: com.example.core.model.AdventureLevelStatus,
+    val completedAt: Long?
+)
+

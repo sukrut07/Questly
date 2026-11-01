@@ -269,6 +269,7 @@ fun DifficultyBadge(difficulty: QuestDifficulty, modifier: Modifier = Modifier) 
         QuestDifficulty.MEDIUM -> colors.secondaryAccent
         QuestDifficulty.HARD -> colors.warning
         QuestDifficulty.EPIC -> colors.gold
+        QuestDifficulty.LEGENDARY -> colors.primaryAccent
     }
 
     Text(

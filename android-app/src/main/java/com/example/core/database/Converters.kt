@@ -90,4 +90,24 @@ class Converters {
     } catch (_: Exception) {
         GameType.SNAKE
     }
+
+    @TypeConverter
+    fun fromAdventureLevelType(value: com.example.core.model.AdventureLevelType): String = value.name
+
+    @TypeConverter
+    fun toAdventureLevelType(value: String): com.example.core.model.AdventureLevelType = try {
+        com.example.core.model.AdventureLevelType.valueOf(value)
+    } catch (_: Exception) {
+        com.example.core.model.AdventureLevelType.QUEST
+    }
+
+    @TypeConverter
+    fun fromAdventureLevelStatus(value: com.example.core.model.AdventureLevelStatus): String = value.name
+
+    @TypeConverter
+    fun toAdventureLevelStatus(value: String): com.example.core.model.AdventureLevelStatus = try {
+        com.example.core.model.AdventureLevelStatus.valueOf(value)
+    } catch (_: Exception) {
+        com.example.core.model.AdventureLevelStatus.LOCKED
+    }
 }

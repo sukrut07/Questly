@@ -18,10 +18,14 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+        val initialDestination = intent?.getStringExtra("EXTRA_DESTINATION")
         setContent {
             val profile by viewModel.profile.collectAsState()
             QuestlyTheme(themePreference = profile.visualTheme) {
-                QuestlyNavHost(viewModel = viewModel)
+                QuestlyNavHost(
+                    viewModel = viewModel,
+                    initialDestination = initialDestination
+                )
             }
         }
     }

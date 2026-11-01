@@ -143,26 +143,47 @@ class QuestlyEngineTest {
 
     @Test
     fun testWorldStageEvolutionFromStreak() {
-        // Stage 1: Forgotten Outpost (0 - 2 days)
+        // Stage 1: Forgotten Outpost (0 - 1 days)
         assertEquals(WorldStage.FORGOTTEN_OUTPOST, WorldStage.fromStreak(0))
         assertEquals(WorldStage.FORGOTTEN_OUTPOST, WorldStage.fromStreak(1))
-        assertEquals(WorldStage.FORGOTTEN_OUTPOST, WorldStage.fromStreak(2))
 
-        // Stage 2: Awakening (3 - 6 days)
-        assertEquals(WorldStage.THE_AWAKENING, WorldStage.fromStreak(3))
-        assertEquals(WorldStage.THE_AWAKENING, WorldStage.fromStreak(6))
+        // Stage 2: First Sparks (2 - 4 days)
+        assertEquals(WorldStage.FIRST_SPARKS, WorldStage.fromStreak(2))
+        assertEquals(WorldStage.FIRST_SPARKS, WorldStage.fromStreak(4))
 
-        // Stage 3: Growing Realm (7 - 13 days)
-        assertEquals(WorldStage.THE_GROWING_REALM, WorldStage.fromStreak(7))
-        assertEquals(WorldStage.THE_GROWING_REALM, WorldStage.fromStreak(13))
+        // Stage 3: Awakening (5 - 9 days)
+        assertEquals(WorldStage.AWAKENING, WorldStage.fromStreak(5))
+        assertEquals(WorldStage.AWAKENING, WorldStage.fromStreak(9))
 
-        // Stage 4: Radiant Citadel (14 - 29 days)
-        assertEquals(WorldStage.THE_RADIANT_CITADEL, WorldStage.fromStreak(14))
-        assertEquals(WorldStage.THE_RADIANT_CITADEL, WorldStage.fromStreak(29))
+        // Stage 4: Growing Realm (10 - 19 days)
+        assertEquals(WorldStage.GROWING_REALM, WorldStage.fromStreak(10))
+        assertEquals(WorldStage.GROWING_REALM, WorldStage.fromStreak(19))
 
-        // Stage 5: Celestial Kingdom (30+ days)
-        assertEquals(WorldStage.THE_CELESTIAL_KINGDOM, WorldStage.fromStreak(30))
-        assertEquals(WorldStage.THE_CELESTIAL_KINGDOM, WorldStage.fromStreak(100))
+        // Stage 5: Radiant Citadel (20 - 29 days)
+        assertEquals(WorldStage.RADIANT_CITADEL, WorldStage.fromStreak(20))
+        assertEquals(WorldStage.RADIANT_CITADEL, WorldStage.fromStreak(29))
+
+        // Stage 6: Celestial Kingdom (30+ days)
+        assertEquals(WorldStage.CELESTIAL_KINGDOM, WorldStage.fromStreak(30))
+        assertEquals(WorldStage.CELESTIAL_KINGDOM, WorldStage.fromStreak(100))
+    }
+
+    @Test
+    fun testPresentationModesHumaneRecovery() {
+        val today = LocalDate.now().toString()
+        val yesterday = LocalDate.now().minusDays(1).toString()
+        val threeDaysAgo = LocalDate.now().minusDays(3).toString()
+
+        val flourishingStreak = com.example.core.model.StreakInfo(currentStreak = 4, lastActiveDate = today)
+        assertEquals(com.example.core.model.WorldPresentationMode.FLOURISHING, flourishingStreak.presentationMode)
+
+        val stableStreak = com.example.core.model.StreakInfo(currentStreak = 4, lastActiveDate = yesterday)
+        assertEquals(com.example.core.model.WorldPresentationMode.STABLE, stableStreak.presentationMode)
+
+        val restingStreak = com.example.core.model.StreakInfo(currentStreak = 1, lastActiveDate = threeDaysAgo)
+        assertEquals(com.example.core.model.WorldPresentationMode.RESTING, restingStreak.presentationMode)
+        // Structures never deleted, stage still reflects streak:
+        assertEquals(WorldStage.FORGOTTEN_OUTPOST, restingStreak.worldStage)
     }
 
     @Test
@@ -173,5 +194,54 @@ class QuestlyEngineTest {
         assertTrue(gameTypes.contains(GameType.SNAKE))
         assertTrue(gameTypes.contains(GameType.MEMORY_MATCH))
         assertEquals(4, gameTypes.size)
+    }
+
+    @Test
+    fun testAdventureLevelsStructureAndProgression() {
+        val defaultLevels = com.example.core.model.DefaultAdventureLevels.getInitialLevels()
+        assertEquals(20, defaultLevels.size)
+
+        // Level 1 starts AVAILABLE, others are LOCKED
+        assertEquals(1, defaultLevels.first().levelNumber)
+        assertEquals(com.example.core.model.AdventureLevelStatus.AVAILABLE, defaultLevels.first().status)
+        assertTrue(defaultLevels.drop(1).all { it.status == com.example.core.model.AdventureLevelStatus.LOCKED })
+
+        // Check Zone distribution across all 4 zones
+        val zones = defaultLevels.map { it.zone }.distinct()
+        assertEquals(4, zones.size)
+        assertTrue(zones.contains(com.example.core.model.AdventureZone.WHISPERING_GLADE))
+        assertTrue(zones.contains(com.example.core.model.AdventureZone.CRYSTAL_SPIRES))
+        assertTrue(zones.contains(com.example.core.model.AdventureZone.SUNKEN_CITADEL))
+        assertTrue(zones.contains(com.example.core.model.AdventureZone.ASTRAL_PEAKS))
+
+        // Level 5 is the first Boss node
+        val level5 = defaultLevels.find { it.levelNumber == 5 }!!
+        assertEquals(com.example.core.model.AdventureLevelType.BOSS, level5.type)
+        assertEquals(150, level5.xpReward)
+    }
+
+    @Test
+    fun testWidgetDataCalculationAndMapping() {
+        val data = com.example.ui.widget.QuestlyWidgetData(
+            level = 5,
+            currentXp = 340,
+            requiredXp = 500,
+            currentStreak = 4,
+            worldStage = "Awakening",
+            todayFocusMins = 45,
+            targetFocusMins = 90,
+            todayCompletedQuests = 3,
+            targetQuests = 5,
+            recommendedQuestTitle = "Study System Architecture",
+            recommendedQuestMins = 45
+        )
+
+        assertEquals(68, data.progressPercent)
+        assertEquals("Awakening", data.worldStage)
+        assertEquals(4, data.currentStreak)
+
+        // Zero required XP gracefully handles divide-by-zero
+        val zeroData = com.example.ui.widget.QuestlyWidgetData(currentXp = 0, requiredXp = 0)
+        assertEquals(0, zeroData.progressPercent)
     }
 }

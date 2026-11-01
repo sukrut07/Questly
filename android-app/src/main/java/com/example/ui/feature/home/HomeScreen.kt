@@ -21,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Explore
 import androidx.compose.material.icons.filled.LocalFireDepartment
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.RocketLaunch
@@ -44,6 +45,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.core.model.AdventureLevelStatus
 import com.example.ui.MainViewModel
 import com.example.ui.components.CategoryBadge
 import com.example.ui.components.DifficultyBadge
@@ -58,9 +60,11 @@ fun HomeScreen(
     viewModel: MainViewModel,
     onNavigateToQuests: () -> Unit,
     onNavigateToFocus: () -> Unit,
+    onNavigateToAdventure: () -> Unit,
     onNavigateToArcade: () -> Unit,
     onNavigateToAchievements: () -> Unit,
     onNavigateToAnalytics: () -> Unit,
+    onNavigateToProfile: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val colors = QuestlyThemeTokens.colors
@@ -72,6 +76,11 @@ fun HomeScreen(
     val analytics by viewModel.analytics.collectAsState()
     val defenderBest by viewModel.defenderHighScore.collectAsState()
     val mazeBest by viewModel.mazeHighScore.collectAsState()
+    val adventureLevels by viewModel.adventureLevels.collectAsState()
+
+    val nextAdventureLevel = adventureLevels.firstOrNull {
+        it.status == AdventureLevelStatus.AVAILABLE || it.status == AdventureLevelStatus.IN_PROGRESS
+    } ?: adventureLevels.firstOrNull()
 
     val greeting = when (LocalTime.now().hour) {
         in 5..11 -> "Good morning"
@@ -99,7 +108,12 @@ fun HomeScreen(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .clickable { onNavigateToProfile() }
+                        .testTag("home_header_profile"),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     Box(
                         modifier = Modifier
                             .size(46.dp)
@@ -167,7 +181,10 @@ fun HomeScreen(
 
         // B. Hero Section: The Living World (Evolves with Streaks)
         item {
-            LivingWorldCard(streakInfo = streak)
+            LivingWorldCard(
+                streakInfo = streak,
+                onExploreWorld = onNavigateToAdventure
+            )
         }
 
         // C. XP & Level Progression Card
@@ -395,6 +412,82 @@ fun HomeScreen(
                             Text("Commission New Quest")
                         }
                     }
+                }
+            }
+        }
+
+        // Adventure Journey Level Preview
+        item {
+            QuestlyCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onNavigateToAdventure() }
+                    .testTag("home_adventure_preview_card"),
+                backgroundColor = colors.cardSurface,
+                borderColor = colors.secondaryAccent.copy(alpha = 0.45f)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        modifier = Modifier.weight(1f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(44.dp)
+                                .clip(CircleShape)
+                                .background(colors.secondaryAccent.copy(alpha = 0.18f)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Explore,
+                                contentDescription = "Adventure",
+                                tint = colors.secondaryAccent,
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Column {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "ADVENTURE MAP",
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = colors.secondaryAccent,
+                                    letterSpacing = 0.8.sp
+                                )
+                                if (nextAdventureLevel != null) {
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text(
+                                        text = "• LEVEL ${nextAdventureLevel.levelNumber}",
+                                        fontSize = 10.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = colors.mutedText
+                                    )
+                                }
+                            }
+                            Text(
+                                text = nextAdventureLevel?.title ?: "Whispering Glade",
+                                fontSize = 15.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = colors.primaryText
+                            )
+                            Text(
+                                text = nextAdventureLevel?.let { "${it.zone.zoneName} • +${it.xpReward} XP Reward" } ?: "Embark on productivity challenges",
+                                fontSize = 12.sp,
+                                color = colors.secondaryText
+                            )
+                        }
+                    }
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                        contentDescription = "Explore",
+                        tint = colors.secondaryAccent
+                    )
                 }
             }
         }

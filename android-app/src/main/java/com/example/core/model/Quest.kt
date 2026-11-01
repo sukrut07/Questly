@@ -15,7 +15,8 @@ enum class QuestDifficulty(val displayName: String, val baseMultiplier: Float, v
     EASY("Easy", 1.0f, 20),
     MEDIUM("Medium", 1.5f, 40),
     HARD("Hard", 2.2f, 70),
-    EPIC("Epic", 3.0f, 100)
+    EPIC("Epic", 3.0f, 100),
+    LEGENDARY("Legendary", 4.0f, 150)
 }
 
 enum class QuestPriority(val displayName: String, val level: Int) {
