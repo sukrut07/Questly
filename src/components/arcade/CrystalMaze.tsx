@@ -69,7 +69,7 @@ export function CrystalMaze({ onExit }: { onExit: () => void }) {
     score: 0,
     lives: 3,
     floor: 1,
-    startTime: Date.now(),
+    startTime: 0,
   });
 
   // Count crystals in map
@@ -98,6 +98,14 @@ export function CrystalMaze({ onExit }: { onExit: () => void }) {
     ];
     setFloor(floorNum);
   }, []);
+
+  const handleGameOver = useCallback(() => {
+    const finalScore = stateRef.current.score;
+    const finalFloor = stateRef.current.floor;
+    const duration = Math.floor((Date.now() - stateRef.current.startTime) / 1000);
+    setGameState('gameover');
+    recordGameScore('CRYSTAL_MAZE', finalScore, finalFloor, duration);
+  }, [recordGameScore]);
 
   // Keyboard controls
   useEffect(() => {
@@ -307,14 +315,6 @@ export function CrystalMaze({ onExit }: { onExit: () => void }) {
     setScore(0);
     setLives(3);
     setGameState('playing');
-  };
-
-  const handleGameOver = () => {
-    const finalScore = stateRef.current.score;
-    const finalFloor = stateRef.current.floor;
-    const duration = Math.floor((Date.now() - stateRef.current.startTime) / 1000);
-    setGameState('gameover');
-    recordGameScore('CRYSTAL_MAZE', finalScore, finalFloor, duration);
   };
 
   return (
