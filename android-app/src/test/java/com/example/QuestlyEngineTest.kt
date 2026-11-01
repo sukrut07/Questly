@@ -207,16 +207,16 @@ class QuestlyEngineTest {
         assertTrue(defaultLevels.drop(1).all { it.status == com.example.core.model.AdventureLevelStatus.LOCKED })
 
         // Check Zone distribution across all 4 zones
-        val zones = defaultLevels.map { it.zone }.distinct()
+        val zones = defaultLevels.map { it.zoneId }.distinct()
         assertEquals(4, zones.size)
-        assertTrue(zones.contains(com.example.core.model.AdventureZone.WHISPERING_GLADE))
-        assertTrue(zones.contains(com.example.core.model.AdventureZone.CRYSTAL_SPIRES))
-        assertTrue(zones.contains(com.example.core.model.AdventureZone.SUNKEN_CITADEL))
-        assertTrue(zones.contains(com.example.core.model.AdventureZone.ASTRAL_PEAKS))
+        assertTrue(zones.contains("whispering_glade"))
+        assertTrue(zones.contains("crystal_spires"))
+        assertTrue(zones.contains("sunken_citadel"))
+        assertTrue(zones.contains("astral_peaks"))
 
         // Level 5 is the first Boss node
         val level5 = defaultLevels.find { it.levelNumber == 5 }!!
-        assertEquals(com.example.core.model.AdventureLevelType.BOSS, level5.type)
+        assertEquals(com.example.core.model.AdventureLevelType.BOSS, level5.levelType)
         assertEquals(150, level5.xpReward)
     }
 
