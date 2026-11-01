@@ -41,7 +41,7 @@ function QuestModalForm({
   selectedQuest: Quest | null;
   isEditing: boolean;
   onClose: () => void;
-  createQuest: (q: Omit<Quest, 'id' | 'createdAt'>) => void;
+  createQuest: (q: Omit<Quest, 'id' | 'createdAt' | 'completedAt' | 'actualMinutes'>) => void;
   updateQuest: (q: Quest) => void;
 }) {
   const [title, setTitle] = useState(isEditing && selectedQuest ? selectedQuest.title : '');
