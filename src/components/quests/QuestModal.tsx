@@ -14,43 +14,46 @@ export function QuestModal() {
   const isEditing = activeModal === 'edit_quest' && selectedQuest !== null;
   const isOpen = activeModal === 'new_quest' || activeModal === 'edit_quest';
 
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState<QuestCategory>('CODING');
-  const [difficulty, setDifficulty] = useState<QuestDifficulty>('MEDIUM');
-  const [priority, setPriority] = useState<QuestPriority>('MEDIUM');
-  const [estimatedMinutes, setEstimatedMinutes] = useState(30);
-  const [dueDate, setDueDate] = useState(getTodayDateString());
-  const [isRecurring, setIsRecurring] = useState(false);
-  const [subtasks, setSubtasks] = useState<{ id: string; title: string; isCompleted: boolean }[]>([]);
-  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
-
-  useEffect(() => {
-    if (isEditing && selectedQuest) {
-      setTitle(selectedQuest.title);
-      setDescription(selectedQuest.description);
-      setCategory(selectedQuest.category);
-      setDifficulty(selectedQuest.difficulty);
-      setPriority(selectedQuest.priority);
-      setEstimatedMinutes(selectedQuest.estimatedMinutes);
-      setDueDate(selectedQuest.dueDate || getTodayDateString());
-      setIsRecurring(selectedQuest.isRecurring);
-      setSubtasks(selectedQuest.subtasks);
-    } else {
-      setTitle('');
-      setDescription('');
-      setCategory('CODING');
-      setDifficulty('MEDIUM');
-      setPriority('MEDIUM');
-      setEstimatedMinutes(30);
-      setDueDate(getTodayDateString());
-      setIsRecurring(false);
-      setSubtasks([]);
-      setNewSubtaskTitle('');
-    }
-  }, [isEditing, selectedQuest, isOpen]);
-
   if (!isOpen) return null;
+
+  return (
+    <QuestModalForm
+      key={isEditing && selectedQuest ? selectedQuest.id : 'new'}
+      selectedQuest={selectedQuest}
+      isEditing={isEditing}
+      onClose={() => {
+        setActiveModal(null);
+        setSelectedQuest(null);
+      }}
+      createQuest={createQuest}
+      updateQuest={updateQuest}
+    />
+  );
+}
+
+function QuestModalForm({
+  selectedQuest,
+  isEditing,
+  onClose,
+  createQuest,
+  updateQuest,
+}: {
+  selectedQuest: Quest | null;
+  isEditing: boolean;
+  onClose: () => void;
+  createQuest: (q: Omit<Quest, 'id' | 'createdAt'>) => void;
+  updateQuest: (q: Quest) => void;
+}) {
+  const [title, setTitle] = useState(isEditing && selectedQuest ? selectedQuest.title : '');
+  const [description, setDescription] = useState(isEditing && selectedQuest ? selectedQuest.description : '');
+  const [category, setCategory] = useState<QuestCategory>(isEditing && selectedQuest ? selectedQuest.category : 'CODING');
+  const [difficulty, setDifficulty] = useState<QuestDifficulty>(isEditing && selectedQuest ? selectedQuest.difficulty : 'MEDIUM');
+  const [priority, setPriority] = useState<QuestPriority>(isEditing && selectedQuest ? selectedQuest.priority : 'MEDIUM');
+  const [estimatedMinutes, setEstimatedMinutes] = useState(isEditing && selectedQuest ? selectedQuest.estimatedMinutes : 30);
+  const [dueDate, setDueDate] = useState(isEditing && selectedQuest ? (selectedQuest.dueDate || getTodayDateString()) : getTodayDateString());
+  const [isRecurring, setIsRecurring] = useState(isEditing && selectedQuest ? selectedQuest.isRecurring : false);
+  const [subtasks, setSubtasks] = useState<{ id: string; title: string; isCompleted: boolean }[]>(isEditing && selectedQuest ? selectedQuest.subtasks : []);
+  const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 
   const handleAddSubtask = () => {
     if (!newSubtaskTitle.trim()) return;
@@ -102,8 +105,7 @@ export function QuestModal() {
       });
     }
 
-    setActiveModal(null);
-    setSelectedQuest(null);
+    onClose();
   };
 
   const categories: QuestCategory[] = [
@@ -153,8 +155,7 @@ export function QuestModal() {
           <button
             onClick={() => {
               sound.playButtonClick();
-              setActiveModal(null);
-              setSelectedQuest(null);
+              onClose();
             }}
             className="p-1.5 rounded-xl text-theme-muted hover:text-theme-main hover:bg-surface-elevated transition-colors"
             aria-label="Close modal"
@@ -337,10 +338,7 @@ export function QuestModal() {
           <div className="pt-3 border-t border-theme flex items-center justify-end gap-2.5">
             <button
               type="button"
-              onClick={() => {
-                setActiveModal(null);
-                setSelectedQuest(null);
-              }}
+              onClick={onClose}
               className="px-4 py-2.5 rounded-xl text-theme-muted hover:text-theme-main hover:bg-surface-elevated transition-colors font-bold"
             >
               Cancel
