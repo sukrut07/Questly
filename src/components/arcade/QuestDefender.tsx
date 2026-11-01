@@ -138,6 +138,14 @@ export function QuestDefender({ onExit }: { onExit: () => void }) {
     };
   }, []);
 
+  const handleGameOver = React.useCallback(() => {
+    const finalScore = stateRef.current.score;
+    const finalWave = stateRef.current.wave;
+    const duration = Math.floor((Date.now() - stateRef.current.startTime) / 1000);
+    setGameState('gameover');
+    recordGameScore('QUEST_DEFENDER', finalScore, finalWave, duration);
+  }, [recordGameScore]);
+
   // Main Game Loop
   useEffect(() => {
     if (gameState !== 'playing') return;

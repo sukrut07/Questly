@@ -107,7 +107,7 @@ export function HomeDashboard() {
             </span>
           </div>
           <p className="text-xs text-theme-muted">
-            {todayStr} • Your realm is {streak.presentationMode} and waiting for today's achievements.
+            {todayStr} • Your realm is {streak.presentationMode} and waiting for today&apos;s achievements.
           </p>
         </div>
 
@@ -166,7 +166,7 @@ export function HomeDashboard() {
           <div className="text-xl font-black text-yellow-400 font-mono">
             +{todayXpEarned} <span className="text-xs text-theme-muted">XP</span>
           </div>
-          <div className="text-[10px] text-theme-muted mt-1 font-semibold">Today's total gain</div>
+          <div className="text-[10px] text-theme-muted mt-1 font-semibold">Today&apos;s total gain</div>
         </div>
 
         <div className="p-4 rounded-3xl bg-surface-main border border-theme shadow-sm">
@@ -190,7 +190,7 @@ export function HomeDashboard() {
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-extrabold text-base text-theme-main tracking-tight">
-                Today's Objectives
+                Today&apos;s Objectives
               </h3>
               <p className="text-xs text-theme-muted">
                 {activeQuests.length} pending missions awaiting execution
