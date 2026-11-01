@@ -172,10 +172,10 @@ fun LivingWorldCard(
                         color = when (worldStage) {
                             WorldStage.FORGOTTEN_OUTPOST -> Color(0xFF111524)
                             WorldStage.FIRST_SPARKS -> Color(0xFF16152B)
-                            WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> Color(0xFF1D1B36)
-                            WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> Color(0xFF132238)
-                            WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> Color(0xFF301E3E)
-                            WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF281347)
+                            WorldStage.AWAKENING -> Color(0xFF1D1B36)
+                            WorldStage.GROWING_REALM -> Color(0xFF132238)
+                            WorldStage.RADIANT_CITADEL -> Color(0xFF301E3E)
+                            WorldStage.CELESTIAL_KINGDOM -> Color(0xFF281347)
                         }
                     )
 
@@ -193,10 +193,10 @@ fun LivingWorldCard(
                         color = when (worldStage) {
                             WorldStage.FORGOTTEN_OUTPOST -> Color(0xFF171D2F)
                             WorldStage.FIRST_SPARKS -> Color(0xFF1D1B36)
-                            WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> Color(0xFF242247)
-                            WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> Color(0xFF182C49)
-                            WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> Color(0xFF3B254E)
-                            WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> Color(0xFF321858)
+                            WorldStage.AWAKENING -> Color(0xFF242247)
+                            WorldStage.GROWING_REALM -> Color(0xFF182C49)
+                            WorldStage.RADIANT_CITADEL -> Color(0xFF3B254E)
+                            WorldStage.CELESTIAL_KINGDOM -> Color(0xFF321858)
                         }
                     )
 
@@ -264,7 +264,7 @@ fun LivingWorldCard(
                             }
                             drawPath(crystalPath, PrimaryViolet.copy(alpha = pulseGlow * 0.75f))
                         }
-                        WorldStage.THE_AWAKENING -> {
+                        WorldStage.AWAKENING -> {
                             // Campfire with bright embers and glowing crystals
                             val cx = w * 0.45f
                             val cy = h * 0.74f
@@ -300,7 +300,7 @@ fun LivingWorldCard(
                             }
                             drawPath(crystalPath, PrimaryViolet.copy(alpha = pulseGlow))
                         }
-                        WorldStage.THE_GROWING_REALM -> {
+                        WorldStage.GROWING_REALM -> {
                             // Watchtower & stone archways
                             val cx = w * 0.5f
                             val cy = h * 0.73f
@@ -344,7 +344,7 @@ fun LivingWorldCard(
                                 )
                             }
                         }
-                        WorldStage.THE_RADIANT_CITADEL -> {
+                        WorldStage.RADIANT_CITADEL -> {
                             // Radiant Citadel Spire & floating obelisks
                             val cx = w * 0.5f
                             val cy = h * 0.72f
@@ -384,7 +384,7 @@ fun LivingWorldCard(
                             }
                             drawPath(rightObelisk, SecondaryBlue.copy(alpha = pulseGlow))
                         }
-                        WorldStage.THE_CELESTIAL_KINGDOM -> {
+                        WorldStage.CELESTIAL_KINGDOM -> {
                             // Grand Celestial Kingdom with aurora and celestial crystal ring
                             val cx = w * 0.5f
                             val cy = h * 0.70f
@@ -567,10 +567,10 @@ fun LivingWorldCard(
                 val nextThreshold = when (worldStage) {
                     WorldStage.FORGOTTEN_OUTPOST -> 2
                     WorldStage.FIRST_SPARKS -> 4
-                    WorldStage.AWAKENING, WorldStage.THE_AWAKENING -> 7
-                    WorldStage.GROWING_REALM, WorldStage.THE_GROWING_REALM -> 14
-                    WorldStage.RADIANT_CITADEL, WorldStage.THE_RADIANT_CITADEL -> 30
-                    WorldStage.CELESTIAL_KINGDOM, WorldStage.THE_CELESTIAL_KINGDOM -> 60
+                    WorldStage.AWAKENING -> 7
+                    WorldStage.GROWING_REALM -> 14
+                    WorldStage.RADIANT_CITADEL -> 30
+                    WorldStage.CELESTIAL_KINGDOM -> 60
                 }
                 val prevThreshold = worldStage.minStreakDays
                 val streakProgress = if (nextThreshold > prevThreshold) {

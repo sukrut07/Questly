@@ -50,6 +50,8 @@ val GoldAchievement = DarkAchievementGold
 val GoldAchievementLight = LightAchievementGold
 val WarningOrange = DarkWarning
 val ErrorRed = DarkError
+val CoralAccent = Color(0xFFFF7D91)
+val CoralAccentLight = Color(0xFFE11D48)
 
 // Backward compatibility aliases
 val TextPrimary = DarkTextPrimary
@@ -74,6 +76,7 @@ data class QuestlyCustomColors(
     val gold: Color,
     val warning: Color,
     val error: Color,
+    val coral: Color = CoralAccent,
     val isDark: Boolean
 )
 
@@ -95,6 +98,7 @@ val LocalQuestlyCustomColors = staticCompositionLocalOf {
         gold = DarkAchievementGold,
         warning = DarkWarning,
         error = DarkError,
+        coral = CoralAccent,
         isDark = true
     )
 }

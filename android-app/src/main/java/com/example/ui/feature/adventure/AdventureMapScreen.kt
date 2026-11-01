@@ -400,7 +400,7 @@ private fun AvailableNode(level: AdventureLevel, scale: Float) {
     val isBoss = level.levelType == AdventureLevelType.BOSS
 
     Column(
-        horizontalAlignment = Alignment.CenterVertically,
+        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.scale(scale)
     ) {
         // Outer pulsing ring
@@ -422,7 +422,7 @@ private fun AvailableNode(level: AdventureLevel, scale: Float) {
                     .background(colors.cardSurface),
                 contentAlignment = Alignment.Center
             ) {
-                Column(horizontalAlignment = Alignment.CenterVertically) {
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     if (isBoss) {
                         Icon(
                             imageVector = Icons.Default.Security,
@@ -463,7 +463,7 @@ private fun CompletedNode(level: AdventureLevel) {
     val colors = QuestlyThemeTokens.colors
     val isBoss = level.levelType == AdventureLevelType.BOSS
 
-    Column(horizontalAlignment = Alignment.CenterVertically) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Box(
             modifier = Modifier
                 .size(if (isBoss) 64.dp else 54.dp)
@@ -754,7 +754,7 @@ private fun StarCelebrationCard(onDismiss: () -> Unit) {
             .padding(24.dp),
         contentAlignment = Alignment.Center
     ) {
-        Column(horizontalAlignment = Alignment.CenterVertically) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(
                 imageVector = Icons.Default.Star,
                 contentDescription = "Triumph",

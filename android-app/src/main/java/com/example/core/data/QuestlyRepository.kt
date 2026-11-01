@@ -75,10 +75,14 @@ class QuestlyRepository(
         database.adventureDao().updateCompletion(levelNumber, finalStatus, stars, now)
         database.adventureDao().unlockLevel(levelNumber + 1)
         awardXp(level.xpReward, "ADVENTURE", "Conquered Adventure Level $levelNumber: ${level.title}")
-        level.badgeReward?.let { badgeName ->
-            unlockCosmetic(badgeName)
+        level.badgeReward?.let { badgeName: String ->
+            database.profileDao().unlockCosmetic(badgeName)
         }
         true
+    }
+
+    suspend fun unlockCosmetic(id: String) = withContext(Dispatchers.IO) {
+        database.profileDao().unlockCosmetic(id)
     }
 
 
@@ -499,6 +503,8 @@ class QuestlyRepository(
             title = title,
             createdAt = createdAt
         )
+    }
+
     private fun AdventureLevelEntity.toModel(): AdventureLevel {
         return AdventureLevel(
             levelNumber = levelNumber,

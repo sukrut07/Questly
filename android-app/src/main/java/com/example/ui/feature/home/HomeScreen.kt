@@ -476,7 +476,7 @@ fun HomeScreen(
                                 color = colors.primaryText
                             )
                             Text(
-                                text = nextAdventureLevel?.let { "${it.zone.zoneName} • +${it.xpReward} XP Reward" } ?: "Embark on productivity challenges",
+                                text = nextAdventureLevel?.let { "${it.zoneName} • +${it.xpReward} XP Reward" } ?: "Embark on productivity challenges",
                                 fontSize = 12.sp,
                                 color = colors.secondaryText
                             )

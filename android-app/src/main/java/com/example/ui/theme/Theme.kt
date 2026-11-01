@@ -94,6 +94,7 @@ fun QuestlyTheme(
             gold = DarkAchievementGold,
             warning = DarkWarning,
             error = DarkError,
+            coral = CoralAccent,
             isDark = true
         )
     } else {
@@ -114,6 +115,7 @@ fun QuestlyTheme(
             gold = LightAchievementGold,
             warning = LightWarning,
             error = LightError,
+            coral = CoralAccentLight,
             isDark = false
         )
     }
