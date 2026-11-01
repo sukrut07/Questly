@@ -69,7 +69,7 @@ export function QuestDefender({ onExit }: { onExit: () => void }) {
     wave: 1,
     shootTimer: 0,
     tripleShotTimer: 0,
-    startTime: Date.now(),
+    startTime: 0,
   });
 
   // Spawn initial enemies for wave

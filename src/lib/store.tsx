@@ -152,21 +152,26 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        if (parsed.user) setUser(parsed.user);
-        if (parsed.streak) setStreak(parsed.streak);
-        if (parsed.quests) setQuests(parsed.quests);
-        if (parsed.adventureLevels) setAdventureLevels(parsed.adventureLevels);
-        if (parsed.achievements) setAchievements(parsed.achievements);
-        if (parsed.focusSessions) setFocusSessions(parsed.focusSessions);
-        if (parsed.activityHistory) setActivityHistory(parsed.activityHistory);
-        if (parsed.gameRecords) setGameRecords(parsed.gameRecords);
-        if (parsed.settings) setSettings(parsed.settings);
+        queueMicrotask(() => {
+          if (parsed.user) setUser(parsed.user);
+          if (parsed.streak) setStreak(parsed.streak);
+          if (parsed.quests) setQuests(parsed.quests);
+          if (parsed.adventureLevels) setAdventureLevels(parsed.adventureLevels);
+          if (parsed.achievements) setAchievements(parsed.achievements);
+          if (parsed.focusSessions) setFocusSessions(parsed.focusSessions);
+          if (parsed.activityHistory) setActivityHistory(parsed.activityHistory);
+          if (parsed.gameRecords) setGameRecords(parsed.gameRecords);
+          if (parsed.settings) setSettings(parsed.settings);
+          setIsHydrated(true);
+        });
+        return;
       }
     } catch (e) {
       console.warn('Failed to parse Questly storage:', e);
-    } finally {
-      setIsHydrated(true);
     }
+    queueMicrotask(() => {
+      setIsHydrated(true);
+    });
   }, []);
 
   // Save to localStorage whenever data changes
