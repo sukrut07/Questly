@@ -439,14 +439,6 @@ export function QuestDefender({ onExit }: { onExit: () => void }) {
     setGameState('playing');
   };
 
-  const handleGameOver = () => {
-    const finalScore = stateRef.current.score;
-    const finalWave = stateRef.current.wave;
-    const duration = Math.floor((Date.now() - stateRef.current.startTime) / 1000);
-    setGameState('gameover');
-    recordGameScore('QUEST_DEFENDER', finalScore, finalWave, duration);
-  };
-
   return (
     <div className="space-y-4 max-w-xl mx-auto select-none">
       {/* Top Game Navigation & Status */}

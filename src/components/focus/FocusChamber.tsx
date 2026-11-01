@@ -41,13 +41,27 @@ export function FocusChamber() {
 
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Update seconds when target changes while stopped
+  const handleCompleteSession = React.useCallback(() => {
+    ambientSound.stop();
+    setIsRunning(false);
+    setIsPaused(false);
+    setIsSessionFinished(true);
+
+    const plannedSeconds = (isCustomMode ? customMinutes : targetMinutes) * 60;
+    recordFocusSession({
+      questId: selectedQuest?.id || null,
+      questTitle: selectedQuest?.title || null,
+      plannedSeconds,
+      elapsedSeconds: elapsedFocusSeconds + 1,
+      isCompleted: true,
+      notes: sessionNotes,
+    });
+  }, [ambientSound, isCustomMode, customMinutes, targetMinutes, recordFocusSession, selectedQuest, elapsedFocusSeconds, sessionNotes]);
+
+  const completeSessionRef = useRef(handleCompleteSession);
   useEffect(() => {
-    if (!isRunning && !isPaused) {
-      const mins = isCustomMode ? customMinutes : targetMinutes;
-      setSecondsRemaining(mins * 60);
-    }
-  }, [targetMinutes, customMinutes, isCustomMode, isRunning, isPaused]);
+    completeSessionRef.current = handleCompleteSession;
+  }, [handleCompleteSession]);
 
   // Ambient sound sync
   useEffect(() => {
@@ -67,7 +81,7 @@ export function FocusChamber() {
       timerRef.current = setInterval(() => {
         setSecondsRemaining((prev) => {
           if (prev <= 1) {
-            handleCompleteSession();
+            completeSessionRef.current();
             return 0;
           }
           return prev - 1;
@@ -109,23 +123,6 @@ export function FocusChamber() {
     setSecondsRemaining(mins * 60);
     setElapsedFocusSeconds(0);
     setIsSessionFinished(false);
-  };
-
-  const handleCompleteSession = () => {
-    ambientSound.stop();
-    setIsRunning(false);
-    setIsPaused(false);
-    setIsSessionFinished(true);
-
-    const plannedSeconds = (isCustomMode ? customMinutes : targetMinutes) * 60;
-    recordFocusSession({
-      questId: selectedQuest?.id || null,
-      questTitle: selectedQuest?.title || null,
-      plannedSeconds,
-      elapsedSeconds: elapsedFocusSeconds + 1,
-      isCompleted: true,
-      notes: sessionNotes,
-    });
   };
 
   const handleEndEarly = () => {
@@ -286,6 +283,7 @@ export function FocusChamber() {
                   sound.playButtonClick();
                   setIsCustomMode(false);
                   setTargetMinutes(mins);
+                  setSecondsRemaining(mins * 60);
                 }}
                 className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                   !isCustomMode && targetMinutes === mins
@@ -301,6 +299,7 @@ export function FocusChamber() {
               onClick={() => {
                 sound.playButtonClick();
                 setIsCustomMode(true);
+                setSecondsRemaining(customMinutes * 60);
               }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all border ${
                 isCustomMode
@@ -322,7 +321,11 @@ export function FocusChamber() {
               max="120"
               step="5"
               value={customMinutes}
-              onChange={(e) => setCustomMinutes(parseInt(e.target.value))}
+              onChange={(e) => {
+                const val = parseInt(e.target.value);
+                setCustomMinutes(val);
+                setSecondsRemaining(val * 60);
+              }}
               className="flex-1 accent-purple-500 cursor-pointer"
             />
             <span className="text-xs font-bold text-theme-main w-14 text-right">
