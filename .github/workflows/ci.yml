@@ -1,0 +1,67 @@
+name: Questly 2.0 CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  flutter-validation:
+    name: Flutter Mobile Quality & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.29.x'
+          channel: 'stable'
+          cache: true
+
+      - name: Install Mobile Dependencies
+        run: |
+          cd mobile
+          flutter pub get
+
+      - name: Verify Dart Formatting
+        run: |
+          cd mobile
+          dart format --output=none --set-exit-if-changed lib test
+
+      - name: Run Static Code Analysis
+        run: |
+          cd mobile
+          flutter analyze
+
+      - name: Execute Automated Unit & Widget Tests
+        run: |
+          cd mobile
+          flutter test
+
+  web-validation:
+    name: Next.js Web Quality & Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install Web Dependencies
+        run: npm ci
+
+      - name: TypeScript Static Type Check
+        run: npx tsc --noEmit
+
+      - name: Execute Web Unit Tests
+        run: npm test
+
+      - name: Verify Web Production Build
+        run: npm run build
