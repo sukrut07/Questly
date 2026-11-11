@@ -148,6 +148,32 @@ class ProfileScreen extends ConsumerWidget {
                     const Divider(),
                     ListTile(
                       leading: const Icon(
+                        Icons.account_tree_rounded,
+                        color: AppColors.limePrimary,
+                      ),
+                      title: const Text('Skill Tree & Mastery'),
+                      subtitle: const Text(
+                        'RPG perk progression & mastery branches',
+                      ),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => context.push(RoutePaths.skillTree),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(
+                        Icons.videogame_asset_rounded,
+                        color: AppColors.lavenderAccent,
+                      ),
+                      title: const Text('Mind Snap Arcade'),
+                      subtitle: const Text(
+                        'Fast cognitive duels & mental breaks',
+                      ),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => context.push(RoutePaths.arcade),
+                    ),
+                    const Divider(),
+                    ListTile(
+                      leading: const Icon(
                         Icons.emoji_events_outlined,
                         color: AppColors.darkAccent,
                       ),

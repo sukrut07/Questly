@@ -7,7 +7,8 @@ class SkillTreeRepository {
         id: 'focus_1',
         branch: SkillBranch.focus,
         name: 'Single-Tasking Anchor',
-        description: 'Eliminate context switching during 25-minute Pomodoro intervals.',
+        description:
+            'Eliminate context switching during 25-minute Pomodoro intervals.',
         requiredLevel: 1,
         currentProgress: 100,
         maxProgress: 100,
@@ -29,7 +30,8 @@ class SkillTreeRepository {
         id: 'focus_3',
         branch: SkillBranch.focus,
         name: 'Flow State Transcender',
-        description: 'Reach 90-minute hyper-focus blocks with zero distraction.',
+        description:
+            'Reach 90-minute hyper-focus blocks with zero distraction.',
         requiredLevel: 6,
         currentProgress: 20,
         maxProgress: 100,

@@ -42,7 +42,11 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                 child: Row(
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.textPrimary,
+                        size: 20,
+                      ),
                       onPressed: () => context.pop(),
                     ),
                     const SizedBox(width: AppSpacing.xs),
@@ -51,11 +55,15 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                       children: [
                         Text(
                           'SKILL TREE & MASTERY',
-                          style: AppTypography.titleLarge.copyWith(letterSpacing: 1.0),
+                          style: AppTypography.titleLarge.copyWith(
+                            letterSpacing: 1.0,
+                          ),
                         ),
                         Text(
                           'Unlock RPG passive perks via real productivity milestones',
-                          style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                          style: AppTypography.caption.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
@@ -68,13 +76,19 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                 height: 44,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   children: [
                     FilterChip(
                       label: const Text('ALL BRANCHES'),
                       labelStyle: TextStyle(
-                        color: _selectedBranch == null ? AppColors.darkBase : AppColors.textPrimary,
-                        fontWeight: _selectedBranch == null ? FontWeight.bold : FontWeight.normal,
+                        color: _selectedBranch == null
+                            ? AppColors.darkBase
+                            : AppColors.textPrimary,
+                        fontWeight: _selectedBranch == null
+                            ? FontWeight.bold
+                            : FontWeight.normal,
                         fontSize: 11,
                       ),
                       selected: _selectedBranch == null,
@@ -84,7 +98,9 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20),
                         side: BorderSide(
-                          color: _selectedBranch == null ? AppColors.limePrimary : AppColors.darkBorder,
+                          color: _selectedBranch == null
+                              ? AppColors.limePrimary
+                              : AppColors.darkBorder,
                         ),
                       ),
                       showCheckmark: false,
@@ -98,12 +114,18 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                           avatar: Icon(
                             branch.icon,
                             size: 14,
-                            color: isSelected ? AppColors.darkBase : AppColors.limePrimary,
+                            color: isSelected
+                                ? AppColors.darkBase
+                                : AppColors.limePrimary,
                           ),
                           label: Text(branch.displayName.toUpperCase()),
                           labelStyle: TextStyle(
-                            color: isSelected ? AppColors.darkBase : AppColors.textPrimary,
-                            fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                            color: isSelected
+                                ? AppColors.darkBase
+                                : AppColors.textPrimary,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
                             fontSize: 11,
                           ),
                           selected: isSelected,
@@ -115,7 +137,9 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),
                             side: BorderSide(
-                              color: isSelected ? AppColors.limePrimary : AppColors.darkBorder,
+                              color: isSelected
+                                  ? AppColors.limePrimary
+                                  : AppColors.darkBorder,
                             ),
                           ),
                           showCheckmark: false,
@@ -144,8 +168,8 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                         borderColor: isComplete
                             ? AppColors.limePrimary.withValues(alpha: 0.5)
                             : node.isUnlocked
-                                ? AppColors.lavenderAccent.withValues(alpha: 0.4)
-                                : AppColors.darkBorder,
+                            ? AppColors.lavenderAccent.withValues(alpha: 0.4)
+                            : AppColors.darkBorder,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -154,7 +178,11 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                               children: [
                                 Row(
                                   children: [
-                                    Icon(node.branch.icon, size: 16, color: AppColors.lavenderAccent),
+                                    Icon(
+                                      node.branch.icon,
+                                      size: 16,
+                                      color: AppColors.lavenderAccent,
+                                    ),
                                     const SizedBox(width: 6),
                                     Text(
                                       node.branch.displayName.toUpperCase(),
@@ -166,17 +194,26 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                                   ],
                                 ),
                                 Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 2,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: node.isUnlocked
-                                        ? AppColors.limePrimary.withValues(alpha: 0.15)
+                                        ? AppColors.limePrimary.withValues(
+                                            alpha: 0.15,
+                                          )
                                         : AppColors.darkBorder,
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: Text(
-                                    node.isUnlocked ? 'REQ LVL ${node.requiredLevel}' : 'LOCKED',
+                                    node.isUnlocked
+                                        ? 'REQ LVL ${node.requiredLevel}'
+                                        : 'LOCKED',
                                     style: AppTypography.captionBold.copyWith(
-                                      color: node.isUnlocked ? AppColors.limePrimary : AppColors.textTertiary,
+                                      color: node.isUnlocked
+                                          ? AppColors.limePrimary
+                                          : AppColors.textTertiary,
                                     ),
                                   ),
                                 ),
@@ -193,7 +230,9 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                             const SizedBox(height: 2),
                             Text(
                               node.description,
-                              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
                             ),
                             const SizedBox(height: AppSpacing.sm),
 
@@ -211,7 +250,9 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                                 Text(
                                   '${node.currentProgress}/${node.maxProgress} (${(node.progressPercent * 100).toInt()}%)',
                                   style: AppTypography.captionBold.copyWith(
-                                    color: isComplete ? AppColors.limePrimary : AppColors.textSecondary,
+                                    color: isComplete
+                                        ? AppColors.limePrimary
+                                        : AppColors.textSecondary,
                                     fontSize: 11,
                                   ),
                                 ),
@@ -225,7 +266,9 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                                 minHeight: 6,
                                 backgroundColor: AppColors.darkBorder,
                                 valueColor: AlwaysStoppedAnimation(
-                                  isComplete ? AppColors.limePrimary : AppColors.lavenderAccent,
+                                  isComplete
+                                      ? AppColors.limePrimary
+                                      : AppColors.lavenderAccent,
                                 ),
                               ),
                             ),
@@ -234,7 +277,11 @@ class _SkillTreeScreenState extends State<SkillTreeScreen> {
                               const SizedBox(height: AppSpacing.sm),
                               Row(
                                 children: [
-                                  const Icon(Icons.stars, size: 14, color: AppColors.limePrimary),
+                                  const Icon(
+                                    Icons.stars,
+                                    size: 14,
+                                    color: AppColors.limePrimary,
+                                  ),
                                   const SizedBox(width: 4),
                                   Text(
                                     'UNLOCKS: ${node.cosmeticReward!.toUpperCase()}',

@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:questly/app/theme/app_colors.dart';
@@ -88,7 +89,9 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
         backgroundColor: AppColors.darkCard,
         title: Text(
           'DUEL COMPLETE!',
-          style: AppTypography.titleLarge.copyWith(color: AppColors.limePrimary),
+          style: AppTypography.titleLarge.copyWith(
+            color: AppColors.limePrimary,
+          ),
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -96,7 +99,10 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
           children: [
             Text(
               'Final Score: $_score points',
-              style: const TextStyle(color: AppColors.textPrimary, fontSize: 18),
+              style: const TextStyle(
+                color: AppColors.textPrimary,
+                fontSize: 18,
+              ),
             ),
             const SizedBox(height: AppSpacing.sm),
             Container(
@@ -108,14 +114,19 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
               ),
               child: Text(
                 '+${_score * 5} XP AWARDED',
-                style: AppTypography.captionBold.copyWith(color: AppColors.limePrimary),
+                style: AppTypography.captionBold.copyWith(
+                  color: AppColors.limePrimary,
+                ),
               ),
             ),
           ],
         ),
         actions: [
           TextButton(
-            child: const Text('NICE', style: TextStyle(color: AppColors.limePrimary)),
+            child: const Text(
+              'NICE',
+              style: TextStyle(color: AppColors.limePrimary),
+            ),
             onPressed: () => Navigator.pop(ctx),
           ),
         ],
@@ -136,7 +147,11 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
               Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+                    icon: const Icon(
+                      Icons.arrow_back_ios_new,
+                      color: AppColors.textPrimary,
+                      size: 20,
+                    ),
                     onPressed: () => context.pop(),
                   ),
                   const SizedBox(width: AppSpacing.xs),
@@ -145,11 +160,15 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
                     children: [
                       Text(
                         'MIND SNAP ARENA',
-                        style: AppTypography.titleLarge.copyWith(letterSpacing: 1.0),
+                        style: AppTypography.titleLarge.copyWith(
+                          letterSpacing: 1.0,
+                        ),
                       ),
                       Text(
                         'Fast mental duels to recharge focus and sharpen speed',
-                        style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                     ],
                   ),
@@ -177,24 +196,36 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8,
+                          vertical: 3,
+                        ),
                         decoration: BoxDecoration(
-                          color: AppColors.lavenderAccent.withValues(alpha: 0.15),
+                          color: AppColors.lavenderAccent.withValues(
+                            alpha: 0.15,
+                          ),
                           borderRadius: BorderRadius.circular(10),
                         ),
                         child: Text(
                           'FEATURED DUEL',
-                          style: AppTypography.captionBold.copyWith(color: AppColors.lavenderAccent),
+                          style: AppTypography.captionBold.copyWith(
+                            color: AppColors.lavenderAccent,
+                          ),
                         ),
                       ),
                       const SizedBox(height: AppSpacing.sm),
                       Text(
                         'MIND SNAP DUELS',
-                        style: AppTypography.displayMedium.copyWith(fontSize: 26, letterSpacing: 0.8),
+                        style: AppTypography.displayMedium.copyWith(
+                          fontSize: 26,
+                          letterSpacing: 0.8,
+                        ),
                       ),
                       Text(
                         'Who can solve fast multiplication & logic sequences fastest?',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.md),
                       QuestlyButton(
@@ -219,18 +250,25 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
                           Text(
                             'TIME: ${_timeLeft}s',
                             style: AppTypography.titleLarge.copyWith(
-                              color: _timeLeft <= 5 ? AppColors.error : AppColors.limePrimary,
+                              color: _timeLeft <= 5
+                                  ? AppColors.error
+                                  : AppColors.limePrimary,
                             ),
                           ),
                           Text(
                             'SCORE: $_score',
-                            style: AppTypography.titleLarge.copyWith(color: AppColors.lavenderAccent),
+                            style: AppTypography.titleLarge.copyWith(
+                              color: AppColors.lavenderAccent,
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: AppSpacing.lg),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 24,
+                          vertical: 16,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.darkBase,
                           borderRadius: BorderRadius.circular(16),
@@ -301,7 +339,9 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
             Icon(
               icon,
               size: 22,
-              color: isSelected ? AppColors.limePrimary : AppColors.textTertiary,
+              color: isSelected
+                  ? AppColors.limePrimary
+                  : AppColors.textTertiary,
             ),
             const SizedBox(height: 4),
             Text(
@@ -310,7 +350,9 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
                 fontFamily: AppTypography.displayFont,
                 fontSize: 10,
                 fontWeight: FontWeight.bold,
-                color: isSelected ? AppColors.limePrimary : AppColors.textTertiary,
+                color: isSelected
+                    ? AppColors.limePrimary
+                    : AppColors.textTertiary,
               ),
             ),
           ],

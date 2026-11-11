@@ -19,7 +19,9 @@ The migration and visual redesign of Questly 2.0 has been successfully implement
 1. **01. Home (Dashboard)**:
    - Header with uppercase greeting, user level badge, and avatar button (tapping opens Profile & Settings).
    - Matiks-style XP Pill indicator (`QuestlyXPIndicator`).
-   - Progression card with XP progress bar and level unlocks.
+   - Focus Squad & Showdown Countdown bar (`FocusSquadBar` with online indicators).
+   - "Today's Challenge" Dual split-banner (`TodaysChallengeBanner`: PUZZLE ‣ / FOCUS ‣).
+   - Progression card with glowing lime progress bar and level unlocks.
    - Today's Productivity card with completion ring.
    - Quick action bar: New Quest, Deep Focus, Write Note, Roadmaps.
    - Compact Weekly Activity Heatmap preview leading directly into Insights.
@@ -48,13 +50,15 @@ The migration and visual redesign of Questly 2.0 has been successfully implement
 
 ### 2.3 Additional Core Modals & Experiences
 - **Deep Focus Mode**: Fullscreen minimalist Pomodoro timer (Pomodoro 25m, Deep Work 50m, Flow State 90m, Short Break 5m) with circular animated lime progress arc, play/pause/reset controls, and completion XP rewards.
+- **RPG Skill Tree & Mastery (`SkillTreeScreen`)**: 6 mastery branches (Focus, Consistency, Planning, Learning, Creativity, Execution) with perk nodes and cosmetic unlocks.
+- **Mind Snap Arcade (`ArcadeScreen`)**: Mental speed math/logic duels with timers and XP awarding.
 - **User Profile & Settings**: Accessible through the top header avatar on the Dashboard.
 
 ---
 
 ## 3. Verification Metrics
 
-- **Dart Codebase**: 94 formatted files in `mobile/`
+- **Dart Codebase**: 100 formatted files in `mobile/`
 - **`flutter analyze` Result**: `No issues found!` (0 errors, 0 warnings, 0 lints)
-- **`flutter test` Result**: `23 passed, 0 failed` (100% pass rate)
+- **`flutter test` Result**: `25 passed, 0 failed` (100% pass rate)
 - **Strict File Safety**: `android-app/`, `src/`, `public/`, and `package.json` preserved 100% untouched.

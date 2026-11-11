@@ -4,10 +4,12 @@ import 'package:go_router/go_router.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/features/achievements/presentation/screens/achievements_screen.dart';
 import 'package:questly/features/analytics/presentation/screens/analytics_screen.dart';
+import 'package:questly/features/arcade/presentation/screens/arcade_screen.dart';
 import 'package:questly/features/auth/presentation/screens/login_screen.dart';
 import 'package:questly/features/dashboard/presentation/screens/dashboard_screen.dart';
 import 'package:questly/features/dashboard/presentation/screens/main_scaffold.dart';
 import 'package:questly/features/focus/presentation/screens/focus_screen.dart';
+import 'package:questly/features/gamification/presentation/screens/skill_tree_screen.dart';
 import 'package:questly/features/notebook/presentation/screens/note_editor_screen.dart';
 import 'package:questly/features/notebook/presentation/screens/notebook_screen.dart';
 import 'package:questly/features/notifications/presentation/screens/notifications_screen.dart';
@@ -91,6 +93,18 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         name: RouteNames.profile,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) => const ProfileScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.skillTree,
+        name: RouteNames.skillTree,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const SkillTreeScreen(),
+      ),
+      GoRoute(
+        path: RoutePaths.arcade,
+        name: RouteNames.arcade,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const ArcadeScreen(),
       ),
       GoRoute(
         path: RoutePaths.settings,

@@ -10,8 +10,10 @@ import 'package:questly/features/dashboard/presentation/providers/dashboard_prov
 import 'package:questly/features/dashboard/presentation/widgets/active_quests_section.dart';
 import 'package:questly/features/dashboard/presentation/widgets/daily_productivity_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/dashboard_header.dart';
+import 'package:questly/features/dashboard/presentation/widgets/focus_squad_bar.dart';
 import 'package:questly/features/dashboard/presentation/widgets/progression_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/quick_actions_bar.dart';
+import 'package:questly/features/dashboard/presentation/widgets/todays_challenge_banner.dart';
 import 'package:questly/shared/widgets/app_button.dart';
 import 'package:questly/shared/widgets/app_loader.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
@@ -89,6 +91,14 @@ class DashboardScreen extends ConsumerWidget {
                   children: [
                     // Header with Avatar (opens Profile) & XP pill
                     DashboardHeader(profile: data.profile),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Focus Squad & Showdown Countdown
+                    const FocusSquadBar(),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Today's Challenge Dual Banner (Puzzle & Focus)
+                    const TodaysChallengeBanner(),
                     const SizedBox(height: AppSpacing.md),
 
                     // Progression Card
