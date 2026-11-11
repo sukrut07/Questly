@@ -3,25 +3,21 @@ import 'package:go_router/go_router.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
+import 'package:questly/app/theme/app_typography.dart';
 
 class QuickActionsBar extends StatelessWidget {
   const QuickActionsBar({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Quick Actions',
-          style: theme.textTheme.titleMedium?.copyWith(
-            fontWeight: FontWeight.w700,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+          'QUICK ACTIONS',
+          style: AppTypography.labelBold.copyWith(
+            color: AppColors.textSecondary,
+            letterSpacing: 1.2,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -31,26 +27,29 @@ class QuickActionsBar extends StatelessWidget {
             _QuickActionButton(
               icon: Icons.add_task_rounded,
               label: 'New Quest',
-              color: AppColors.darkPrimary,
-              onTap: () => context.pushNamed(RouteNames.createQuest),
+              color: AppColors.limePrimary,
+              onTap: () => context.push(RoutePaths.createQuest),
             ),
             _QuickActionButton(
               icon: Icons.timer_outlined,
               label: 'Deep Focus',
-              color: AppColors.darkSecondary,
-              onTap: () => context.goNamed(RouteNames.tasks),
+              color: AppColors.lavenderAccent,
+              onTap: () => context.push(RoutePaths.focus),
             ),
             _QuickActionButton(
-              icon: Icons.emoji_events_outlined,
-              label: 'Badges',
-              color: AppColors.darkAccent,
-              onTap: () => context.pushNamed(RouteNames.achievements),
+              icon: Icons.edit_note_rounded,
+              label: 'Write Note',
+              color: const Color(0xFFFFCC66),
+              onTap: () {
+                final noteId = 'note_${DateTime.now().millisecondsSinceEpoch}';
+                context.push(RoutePaths.noteEditor.replaceAll(':id', noteId));
+              },
             ),
             _QuickActionButton(
-              icon: Icons.bar_chart_rounded,
-              label: 'Stats',
+              icon: Icons.alt_route_rounded,
+              label: 'Roadmaps',
               color: const Color(0xFF67B8FF),
-              onTap: () => context.goNamed(RouteNames.analytics),
+              onTap: () => context.go(RoutePaths.roadmaps),
             ),
           ],
         ),
@@ -74,38 +73,33 @@ class _QuickActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+      borderRadius: BorderRadius.circular(16),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 52,
-              height: 52,
+              width: 56,
+              height: 56,
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.15),
-                borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
+                color: color.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(
                   color: color.withValues(alpha: 0.35),
-                  width: 1.2,
+                  width: 1.5,
                 ),
               ),
-              child: Center(child: Icon(icon, color: color, size: 24)),
+              child: Center(child: Icon(icon, color: color, size: 26)),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               label,
-              style: theme.textTheme.labelSmall?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: isDark
-                    ? AppColors.darkTextPrimary
-                    : AppColors.lightTextPrimary,
+              style: AppTypography.captionBold.copyWith(
+                fontSize: 11,
+                color: AppColors.textPrimary,
               ),
             ),
           ],

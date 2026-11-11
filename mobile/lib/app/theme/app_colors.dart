@@ -11,11 +11,18 @@ class AppColors {
   static const Color darkElevatedSurface = Color(0xFF282828);
   static const Color darkBorder = Color(0xFF343434);
 
+  // Synonyms for convenience
+  static const Color darkBase = darkBackground;
+  static const Color darkCard = darkCardBackground;
+
   // Brand Accents
   static const Color primaryLime = Color(0xFFB5FF55);
   static const Color secondaryLime = Color(0xFF9CEB43);
   static const Color lavender = Color(0xFFB9A3FF);
   static const Color purple = Color(0xFF9575F5);
+
+  static const Color limePrimary = primaryLime;
+  static const Color lavenderAccent = lavender;
 
   // Backward-compatible aliases
   static const Color darkPrimary = primaryLime;
@@ -28,6 +35,7 @@ class AppColors {
   static const Color textPrimary = Color(0xFFFFFFFF);
   static const Color textSecondary = Color(0xFFA6A6A6);
   static const Color textMuted = Color(0xFF727272);
+  static const Color textTertiary = textMuted;
 
   static const Color darkTextPrimary = textPrimary;
   static const Color darkTextSecondary = textSecondary;

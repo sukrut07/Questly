@@ -39,7 +39,9 @@ class QuestlySectionHeader extends StatelessWidget {
                     fontSize: 18,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.8,
-                    color: isDark ? AppColors.textPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.textPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                 ),
                 if (subtitle != null) ...[
@@ -50,7 +52,9 @@ class QuestlySectionHeader extends StatelessWidget {
                       fontFamily: GoogleFonts.inter().fontFamily,
                       fontSize: 12,
                       fontWeight: FontWeight.w400,
-                      color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.textSecondary
+                          : AppColors.lightTextSecondary,
                     ),
                   ),
                 ],
@@ -73,14 +77,18 @@ class QuestlySectionHeader extends StatelessWidget {
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.6,
-                        color: isDark ? AppColors.primaryLime : AppColors.lightPrimary,
+                        color: isDark
+                            ? AppColors.primaryLime
+                            : AppColors.lightPrimary,
                       ),
                     ),
                     const SizedBox(width: 4),
                     Icon(
                       Icons.arrow_forward_rounded,
                       size: 14,
-                      color: isDark ? AppColors.primaryLime : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.primaryLime
+                          : AppColors.lightPrimary,
                     ),
                   ],
                 ),

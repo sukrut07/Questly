@@ -12,10 +12,15 @@ enum QuestlyButtonVariant {
   danger,
 }
 
+enum QuestlyButtonSize { small, medium, large }
+
 class QuestlyButton extends StatefulWidget {
-  final String label;
+  final String? label;
+  final String? text;
   final VoidCallback? onPressed;
   final QuestlyButtonVariant variant;
+  final QuestlyButtonSize size;
+  final IconData? icon;
   final IconData? leadingIcon;
   final IconData? trailingIcon;
   final bool isLoading;
@@ -24,15 +29,21 @@ class QuestlyButton extends StatefulWidget {
 
   const QuestlyButton({
     super.key,
-    required this.label,
+    this.label,
+    this.text,
     required this.onPressed,
     this.variant = QuestlyButtonVariant.primaryLime,
+    this.size = QuestlyButtonSize.medium,
+    this.icon,
     this.leadingIcon,
     this.trailingIcon,
     this.isLoading = false,
     this.isFullWidth = false,
     this.padding,
-  });
+  }) : assert(
+         label != null || text != null,
+         'Either label or text must be provided',
+       );
 
   @override
   State<QuestlyButton> createState() => _QuestlyButtonState();
@@ -50,9 +61,10 @@ class _QuestlyButtonState extends State<QuestlyButton>
       vsync: this,
       duration: const Duration(milliseconds: 90),
     );
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.96).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
-    );
+    _scaleAnimation = Tween<double>(
+      begin: 1.0,
+      end: 0.96,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
   }
 
   @override
@@ -94,7 +106,9 @@ class _QuestlyButtonState extends State<QuestlyButton>
         fg = Colors.black;
         break;
       case QuestlyButtonVariant.darkOutline:
-        bg = isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface;
+        bg = isDark
+            ? AppColors.darkElevatedSurface
+            : AppColors.lightElevatedSurface;
         fg = isDark ? AppColors.textPrimary : AppColors.lightTextPrimary;
         border = Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -117,11 +131,35 @@ class _QuestlyButtonState extends State<QuestlyButton>
       border = null;
     }
 
+    final displayText = (widget.text ?? widget.label ?? '').toUpperCase();
+    final effectiveIcon = widget.icon ?? widget.leadingIcon;
+
+    final fontSize = switch (widget.size) {
+      QuestlyButtonSize.small => 12.0,
+      QuestlyButtonSize.medium => 14.0,
+      QuestlyButtonSize.large => 16.0,
+    };
+
+    final defaultPadding = switch (widget.size) {
+      QuestlyButtonSize.small => const EdgeInsets.symmetric(
+        horizontal: 12,
+        vertical: 8,
+      ),
+      QuestlyButtonSize.medium => const EdgeInsets.symmetric(
+        horizontal: 18,
+        vertical: 12,
+      ),
+      QuestlyButtonSize.large => const EdgeInsets.symmetric(
+        horizontal: 24,
+        vertical: 15,
+      ),
+    };
+
     final buttonText = Text(
-      widget.label.toUpperCase(),
+      displayText,
       style: TextStyle(
         fontFamily: GoogleFonts.oswald().fontFamily,
-        fontSize: 15,
+        fontSize: fontSize,
         fontWeight: FontWeight.w700,
         letterSpacing: 0.8,
         color: fg,
@@ -142,24 +180,22 @@ class _QuestlyButtonState extends State<QuestlyButton>
             ),
           ),
           const SizedBox(width: AppSpacing.sm),
-        ] else if (widget.leadingIcon != null) ...[
-          Icon(widget.leadingIcon, size: 18, color: fg),
+        ] else if (effectiveIcon != null) ...[
+          Icon(effectiveIcon, size: fontSize + 3, color: fg),
           const SizedBox(width: AppSpacing.xs),
         ],
         buttonText,
         if (!widget.isLoading && widget.trailingIcon != null) ...[
           const SizedBox(width: AppSpacing.xs),
-          Icon(widget.trailingIcon, size: 18, color: fg),
+          Icon(widget.trailingIcon, size: fontSize + 3, color: fg),
         ],
       ],
     );
 
     Widget buttonBody = AnimatedBuilder(
       animation: _scaleAnimation,
-      builder: (context, child) => Transform.scale(
-        scale: _scaleAnimation.value,
-        child: child,
-      ),
+      builder: (context, child) =>
+          Transform.scale(scale: _scaleAnimation.value, child: child),
       child: GestureDetector(
         onTapDown: _onTapDown,
         onTapUp: _onTapUp,
@@ -170,7 +206,8 @@ class _QuestlyButtonState extends State<QuestlyButton>
             color: bg,
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             border: border,
-            boxShadow: widget.variant == QuestlyButtonVariant.primaryLime &&
+            boxShadow:
+                widget.variant == QuestlyButtonVariant.primaryLime &&
                     widget.onPressed != null
                 ? [
                     BoxShadow(
@@ -181,8 +218,7 @@ class _QuestlyButtonState extends State<QuestlyButton>
                   ]
                 : null,
           ),
-          padding: widget.padding ??
-              const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+          padding: widget.padding ?? defaultPadding,
           child: content,
         ),
       ),

@@ -33,7 +33,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       final dateKey = DateFormat('yyyy-MM-dd').format(date);
       // Realistic pseudorandom pattern based on day of week and seed
       final weekday = date.weekday;
-      final isWeekend = weekday == DateTime.saturday || weekday == DateTime.sunday;
+      final isWeekend =
+          weekday == DateTime.saturday || weekday == DateTime.sunday;
       final base = (i * 7 + weekday * 3) % 7;
       final count = isWeekend ? (base % 3) : ((base + 2) % 6);
       final xp = count * 45 + (base * 10);
@@ -52,6 +53,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   @override
   Widget build(BuildContext context) {
     final dashboardAsync = ref.watch(dashboardStateProvider);
+    final streakDays = dashboardAsync.asData?.value.streak.currentStreak ?? 14;
     final heatmapData = _generateHeatmapData();
 
     return Scaffold(
@@ -78,23 +80,40 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                         children: [
                           Text(
                             'INSIGHTS',
-                            style: AppTypography.displayMedium.copyWith(letterSpacing: 1.2),
+                            style: AppTypography.displayMedium.copyWith(
+                              letterSpacing: 1.2,
+                            ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: AppColors.limePrimary.withValues(alpha: 0.15),
+                              color: AppColors.limePrimary.withValues(
+                                alpha: 0.15,
+                              ),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.limePrimary.withValues(alpha: 0.4)),
+                              border: Border.all(
+                                color: AppColors.limePrimary.withValues(
+                                  alpha: 0.4,
+                                ),
+                              ),
                             ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Icon(Icons.trending_up, size: 14, color: AppColors.limePrimary),
+                                const Icon(
+                                  Icons.trending_up,
+                                  size: 14,
+                                  color: AppColors.limePrimary,
+                                ),
                                 const SizedBox(width: 4),
                                 Text(
                                   '+24% VELOCITY',
-                                  style: AppTypography.captionBold.copyWith(color: AppColors.limePrimary),
+                                  style: AppTypography.captionBold.copyWith(
+                                    color: AppColors.limePrimary,
+                                  ),
                                 ),
                               ],
                             ),
@@ -104,7 +123,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         'Heatmaps, consistency metrics & productivity analytics',
-                        style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                        style: AppTypography.bodySmall.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
                       ),
                       const SizedBox(height: AppSpacing.md),
 
@@ -129,7 +150,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      Row(
+                      const Row(
                         children: [
                           Expanded(
                             child: QuestlyStatCard(
@@ -140,7 +161,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               accentColor: AppColors.limePrimary,
                             ),
                           ),
-                          const SizedBox(width: AppSpacing.sm),
+                          SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: QuestlyStatCard(
                               title: 'FOCUS TIME',
@@ -158,14 +179,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           Expanded(
                             child: QuestlyStatCard(
                               title: 'DAILY STREAK',
-                              value: '14 DAYS',
+                              value: '$streakDays DAYS',
                               subtitle: 'Personal record: 28d',
                               icon: Icons.local_fire_department,
                               accentColor: const Color(0xFFFF9F43),
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          Expanded(
+                          const Expanded(
                             child: QuestlyStatCard(
                               title: 'XP VELOCITY',
                               value: '+1,840',
@@ -184,7 +205,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
               // Heatmap Section
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -206,20 +229,26 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               },
                             ),
                             if (_selectedHeatmapDay != null) ...[
-                              const Divider(color: AppColors.darkBorder, height: 24),
+                              const Divider(
+                                color: AppColors.darkBorder,
+                                height: 24,
+                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         DateFormat('EEEE, MMMM d, yyyy')
                                             .format(_selectedHeatmapDay!.date)
                                             .toUpperCase(),
-                                        style: AppTypography.captionBold.copyWith(
-                                          color: AppColors.lavenderAccent,
-                                        ),
+                                        style: AppTypography.captionBold
+                                            .copyWith(
+                                              color: AppColors.lavenderAccent,
+                                            ),
                                       ),
                                       const SizedBox(height: 2),
                                       Text(
@@ -229,9 +258,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                     ],
                                   ),
                                   Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical: 4,
+                                    ),
                                     decoration: BoxDecoration(
-                                      color: AppColors.limePrimary.withValues(alpha: 0.15),
+                                      color: AppColors.limePrimary.withValues(
+                                        alpha: 0.15,
+                                      ),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -276,12 +310,15 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                 enabled: true,
                                 touchTooltipData: BarTouchTooltipData(
                                   getTooltipColor: (_) => AppColors.darkCard,
-                                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
-                                    return BarTooltipItem(
-                                      '${rod.toY.toInt()} Quests',
-                                      AppTypography.captionBold.copyWith(color: AppColors.limePrimary),
-                                    );
-                                  },
+                                  getTooltipItem:
+                                      (group, groupIndex, rod, rodIndex) {
+                                        return BarTooltipItem(
+                                          '${rod.toY.toInt()} Quests',
+                                          AppTypography.captionBold.copyWith(
+                                            color: AppColors.limePrimary,
+                                          ),
+                                        );
+                                      },
                                 ),
                               ),
                               titlesData: FlTitlesData(
@@ -290,16 +327,29 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                   sideTitles: SideTitles(
                                     showTitles: true,
                                     getTitlesWidget: (value, meta) {
-                                      const days = ['M', 'T', 'W', 'T', 'F', 'S', 'S'];
+                                      const days = [
+                                        'M',
+                                        'T',
+                                        'W',
+                                        'T',
+                                        'F',
+                                        'S',
+                                        'S',
+                                      ];
                                       final index = value.toInt();
                                       if (index >= 0 && index < days.length) {
                                         return Padding(
-                                          padding: const EdgeInsets.only(top: 8.0),
+                                          padding: const EdgeInsets.only(
+                                            top: 8.0,
+                                          ),
                                           child: Text(
                                             days[index],
-                                            style: AppTypography.captionBold.copyWith(
-                                              color: index == 3 ? AppColors.limePrimary : AppColors.textSecondary,
-                                            ),
+                                            style: AppTypography.captionBold
+                                                .copyWith(
+                                                  color: index == 3
+                                                      ? AppColors.limePrimary
+                                                      : AppColors.textSecondary,
+                                                ),
                                           ),
                                         );
                                       }
@@ -307,9 +357,15 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                     },
                                   ),
                                 ),
-                                leftTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                                rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                                leftTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                topTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
+                                rightTitles: const AxisTitles(
+                                  sideTitles: SideTitles(showTitles: false),
+                                ),
                               ),
                               gridData: const FlGridData(show: false),
                               borderData: FlBorderData(show: false),
@@ -331,9 +387,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               ),
 
-              const SliverToBoxAdapter(
-                child: SizedBox(height: AppSpacing.xxl),
-              ),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
             ],
           ),
         ),
@@ -347,7 +401,9 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
       barRods: [
         BarChartRodData(
           toY: y,
-          color: isHighlight ? AppColors.limePrimary : AppColors.lavenderAccent.withValues(alpha: 0.6),
+          color: isHighlight
+              ? AppColors.limePrimary
+              : AppColors.lavenderAccent.withValues(alpha: 0.6),
           width: 16,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
           backDrawRodData: BackgroundBarChartRodData(

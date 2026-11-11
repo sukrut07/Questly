@@ -6,4 +6,3 @@ abstract class TaskRepository {
   Future<int> getRemainingTaskCount();
   Future<double> getDailyProgress();
 }
-

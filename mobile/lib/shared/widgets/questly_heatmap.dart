@@ -87,7 +87,7 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
         : null;
     final selectedData = selectedKey != null
         ? widget.activityData[selectedKey] ??
-            HeatmapDayData(date: _selectedDate!)
+              HeatmapDayData(date: _selectedDate!)
         : null;
 
     return Column(
@@ -105,9 +105,11 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                 child: Column(
                   children: week.map((date) {
                     final key = DateFormat('yyyy-MM-dd').format(date);
-                    final data = widget.activityData[key] ?? HeatmapDayData(date: date);
+                    final data =
+                        widget.activityData[key] ?? HeatmapDayData(date: date);
                     final isFuture = date.isAfter(today);
-                    final isSelected = _selectedDate != null &&
+                    final isSelected =
+                        _selectedDate != null &&
                         _selectedDate!.year == date.year &&
                         _selectedDate!.month == date.month &&
                         _selectedDate!.day == date.day;
@@ -137,8 +139,10 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                                   color: isFuture
                                       ? Colors.transparent
                                       : (isDark
-                                          ? AppColors.darkBorder.withValues(alpha: 0.5)
-                                          : Colors.grey.shade300),
+                                            ? AppColors.darkBorder.withValues(
+                                                alpha: 0.5,
+                                              )
+                                            : Colors.grey.shade300),
                                   width: 0.5,
                                 ),
                         ),
@@ -166,7 +170,9 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                     fontFamily: GoogleFonts.inter().fontFamily,
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
-                    color: isDark ? AppColors.primaryLime : AppColors.lightPrimary,
+                    color: isDark
+                        ? AppColors.primaryLime
+                        : AppColors.lightPrimary,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -178,7 +184,9 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                 style: TextStyle(
                   fontFamily: GoogleFonts.inter().fontFamily,
                   fontSize: 11,
-                  color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+                  color: isDark
+                      ? AppColors.textMuted
+                      : AppColors.lightTextMuted,
                 ),
               ),
 
@@ -192,7 +200,9 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                     fontFamily: GoogleFonts.oswald().fontFamily,
                     fontSize: 9,
                     letterSpacing: 0.5,
-                    color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.lightTextMuted,
                   ),
                 ),
                 const SizedBox(width: 4),
@@ -213,7 +223,9 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap> {
                     fontFamily: GoogleFonts.oswald().fontFamily,
                     fontSize: 9,
                     letterSpacing: 0.5,
-                    color: isDark ? AppColors.textMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.textMuted
+                        : AppColors.lightTextMuted,
                   ),
                 ),
               ],

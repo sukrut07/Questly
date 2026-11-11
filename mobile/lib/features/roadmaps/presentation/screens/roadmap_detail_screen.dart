@@ -7,7 +7,6 @@ import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/features/roadmaps/domain/models/roadmap.dart';
-import 'package:questly/features/roadmaps/presentation/widgets/roadmap_path_painter.dart';
 import 'package:questly/shared/widgets/questly_button.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
@@ -15,13 +14,11 @@ import 'package:questly/shared/widgets/questly_grid_background.dart';
 class RoadmapDetailScreen extends ConsumerStatefulWidget {
   final String roadmapId;
 
-  const RoadmapDetailScreen({
-    super.key,
-    required this.roadmapId,
-  });
+  const RoadmapDetailScreen({super.key, required this.roadmapId});
 
   @override
-  ConsumerState<RoadmapDetailScreen> createState() => _RoadmapDetailScreenState();
+  ConsumerState<RoadmapDetailScreen> createState() =>
+      _RoadmapDetailScreenState();
 }
 
 class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
@@ -105,7 +102,11 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
                   child: Row(
                     children: [
                       IconButton(
-                        icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+                        icon: const Icon(
+                          Icons.arrow_back_ios_new,
+                          color: AppColors.textPrimary,
+                          size: 20,
+                        ),
                         onPressed: () => context.pop(),
                       ),
                       const SizedBox(width: AppSpacing.xs),
@@ -119,11 +120,16 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
                         ),
                       ),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 4,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.limePrimary.withValues(alpha: 0.15),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.limePrimary.withValues(alpha: 0.4)),
+                          border: Border.all(
+                            color: AppColors.limePrimary.withValues(alpha: 0.4),
+                          ),
                         ),
                         child: Text(
                           '+${roadmap.totalXpReward} XP',
@@ -140,7 +146,9 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
               // Header Information
               SliverToBoxAdapter(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -162,7 +170,9 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
 
                       // Progress Card
                       QuestlyCard(
-                        borderColor: AppColors.limePrimary.withValues(alpha: 0.3),
+                        borderColor: AppColors.limePrimary.withValues(
+                          alpha: 0.3,
+                        ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -191,7 +201,9 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
                                 value: progress,
                                 minHeight: 8,
                                 backgroundColor: AppColors.darkBorder,
-                                valueColor: const AlwaysStoppedAnimation(AppColors.limePrimary),
+                                valueColor: const AlwaysStoppedAnimation(
+                                  AppColors.limePrimary,
+                                ),
                               ),
                             ),
                           ],
@@ -215,26 +227,21 @@ class _RoadmapDetailScreenState extends ConsumerState<RoadmapDetailScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
                 sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                    (context, index) {
-                      final milestone = roadmap.milestones[index];
-                      final isLast = index == roadmap.milestones.length - 1;
+                  delegate: SliverChildBuilderDelegate((context, index) {
+                    final milestone = roadmap.milestones[index];
+                    final isLast = index == roadmap.milestones.length - 1;
 
-                      return _MilestoneItem(
-                        milestone: milestone,
-                        isLast: isLast,
-                        onToggle: () => _toggleMilestone(milestone.id),
-                        onStartFocus: () => context.push(RoutePaths.focus),
-                      );
-                    },
-                    childCount: roadmap.milestones.length,
-                  ),
+                    return _MilestoneItem(
+                      milestone: milestone,
+                      isLast: isLast,
+                      onToggle: () => _toggleMilestone(milestone.id),
+                      onStartFocus: () => context.push(RoutePaths.focus),
+                    );
+                  }, childCount: roadmap.milestones.length),
                 ),
               ),
 
-              const SliverToBoxAdapter(
-                child: SizedBox(height: AppSpacing.xxl),
-              ),
+              const SliverToBoxAdapter(child: SizedBox(height: AppSpacing.xxl)),
             ],
           ),
         ),
@@ -293,7 +300,9 @@ class _MilestoneItem extends StatelessWidget {
                               Text(
                                 'STAGE ${milestone.order}'.toUpperCase(),
                                 style: AppTypography.captionBold.copyWith(
-                                  color: isDone ? AppColors.limePrimary : AppColors.lavenderAccent,
+                                  color: isDone
+                                      ? AppColors.limePrimary
+                                      : AppColors.lavenderAccent,
                                   letterSpacing: 1.2,
                                 ),
                               ),
@@ -301,25 +310,36 @@ class _MilestoneItem extends StatelessWidget {
                               Text(
                                 milestone.title,
                                 style: AppTypography.titleMedium.copyWith(
-                                  decoration: isDone ? TextDecoration.lineThrough : null,
-                                  color: isDone ? AppColors.textSecondary : AppColors.textPrimary,
+                                  decoration: isDone
+                                      ? TextDecoration.lineThrough
+                                      : null,
+                                  color: isDone
+                                      ? AppColors.textSecondary
+                                      : AppColors.textPrimary,
                                 ),
                               ),
                             ],
                           ),
                         ),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
                           decoration: BoxDecoration(
                             color: isDone
                                 ? AppColors.limePrimary.withValues(alpha: 0.15)
-                                : AppColors.lavenderAccent.withValues(alpha: 0.15),
+                                : AppColors.lavenderAccent.withValues(
+                                    alpha: 0.15,
+                                  ),
                             borderRadius: BorderRadius.circular(12),
                           ),
                           child: Text(
                             '+${milestone.xpReward} XP',
                             style: AppTypography.captionBold.copyWith(
-                              color: isDone ? AppColors.limePrimary : AppColors.lavenderAccent,
+                              color: isDone
+                                  ? AppColors.limePrimary
+                                  : AppColors.lavenderAccent,
                             ),
                           ),
                         ),
@@ -335,27 +355,35 @@ class _MilestoneItem extends StatelessWidget {
 
                     if (milestone.subtasks.isNotEmpty) ...[
                       const SizedBox(height: AppSpacing.sm),
-                      ...milestone.subtasks.map((st) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4),
-                            child: Row(
-                              children: [
-                                Icon(
-                                  isDone ? Icons.check_circle : Icons.radio_button_unchecked,
-                                  size: 14,
-                                  color: isDone ? AppColors.limePrimary : AppColors.textTertiary,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    st,
-                                    style: AppTypography.caption.copyWith(
-                                      color: isDone ? AppColors.textSecondary : AppColors.textPrimary,
-                                    ),
+                      ...milestone.subtasks.map(
+                        (st) => Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            children: [
+                              Icon(
+                                isDone
+                                    ? Icons.check_circle
+                                    : Icons.radio_button_unchecked,
+                                size: 14,
+                                color: isDone
+                                    ? AppColors.limePrimary
+                                    : AppColors.textTertiary,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  st,
+                                  style: AppTypography.caption.copyWith(
+                                    color: isDone
+                                        ? AppColors.textSecondary
+                                        : AppColors.textPrimary,
                                   ),
                                 ),
-                              ],
-                            ),
-                          )),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                     ],
 
                     const SizedBox(height: AppSpacing.sm),
@@ -365,7 +393,9 @@ class _MilestoneItem extends StatelessWidget {
                           child: QuestlyButton(
                             text: isDone ? 'COMPLETED' : 'MARK COMPLETE',
                             icon: isDone ? Icons.check : Icons.done_all,
-                            variant: isDone ? QuestlyButtonVariant.darkOutline : QuestlyButtonVariant.primaryLime,
+                            variant: isDone
+                                ? QuestlyButtonVariant.darkOutline
+                                : QuestlyButtonVariant.primaryLime,
                             size: QuestlyButtonSize.small,
                             onPressed: onToggle,
                           ),
@@ -423,7 +453,7 @@ class SliverTimelineIndicator extends StatelessWidget {
                       color: AppColors.limePrimary.withValues(alpha: 0.35),
                       blurRadius: 8,
                       spreadRadius: 1,
-                    )
+                    ),
                   ]
                 : null,
           ),

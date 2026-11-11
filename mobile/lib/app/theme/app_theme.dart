@@ -79,7 +79,10 @@ class AppTheme {
         filled: true,
         fillColor: AppColors.darkElevatedSurface,
         hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.textMuted),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.darkBorder),
@@ -90,7 +93,10 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          borderSide: const BorderSide(color: AppColors.primaryLime, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppColors.primaryLime,
+            width: 1.5,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -185,8 +191,13 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: AppColors.lightElevatedSurface,
-        hintStyle: textTheme.bodyMedium?.copyWith(color: AppColors.lightTextMuted),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        hintStyle: textTheme.bodyMedium?.copyWith(
+          color: AppColors.lightTextMuted,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
           borderSide: const BorderSide(color: AppColors.lightBorder),
@@ -197,7 +208,10 @@ class AppTheme {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-          borderSide: const BorderSide(color: AppColors.lightPrimary, width: 1.5),
+          borderSide: const BorderSide(
+            color: AppColors.lightPrimary,
+            width: 1.5,
+          ),
         ),
         errorBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
@@ -220,7 +234,9 @@ class AppTheme {
               fontWeight: FontWeight.w700,
             );
           }
-          return textTheme.labelSmall?.copyWith(color: AppColors.lightTextMuted);
+          return textTheme.labelSmall?.copyWith(
+            color: AppColors.lightTextMuted,
+          );
         }),
       ),
     );

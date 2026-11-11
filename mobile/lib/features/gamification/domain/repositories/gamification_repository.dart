@@ -9,4 +9,3 @@ abstract class GamificationRepository {
   Future<UserProfile> awardXp(int amount, String reason);
   Future<StreakInfo> recordActivity();
 }
-

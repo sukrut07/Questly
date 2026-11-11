@@ -17,4 +17,3 @@ class AnalyticsData {
 abstract class AnalyticsRepository {
   Future<AnalyticsData> getSummary();
 }
-

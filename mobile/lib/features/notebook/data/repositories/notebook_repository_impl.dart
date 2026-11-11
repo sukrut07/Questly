@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/features/notebook/domain/models/note.dart';
 import 'package:questly/features/notebook/domain/repositories/notebook_repository.dart';
@@ -19,7 +20,9 @@ class NotebookRepositoryImpl implements NotebookRepository {
       if (jsonStr != null && jsonStr.isNotEmpty) {
         try {
           final list = jsonDecode(jsonStr) as List<dynamic>;
-          _notes.addAll(list.map((e) => Note.fromJson(e as Map<String, dynamic>)));
+          _notes.addAll(
+            list.map((e) => Note.fromJson(e as Map<String, dynamic>)),
+          );
           return;
         } catch (_) {}
       }
@@ -67,7 +70,11 @@ class NotebookRepositoryImpl implements NotebookRepository {
   }
 
   @override
-  Future<List<Note>> getNotes({String? folderId, String? tag, String? query}) async {
+  Future<List<Note>> getNotes({
+    String? folderId,
+    String? tag,
+    String? query,
+  }) async {
     return _notes.where((n) {
       if (n.isArchived) return false;
       if (folderId != null && n.folderId != folderId) return false;
@@ -79,12 +86,11 @@ class NotebookRepositoryImpl implements NotebookRepository {
         return matchTitle || matchContent;
       }
       return true;
-    }).toList()
-      ..sort((a, b) {
-        if (a.isPinned && !b.isPinned) return -1;
-        if (!a.isPinned && b.isPinned) return 1;
-        return b.updatedAt.compareTo(a.updatedAt);
-      });
+    }).toList()..sort((a, b) {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return b.updatedAt.compareTo(a.updatedAt);
+    });
   }
 
   @override
@@ -127,10 +133,30 @@ class NotebookRepositoryImpl implements NotebookRepository {
   @override
   Future<List<NotebookFolder>> getFolders() async {
     return const [
-      NotebookFolder(id: 'f_all', name: 'All Notes', colorHex: 0xFFB5FF55, iconName: 'all_inclusive'),
-      NotebookFolder(id: 'f_work', name: 'Engineering', colorHex: 0xFF9575F5, iconName: 'code'),
-      NotebookFolder(id: 'f_learning', name: 'Learning & DSA', colorHex: 0xFFB9A3FF, iconName: 'school'),
-      NotebookFolder(id: 'f_ideas', name: 'Ideas & Focus', colorHex: 0xFFFFCC66, iconName: 'lightbulb'),
+      NotebookFolder(
+        id: 'f_all',
+        name: 'All Notes',
+        colorHex: 0xFFB5FF55,
+        iconName: 'all_inclusive',
+      ),
+      NotebookFolder(
+        id: 'f_work',
+        name: 'Engineering',
+        colorHex: 0xFF9575F5,
+        iconName: 'code',
+      ),
+      NotebookFolder(
+        id: 'f_learning',
+        name: 'Learning & DSA',
+        colorHex: 0xFFB9A3FF,
+        iconName: 'school',
+      ),
+      NotebookFolder(
+        id: 'f_ideas',
+        name: 'Ideas & Focus',
+        colorHex: 0xFFFFCC66,
+        iconName: 'lightbulb',
+      ),
     ];
   }
 }

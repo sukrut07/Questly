@@ -13,12 +13,7 @@ enum FocusMode {
   int get defaultSeconds => defaultMinutes * 60;
 }
 
-enum TimerState {
-  idle,
-  running,
-  paused,
-  completed,
-}
+enum TimerState { idle, running, paused, completed }
 
 class FocusSession {
   final String id;
@@ -107,7 +102,9 @@ class FocusSession {
       startedAt: json['startedAt'] != null
           ? DateTime.tryParse(json['startedAt'] as String) ?? DateTime.now()
           : DateTime.now(),
-      endedAt: json['endedAt'] != null ? DateTime.tryParse(json['endedAt'] as String) : null,
+      endedAt: json['endedAt'] != null
+          ? DateTime.tryParse(json['endedAt'] as String)
+          : null,
       notes: json['notes'] as String? ?? '',
     );
   }

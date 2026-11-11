@@ -72,8 +72,14 @@ class RoadmapMilestone {
       description: json['description'] as String? ?? '',
       isCompleted: json['isCompleted'] as bool? ?? false,
       xpReward: (json['xpReward'] as num?)?.toInt() ?? 50,
-      deadline: json['deadline'] != null ? DateTime.tryParse(json['deadline'] as String) : null,
-      subtasks: (json['subtasks'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? const [],
+      deadline: json['deadline'] != null
+          ? DateTime.tryParse(json['deadline'] as String)
+          : null,
+      subtasks:
+          (json['subtasks'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const [],
       linkedQuestId: json['linkedQuestId'] as String?,
       linkedNoteId: json['linkedNoteId'] as String?,
     );
@@ -107,7 +113,8 @@ class Roadmap {
     return (done / milestones.length).clamp(0.0, 1.0);
   }
 
-  int get completedMilestonesCount => milestones.where((m) => m.isCompleted).length;
+  int get completedMilestonesCount =>
+      milestones.where((m) => m.isCompleted).length;
 
   int get totalXpReward => milestones.fold(0, (sum, m) => sum + m.xpReward);
 
@@ -157,9 +164,10 @@ class Roadmap {
           : DateTime.now(),
       targetCompletionDate: json['targetCompletionDate'] != null
           ? DateTime.tryParse(json['targetCompletionDate'] as String) ??
-              DateTime.now().add(const Duration(days: 90))
+                DateTime.now().add(const Duration(days: 90))
           : DateTime.now().add(const Duration(days: 90)),
-      milestones: (json['milestones'] as List<dynamic>?)
+      milestones:
+          (json['milestones'] as List<dynamic>?)
               ?.map((m) => RoadmapMilestone.fromJson(m as Map<String, dynamic>))
               .toList() ??
           const [],

@@ -26,10 +26,7 @@ class MainScaffold extends StatelessWidget {
         decoration: const BoxDecoration(
           color: AppColors.darkCard,
           border: Border(
-            top: BorderSide(
-              color: AppColors.darkBorder,
-              width: 1,
-            ),
+            top: BorderSide(color: AppColors.darkBorder, width: 1),
           ),
         ),
         child: SafeArea(
@@ -39,11 +36,41 @@ class MainScaffold extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'Home', selectedIndex),
-                _buildNavItem(1, Icons.flag_rounded, Icons.flag_outlined, 'Quests', selectedIndex),
-                _buildNavItem(2, Icons.insights_rounded, Icons.insights_outlined, 'Insights', selectedIndex),
-                _buildNavItem(3, Icons.edit_note_rounded, Icons.edit_note_outlined, 'Notebook', selectedIndex),
-                _buildNavItem(4, Icons.alt_route_rounded, Icons.alt_route_outlined, 'Roadmaps', selectedIndex),
+                _buildNavItem(
+                  0,
+                  Icons.home_rounded,
+                  Icons.home_outlined,
+                  'Home',
+                  selectedIndex,
+                ),
+                _buildNavItem(
+                  1,
+                  Icons.flag_rounded,
+                  Icons.flag_outlined,
+                  'Quests',
+                  selectedIndex,
+                ),
+                _buildNavItem(
+                  2,
+                  Icons.insights_rounded,
+                  Icons.insights_outlined,
+                  'Insights',
+                  selectedIndex,
+                ),
+                _buildNavItem(
+                  3,
+                  Icons.edit_note_rounded,
+                  Icons.edit_note_outlined,
+                  'Notebook',
+                  selectedIndex,
+                ),
+                _buildNavItem(
+                  4,
+                  Icons.alt_route_rounded,
+                  Icons.alt_route_outlined,
+                  'Roadmaps',
+                  selectedIndex,
+                ),
               ],
             ),
           ),
@@ -72,7 +99,9 @@ class MainScaffold extends StatelessWidget {
             Icon(
               isSelected ? selectedIcon : unselectedIcon,
               size: 24,
-              color: isSelected ? AppColors.limePrimary : AppColors.textTertiary,
+              color: isSelected
+                  ? AppColors.limePrimary
+                  : AppColors.textTertiary,
             ),
             const SizedBox(height: 3),
             Text(
@@ -81,7 +110,9 @@ class MainScaffold extends StatelessWidget {
                 fontFamily: GoogleFonts.inter().fontFamily,
                 fontSize: 10,
                 fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected ? AppColors.limePrimary : AppColors.textTertiary,
+                color: isSelected
+                    ? AppColors.limePrimary
+                    : AppColors.textTertiary,
               ),
             ),
           ],

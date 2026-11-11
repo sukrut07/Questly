@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -105,7 +106,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
           backgroundColor: AppColors.darkCard,
           title: Text(
             'FOCUS SESSION COMPLETE!',
-            style: AppTypography.titleLarge.copyWith(color: AppColors.limePrimary),
+            style: AppTypography.titleLarge.copyWith(
+              color: AppColors.limePrimary,
+            ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -117,7 +120,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
               ),
               const SizedBox(height: AppSpacing.md),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 8,
+                ),
                 decoration: BoxDecoration(
                   color: AppColors.limePrimary.withValues(alpha: 0.15),
                   borderRadius: BorderRadius.circular(8),
@@ -130,7 +136,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
                     const SizedBox(width: 8),
                     Text(
                       '+$xpEarned XP REWARDED',
-                      style: AppTypography.titleMedium.copyWith(color: AppColors.limePrimary),
+                      style: AppTypography.titleMedium.copyWith(
+                        color: AppColors.limePrimary,
+                      ),
                     ),
                   ],
                 ),
@@ -139,7 +147,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
           ),
           actions: [
             TextButton(
-              child: const Text('GREAT', style: TextStyle(color: AppColors.limePrimary)),
+              child: const Text(
+                'GREAT',
+                style: TextStyle(color: AppColors.limePrimary),
+              ),
               onPressed: () {
                 Navigator.pop(ctx);
                 _resetTimer();
@@ -160,7 +171,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
   @override
   Widget build(BuildContext context) {
     final totalSec = _selectedMode.defaultSeconds;
-    final progress = totalSec > 0 ? (1.0 - (_remainingSeconds / totalSec)).clamp(0.0, 1.0) : 0.0;
+    final progress = totalSec > 0
+        ? (1.0 - (_remainingSeconds / totalSec)).clamp(0.0, 1.0)
+        : 0.0;
 
     return Scaffold(
       backgroundColor: AppColors.darkBase,
@@ -178,12 +191,17 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                      icon: const Icon(
+                        Icons.close,
+                        color: AppColors.textPrimary,
+                      ),
                       onPressed: () => context.pop(),
                     ),
                     Text(
                       'DEEP FOCUS',
-                      style: AppTypography.titleMedium.copyWith(letterSpacing: 1.5),
+                      style: AppTypography.titleMedium.copyWith(
+                        letterSpacing: 1.5,
+                      ),
                     ),
                     const SizedBox(width: 48), // balance
                   ],
@@ -258,7 +276,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
                         value: progress,
                         strokeWidth: 10,
                         backgroundColor: AppColors.darkBorder,
-                        valueColor: const AlwaysStoppedAnimation(AppColors.limePrimary),
+                        valueColor: const AlwaysStoppedAnimation(
+                          AppColors.limePrimary,
+                        ),
                       ),
                     ),
 
@@ -296,9 +316,14 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    if (_timerState == TimerState.running || _timerState == TimerState.paused)
+                    if (_timerState == TimerState.running ||
+                        _timerState == TimerState.paused)
                       IconButton(
-                        icon: const Icon(Icons.refresh, color: AppColors.textTertiary, size: 28),
+                        icon: const Icon(
+                          Icons.refresh,
+                          color: AppColors.textTertiary,
+                          size: 28,
+                        ),
                         onPressed: _resetTimer,
                       ),
                     const SizedBox(width: AppSpacing.md),
@@ -312,7 +337,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen> {
                       )
                     else
                       QuestlyButton(
-                        text: _timerState == TimerState.paused ? 'RESUME' : 'START FOCUS',
+                        text: _timerState == TimerState.paused
+                            ? 'RESUME'
+                            : 'START FOCUS',
                         icon: Icons.play_arrow,
                         variant: QuestlyButtonVariant.primaryLime,
                         size: QuestlyButtonSize.large,

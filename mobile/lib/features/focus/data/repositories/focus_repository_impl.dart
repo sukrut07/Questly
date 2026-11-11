@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/features/focus/domain/models/focus_session.dart';
 import 'package:questly/features/focus/domain/repositories/focus_repository.dart';
@@ -19,7 +20,9 @@ class FocusRepositoryImpl implements FocusRepository {
       if (jsonStr != null && jsonStr.isNotEmpty) {
         try {
           final list = jsonDecode(jsonStr) as List<dynamic>;
-          _sessions.addAll(list.map((e) => FocusSession.fromJson(e as Map<String, dynamic>)));
+          _sessions.addAll(
+            list.map((e) => FocusSession.fromJson(e as Map<String, dynamic>)),
+          );
           return;
         } catch (_) {}
       }
@@ -38,7 +41,9 @@ class FocusRepositoryImpl implements FocusRepository {
           isCompleted: true,
           xpEarned: 120,
           startedAt: DateTime.now().subtract(const Duration(hours: 3)),
-          endedAt: DateTime.now().subtract(const Duration(hours: 2, minutes: 10)),
+          endedAt: DateTime.now().subtract(
+            const Duration(hours: 2, minutes: 10),
+          ),
           notes: 'Completed two-pointer and sliding window modules with zero distraction.',
         ),
         FocusSession(
@@ -51,7 +56,9 @@ class FocusRepositoryImpl implements FocusRepository {
           isCompleted: true,
           xpEarned: 60,
           startedAt: DateTime.now().subtract(const Duration(days: 1, hours: 4)),
-          endedAt: DateTime.now().subtract(const Duration(days: 1, hours: 3, minutes: 35)),
+          endedAt: DateTime.now().subtract(
+            const Duration(days: 1, hours: 3, minutes: 35),
+          ),
           notes: 'Wired up Riverpod state providers and Clean Architecture domain contracts.',
         ),
       ]);
@@ -67,7 +74,8 @@ class FocusRepositoryImpl implements FocusRepository {
 
   @override
   Future<List<FocusSession>> getRecentSessions() async {
-    return List.from(_sessions)..sort((a, b) => b.startedAt.compareTo(a.startedAt));
+    return List.from(_sessions)
+      ..sort((a, b) => b.startedAt.compareTo(a.startedAt));
   }
 
   @override
@@ -86,6 +94,6 @@ class FocusRepositoryImpl implements FocusRepository {
   Future<int> getTotalFocusMinutes() async {
     return _sessions
         .where((s) => s.isCompleted)
-        .fold(0, (sum, s) => sum + (s.elapsedSeconds ~/ 60));
+        .fold<int>(0, (sum, s) => sum + (s.elapsedSeconds ~/ 60));
   }
 }

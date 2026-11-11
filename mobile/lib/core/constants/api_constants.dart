@@ -35,4 +35,3 @@ class ApiConstants {
   static const String headerAccept = 'Accept';
   static const String contentTypeJson = 'application/json';
 }
-

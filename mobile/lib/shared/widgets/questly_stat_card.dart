@@ -5,7 +5,8 @@ import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 
 class QuestlyStatCard extends StatelessWidget {
-  final String label;
+  final String? label;
+  final String? title;
   final String value;
   final String? subtitle;
   final IconData? icon;
@@ -14,18 +15,25 @@ class QuestlyStatCard extends StatelessWidget {
 
   const QuestlyStatCard({
     super.key,
-    required this.label,
+    this.label,
+    this.title,
     required this.value,
     this.subtitle,
     this.icon,
     this.accentColor,
     this.onTap,
-  });
+  }) : assert(
+         label != null || title != null,
+         'Either label or title must be provided',
+       );
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final color = accentColor ?? (isDark ? AppColors.primaryLime : AppColors.lightPrimary);
+    final color =
+        accentColor ??
+        (isDark ? AppColors.primaryLime : AppColors.lightPrimary);
+    final displayLabel = (label ?? title ?? '').toUpperCase();
 
     return QuestlyCard(
       onTap: onTap,
@@ -38,17 +46,18 @@ class QuestlyStatCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                label.toUpperCase(),
+                displayLabel,
                 style: TextStyle(
                   fontFamily: GoogleFonts.oswald().fontFamily,
                   fontSize: 12,
                   fontWeight: FontWeight.w600,
                   letterSpacing: 0.8,
-                  color: isDark ? AppColors.textSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.textSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
-              if (icon != null)
-                Icon(icon, size: 16, color: color),
+              if (icon != null) Icon(icon, size: 16, color: color),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
@@ -59,7 +68,9 @@ class QuestlyStatCard extends StatelessWidget {
               fontSize: 26,
               fontWeight: FontWeight.w800,
               letterSpacing: -0.5,
-              color: isDark ? AppColors.textPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.textPrimary
+                  : AppColors.lightTextPrimary,
             ),
           ),
           if (subtitle != null) ...[

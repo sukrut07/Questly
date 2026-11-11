@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/features/roadmaps/domain/models/roadmap.dart';
 import 'package:questly/features/roadmaps/domain/repositories/roadmap_repository.dart';
@@ -19,7 +20,9 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
       if (jsonStr != null && jsonStr.isNotEmpty) {
         try {
           final list = jsonDecode(jsonStr) as List<dynamic>;
-          _roadmaps.addAll(list.map((e) => Roadmap.fromJson(e as Map<String, dynamic>)));
+          _roadmaps.addAll(
+            list.map((e) => Roadmap.fromJson(e as Map<String, dynamic>)),
+          );
           return;
         } catch (_) {}
       }
@@ -38,135 +41,180 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
   }
 
   static List<Roadmap> get _defaultRoadmaps => [
-        Roadmap(
-          id: 'roadmap_fullstack',
-          title: 'Full-Stack Modern Architect',
-          description: 'Master full-stack system development from frontend Next.js to Flutter mobile & scalable cloud backends.',
-          category: 'Software Engineering',
-          startDate: DateTime.now().subtract(const Duration(days: 30)),
-          targetCompletionDate: DateTime.now().add(const Duration(days: 90)),
-          milestones: [
-            RoadmapMilestone(
-              id: 'fs_1',
-              order: 1,
-              title: 'TypeScript & Modern React Patterns',
-              description: 'Server Components, Hooks architecture, Suspense and state management.',
-              isCompleted: true,
-              xpReward: 100,
-              subtasks: ['Server actions', 'Optimistic UI', 'State boundaries'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_2',
-              order: 2,
-              title: 'API Design & PostgreSQL Schema',
-              description: 'Normalized database design, indexing strategies and RESTful/tRPC protocols.',
-              isCompleted: true,
-              xpReward: 150,
-              subtasks: ['Connection pooling', 'Composite indexes', 'Foreign keys'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_3',
-              order: 3,
-              title: 'Flutter Mobile App Architecture',
-              description: 'Cross-platform reactive UI, Riverpod state injection, and Clean Architecture.',
-              isCompleted: true,
-              xpReward: 200,
-              subtasks: ['Riverpod 3 Notifiers', 'Custom painters', 'GoRouter shell'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_4',
-              order: 4,
-              title: 'Authentication & Session Security',
-              description: 'JWT rotation, Secure Storage, OAuth2 flows and CSRF protection.',
-              isCompleted: false,
-              xpReward: 175,
-              subtasks: ['Biometric auth', 'Token refresh interceptors', 'PKCE flow'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_5',
-              order: 5,
-              title: 'Distributed Caching & Redis',
-              description: 'Write-through vs read-through cache, TTL invalidation and rate limiters.',
-              isCompleted: false,
-              xpReward: 200,
-              subtasks: ['Sliding window limiter', 'Redis pub/sub', 'Cache stampede prevention'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_6',
-              order: 6,
-              title: 'Docker, CI/CD & Cloud Orchestration',
-              description: 'Containerized builds, GitHub Actions pipeline, and automated testing suites.',
-              isCompleted: false,
-              xpReward: 250,
-              subtasks: ['Multi-stage Docker builds', 'Fastlane mobile deploys', 'Zero-downtime rolling update'],
-            ),
-            RoadmapMilestone(
-              id: 'fs_7',
-              order: 7,
-              title: 'High-Scale Observability & Metrics',
-              description: 'Telemetry, structured tracing, and real-time crash alerting.',
-              isCompleted: false,
-              xpReward: 300,
-              subtasks: ['OpenTelemetry integration', 'Grafana alerts', 'APM tracing'],
-            ),
+    Roadmap(
+      id: 'roadmap_fullstack',
+      title: 'Full-Stack Modern Architect',
+      description: 'Master full-stack system development from frontend Next.js to Flutter mobile & scalable cloud backends.',
+      category: 'Software Engineering',
+      startDate: DateTime.now().subtract(const Duration(days: 30)),
+      targetCompletionDate: DateTime.now().add(const Duration(days: 90)),
+      milestones: const [
+        RoadmapMilestone(
+          id: 'fs_1',
+          order: 1,
+          title: 'TypeScript & Modern React Patterns',
+          description: 'Server Components, Hooks architecture, Suspense and state management.',
+          isCompleted: true,
+          xpReward: 100,
+          subtasks: ['Server actions', 'Optimistic UI', 'State boundaries'],
+        ),
+        RoadmapMilestone(
+          id: 'fs_2',
+          order: 2,
+          title: 'API Design & PostgreSQL Schema',
+          description: 'Normalized database design, indexing strategies and RESTful/tRPC protocols.',
+          isCompleted: true,
+          xpReward: 150,
+          subtasks: ['Connection pooling', 'Composite indexes', 'Foreign keys'],
+        ),
+        RoadmapMilestone(
+          id: 'fs_3',
+          order: 3,
+          title: 'Flutter Mobile App Architecture',
+          description: 'Cross-platform reactive UI, Riverpod state injection, and Clean Architecture.',
+          isCompleted: true,
+          xpReward: 200,
+          subtasks: [
+            'Riverpod 3 Notifiers',
+            'Custom painters',
+            'GoRouter shell',
           ],
         ),
-        Roadmap(
-          id: 'roadmap_dsa',
-          title: 'Algorithms & Data Structures Mastery',
-          description: 'High-frequency algorithmic paradigms, problem patterns and space-time optimization.',
-          category: 'Computer Science',
-          startDate: DateTime.now().subtract(const Duration(days: 14)),
-          targetCompletionDate: DateTime.now().add(const Duration(days: 60)),
-          milestones: [
-            RoadmapMilestone(
-              id: 'dsa_1',
-              order: 1,
-              title: 'Two Pointers & Sliding Window',
-              description: 'Linear array processing and sub-array optimization techniques.',
-              isCompleted: true,
-              xpReward: 120,
-              subtasks: ['Longest substring without repeat', 'Trapping rain water', 'Container with most water'],
-            ),
-            RoadmapMilestone(
-              id: 'dsa_2',
-              order: 2,
-              title: 'Monotonic Stacks & Binary Search',
-              description: 'Order-invariant queues, logarithmic search over answer spaces.',
-              isCompleted: true,
-              xpReward: 150,
-              subtasks: ['Search in rotated array', 'Next greater element', 'Largest rectangle in histogram'],
-            ),
-            RoadmapMilestone(
-              id: 'dsa_3',
-              order: 3,
-              title: 'Trees, Heaps & Priority Queues',
-              description: 'Binary trees, LCA, segment trees, and min-heap orderings.',
-              isCompleted: false,
-              xpReward: 180,
-              subtasks: ['Lowest Common Ancestor', 'Serialize & deserialize tree', 'Top K frequent elements'],
-            ),
-            RoadmapMilestone(
-              id: 'dsa_4',
-              order: 4,
-              title: 'Graph Traversal & Topological Sort',
-              description: 'BFS, DFS, Dijkstra shortest path and Kahn topological cycle detection.',
-              isCompleted: false,
-              xpReward: 220,
-              subtasks: ['Course Schedule I & II', 'Number of Islands', 'Cheapest flights within K stops'],
-            ),
-            RoadmapMilestone(
-              id: 'dsa_5',
-              order: 5,
-              title: 'Dynamic Programming & Memoization',
-              description: 'State formulation, transition functions, 1D & 2D knapsack variants.',
-              isCompleted: false,
-              xpReward: 250,
-              subtasks: ['Longest increasing subsequence', 'Coin Change', 'Word Break II'],
-            ),
+        RoadmapMilestone(
+          id: 'fs_4',
+          order: 4,
+          title: 'Authentication & Session Security',
+          description:
+              'JWT rotation, Secure Storage, OAuth2 flows and CSRF protection.',
+          isCompleted: false,
+          xpReward: 175,
+          subtasks: [
+            'Biometric auth',
+            'Token refresh interceptors',
+            'PKCE flow',
           ],
         ),
-      ];
+        RoadmapMilestone(
+          id: 'fs_5',
+          order: 5,
+          title: 'Distributed Caching & Redis',
+          description: 'Write-through vs read-through cache, TTL invalidation and rate limiters.',
+          isCompleted: false,
+          xpReward: 200,
+          subtasks: [
+            'Sliding window limiter',
+            'Redis pub/sub',
+            'Cache stampede prevention',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'fs_6',
+          order: 6,
+          title: 'Docker, CI/CD & Cloud Orchestration',
+          description: 'Containerized builds, GitHub Actions pipeline, and automated testing suites.',
+          isCompleted: false,
+          xpReward: 250,
+          subtasks: [
+            'Multi-stage Docker builds',
+            'Fastlane mobile deploys',
+            'Zero-downtime rolling update',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'fs_7',
+          order: 7,
+          title: 'High-Scale Observability & Metrics',
+          description:
+              'Telemetry, structured tracing, and real-time crash alerting.',
+          isCompleted: false,
+          xpReward: 300,
+          subtasks: [
+            'OpenTelemetry integration',
+            'Grafana alerts',
+            'APM tracing',
+          ],
+        ),
+      ],
+    ),
+    Roadmap(
+      id: 'roadmap_dsa',
+      title: 'Algorithms & Data Structures Mastery',
+      description: 'High-frequency algorithmic paradigms, problem patterns and space-time optimization.',
+      category: 'Computer Science',
+      startDate: DateTime.now().subtract(const Duration(days: 14)),
+      targetCompletionDate: DateTime.now().add(const Duration(days: 60)),
+      milestones: const [
+        RoadmapMilestone(
+          id: 'dsa_1',
+          order: 1,
+          title: 'Two Pointers & Sliding Window',
+          description:
+              'Linear array processing and sub-array optimization techniques.',
+          isCompleted: true,
+          xpReward: 120,
+          subtasks: [
+            'Longest substring without repeat',
+            'Trapping rain water',
+            'Container with most water',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'dsa_2',
+          order: 2,
+          title: 'Monotonic Stacks & Binary Search',
+          description:
+              'Order-invariant queues, logarithmic search over answer spaces.',
+          isCompleted: true,
+          xpReward: 150,
+          subtasks: [
+            'Search in rotated array',
+            'Next greater element',
+            'Largest rectangle in histogram',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'dsa_3',
+          order: 3,
+          title: 'Trees, Heaps & Priority Queues',
+          description:
+              'Binary trees, LCA, segment trees, and min-heap orderings.',
+          isCompleted: false,
+          xpReward: 180,
+          subtasks: [
+            'Lowest Common Ancestor',
+            'Serialize & deserialize tree',
+            'Top K frequent elements',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'dsa_4',
+          order: 4,
+          title: 'Graph Traversal & Topological Sort',
+          description: 'BFS, DFS, Dijkstra shortest path and Kahn topological cycle detection.',
+          isCompleted: false,
+          xpReward: 220,
+          subtasks: [
+            'Course Schedule I & II',
+            'Number of Islands',
+            'Cheapest flights within K stops',
+          ],
+        ),
+        RoadmapMilestone(
+          id: 'dsa_5',
+          order: 5,
+          title: 'Dynamic Programming & Memoization',
+          description: 'State formulation, transition functions, 1D & 2D knapsack variants.',
+          isCompleted: false,
+          xpReward: 250,
+          subtasks: [
+            'Longest increasing subsequence',
+            'Coin Change',
+            'Word Break II',
+          ],
+        ),
+      ],
+    ),
+  ];
 
   @override
   Future<List<Roadmap>> getRoadmaps() async {
@@ -228,10 +276,31 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
         startDate: DateTime.now(),
         targetCompletionDate: DateTime.now().add(const Duration(days: 90)),
         milestones: [
-          const RoadmapMilestone(order: 1, id: 't_ai_1', title: 'Vector Embeddings & Semantic Search', description: 'Cosine similarity, HNSW indexes and vector databases (Pinecone, Qdrant).'),
-          const RoadmapMilestone(order: 2, id: 't_ai_2', title: 'RAG Pipeline Architecture', description: 'Chunking strategies, hybrid search and re-ranking models.'),
-          const RoadmapMilestone(order: 3, id: 't_ai_3', title: 'Agent Frameworks & Tool Calling', description: 'ReAct pattern, LangGraph, tool schema execution and memory stores.'),
-          const RoadmapMilestone(order: 4, id: 't_ai_4', title: 'Evaluation & Prompt Optimization', description: 'Ragas evaluation framework, BLEU/ROUGE scoring, and hallucination guardrails.'),
+          const RoadmapMilestone(
+            order: 1,
+            id: 't_ai_1',
+            title: 'Vector Embeddings & Semantic Search',
+            description: 'Cosine similarity, HNSW indexes and vector databases (Pinecone, Qdrant).',
+          ),
+          const RoadmapMilestone(
+            order: 2,
+            id: 't_ai_2',
+            title: 'RAG Pipeline Architecture',
+            description:
+                'Chunking strategies, hybrid search and re-ranking models.',
+          ),
+          const RoadmapMilestone(
+            order: 3,
+            id: 't_ai_3',
+            title: 'Agent Frameworks & Tool Calling',
+            description: 'ReAct pattern, LangGraph, tool schema execution and memory stores.',
+          ),
+          const RoadmapMilestone(
+            order: 4,
+            id: 't_ai_4',
+            title: 'Evaluation & Prompt Optimization',
+            description: 'Ragas evaluation framework, BLEU/ROUGE scoring, and hallucination guardrails.',
+          ),
         ],
       ),
       Roadmap(
@@ -242,11 +311,40 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
         startDate: DateTime.now(),
         targetCompletionDate: DateTime.now().add(const Duration(days: 60)),
         milestones: [
-          const RoadmapMilestone(order: 1, id: 't_ex_1', title: 'Core Syllabus & Domain Mapping', description: 'Map exam domains and build foundational formula sheets.'),
-          const RoadmapMilestone(order: 2, id: 't_ex_2', title: 'High-Yield Topic Deep Dives', description: 'Cover top 40% weighted exam questions and case studies.'),
-          const RoadmapMilestone(order: 3, id: 't_ex_3', title: 'Full-Length Timed Mock 1', description: 'Identify knowledge gaps and speed bottlenecks under exam conditions.'),
-          const RoadmapMilestone(order: 4, id: 't_ex_4', title: 'Weak-Area Remediation', description: 'Target error log flashcards and high-difficulty problem sets.'),
-          const RoadmapMilestone(order: 5, id: 't_ex_5', title: 'Final Review & Confidence Pass', description: 'Comprehensive review with zero-distraction focus blocks.'),
+          const RoadmapMilestone(
+            order: 1,
+            id: 't_ex_1',
+            title: 'Core Syllabus & Domain Mapping',
+            description:
+                'Map exam domains and build foundational formula sheets.',
+          ),
+          const RoadmapMilestone(
+            order: 2,
+            id: 't_ex_2',
+            title: 'High-Yield Topic Deep Dives',
+            description:
+                'Cover top 40% weighted exam questions and case studies.',
+          ),
+          const RoadmapMilestone(
+            order: 3,
+            id: 't_ex_3',
+            title: 'Full-Length Timed Mock 1',
+            description: 'Identify knowledge gaps and speed bottlenecks under exam conditions.',
+          ),
+          const RoadmapMilestone(
+            order: 4,
+            id: 't_ex_4',
+            title: 'Weak-Area Remediation',
+            description:
+                'Target error log flashcards and high-difficulty problem sets.',
+          ),
+          const RoadmapMilestone(
+            order: 5,
+            id: 't_ex_5',
+            title: 'Final Review & Confidence Pass',
+            description:
+                'Comprehensive review with zero-distraction focus blocks.',
+          ),
         ],
       ),
     ];

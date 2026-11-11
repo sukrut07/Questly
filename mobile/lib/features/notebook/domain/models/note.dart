@@ -80,7 +80,9 @@ class Note {
       title: json['title'] as String? ?? 'Untitled Note',
       content: json['content'] as String? ?? '',
       folderId: json['folderId'] as String?,
-      tags: (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? const [],
+      tags:
+          (json['tags'] as List<dynamic>?)?.map((e) => e.toString()).toList() ??
+          const [],
       isPinned: json['isPinned'] as bool? ?? false,
       isArchived: json['isArchived'] as bool? ?? false,
       linkedQuestId: json['linkedQuestId'] as String?,

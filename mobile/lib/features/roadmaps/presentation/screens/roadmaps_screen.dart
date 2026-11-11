@@ -18,7 +18,8 @@ class RoadmapsScreen extends ConsumerStatefulWidget {
   ConsumerState<RoadmapsScreen> createState() => _RoadmapsScreenState();
 }
 
-class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTickerProviderStateMixin {
+class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
+    with SingleTickerProviderStateMixin {
   late TabController _tabController;
   List<Roadmap> _activeRoadmaps = [];
   List<Roadmap> _templates = [];
@@ -57,7 +58,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
       id: 'roadmap_${DateTime.now().millisecondsSinceEpoch}',
       startDate: DateTime.now(),
       targetCompletionDate: DateTime.now().add(const Duration(days: 90)),
-      milestones: template.milestones.map((m) => m.copyWith(isCompleted: false)).toList(),
+      milestones: template.milestones
+          .map((m) => m.copyWith(isCompleted: false))
+          .toList(),
     );
     await repo.saveRoadmap(newRoadmap);
     await _loadData();
@@ -102,11 +105,20 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 4,
+                            ),
                             decoration: BoxDecoration(
-                              color: AppColors.lavenderAccent.withValues(alpha: 0.15),
+                              color: AppColors.lavenderAccent.withValues(
+                                alpha: 0.15,
+                              ),
                               borderRadius: BorderRadius.circular(20),
-                              border: Border.all(color: AppColors.lavenderAccent.withValues(alpha: 0.4)),
+                              border: Border.all(
+                                color: AppColors.lavenderAccent.withValues(
+                                  alpha: 0.4,
+                                ),
+                              ),
                             ),
                             child: Text(
                               '${_activeRoadmaps.length} ACTIVE',
@@ -131,7 +143,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                         indicatorWeight: 3,
                         labelColor: AppColors.limePrimary,
                         unselectedLabelColor: AppColors.textSecondary,
-                        labelStyle: AppTypography.labelBold.copyWith(letterSpacing: 1.0),
+                        labelStyle: AppTypography.labelBold.copyWith(
+                          letterSpacing: 1.0,
+                        ),
                         unselectedLabelStyle: AppTypography.labelMedium,
                         dividerColor: AppColors.darkBorder,
                         tabs: const [
@@ -146,14 +160,13 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
             ],
             body: _isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(color: AppColors.limePrimary),
+                    child: CircularProgressIndicator(
+                      color: AppColors.limePrimary,
+                    ),
                   )
                 : TabBarView(
                     controller: _tabController,
-                    children: [
-                      _buildActiveRoadmapsTab(),
-                      _buildTemplatesTab(),
-                    ],
+                    children: [_buildActiveRoadmapsTab(), _buildTemplatesTab()],
                   ),
           ),
         ),
@@ -166,7 +179,8 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
           'NEW ROADMAP',
           style: AppTypography.labelBold.copyWith(color: AppColors.darkBase),
         ),
-        onPressed: () => context.push(RoutePaths.createRoadmap).then((_) => _loadData()),
+        onPressed: () =>
+            context.push(RoutePaths.createRoadmap).then((_) => _loadData()),
       ),
     );
   }
@@ -177,16 +191,24 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(Icons.alt_route, size: 54, color: AppColors.textTertiary),
+            const Icon(
+              Icons.alt_route,
+              size: 54,
+              color: AppColors.textTertiary,
+            ),
             const SizedBox(height: AppSpacing.md),
             Text(
               'NO ACTIVE ROADMAPS',
-              style: AppTypography.headlineSmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.headlineSmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Select a template or create your own custom milestone path.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textTertiary,
+              ),
             ),
           ],
         ),
@@ -208,7 +230,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
             borderColor: isComplete
                 ? AppColors.limePrimary.withValues(alpha: 0.5)
                 : AppColors.darkBorder,
-            onTap: () => context.push(RoutePaths.roadmapDetail.replaceAll(':id', rm.id)).then((_) => _loadData()),
+            onTap: () => context
+                .push(RoutePaths.roadmapDetail.replaceAll(':id', rm.id))
+                .then((_) => _loadData()),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -216,7 +240,10 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.lavenderAccent.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
@@ -247,7 +274,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                   rm.description,
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
 
@@ -257,11 +286,15 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                   children: [
                     Text(
                       '${rm.completedMilestonesCount}/${rm.milestones.length} MILESTONES',
-                      style: AppTypography.captionBold.copyWith(color: AppColors.textSecondary),
+                      style: AppTypography.captionBold.copyWith(
+                        color: AppColors.textSecondary,
+                      ),
                     ),
                     Text(
                       '${(progress * 100).toInt()}%',
-                      style: AppTypography.captionBold.copyWith(color: AppColors.limePrimary),
+                      style: AppTypography.captionBold.copyWith(
+                        color: AppColors.limePrimary,
+                      ),
                     ),
                   ],
                 ),
@@ -272,7 +305,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                     value: progress,
                     minHeight: 6,
                     backgroundColor: AppColors.darkBorder,
-                    valueColor: const AlwaysStoppedAnimation(AppColors.limePrimary),
+                    valueColor: const AlwaysStoppedAnimation(
+                      AppColors.limePrimary,
+                    ),
                   ),
                 ),
                 const SizedBox(height: AppSpacing.md),
@@ -321,7 +356,10 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8,
+                        vertical: 3,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.limePrimary.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(12),
@@ -350,7 +388,9 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen> with SingleTick
                 const SizedBox(height: 4),
                 Text(
                   t.description,
-                  style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                  style: AppTypography.bodySmall.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
                 ),
                 const SizedBox(height: AppSpacing.md),
                 QuestlyButton(

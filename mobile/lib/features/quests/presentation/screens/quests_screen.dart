@@ -5,11 +5,13 @@ import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
+import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
-import 'package:questly/shared/widgets/app_card.dart';
 import 'package:questly/shared/widgets/empty_state.dart';
-import 'package:questly/shared/widgets/stat_badge.dart';
+import 'package:questly/shared/widgets/questly_button.dart';
+import 'package:questly/shared/widgets/questly_card.dart';
+import 'package:questly/shared/widgets/questly_grid_background.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
   const QuestsScreen({super.key});
@@ -23,40 +25,58 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final questRepo = ref.watch(questRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quest Journal'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add_rounded),
-            onPressed: () => context.pushNamed(RouteNames.createQuest),
-            tooltip: 'Create Quest',
-          ),
-        ],
-      ),
-      body: FutureBuilder<List<Quest>>(
-        future: questRepo.getQuests(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          final allQuests = snapshot.data ?? [];
-          final filtered = _selectedCategory == null
-              ? allQuests
-              : allQuests
-                    .where((q) => q.category == _selectedCategory)
-                    .toList();
-
-          return Column(
+      backgroundColor: AppColors.darkBase,
+      body: QuestlyGridBackground(
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Header
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.md,
+                  AppSpacing.xs,
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'QUESTS & TASKS',
+                          style: AppTypography.displayMedium.copyWith(
+                            letterSpacing: 1.2,
+                          ),
+                        ),
+                        Text(
+                          'Daily missions, priorities & focus challenges',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.add,
+                        color: AppColors.limePrimary,
+                        size: 28,
+                      ),
+                      onPressed: () => context.push(RoutePaths.createQuest),
+                    ),
+                  ],
+                ),
+              ),
+
               // Category filter pills
               SizedBox(
-                height: 48,
+                height: 44,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(
@@ -64,38 +84,69 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                   ),
                   children: [
                     FilterChip(
-                      label: const Text('All Categories'),
+                      label: const Text('ALL CATEGORIES'),
+                      labelStyle: TextStyle(
+                        color: _selectedCategory == null
+                            ? AppColors.darkBase
+                            : AppColors.textPrimary,
+                        fontWeight: _selectedCategory == null
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                        fontSize: 11,
+                      ),
                       selected: _selectedCategory == null,
                       onSelected: (_) =>
                           setState(() => _selectedCategory = null),
-                      backgroundColor: isDark
-                          ? AppColors.darkCardSurface
-                          : AppColors.lightCardSurface,
-                      selectedColor: AppColors.darkPrimary.withValues(
-                        alpha: 0.25,
+                      backgroundColor: AppColors.darkCard,
+                      selectedColor: AppColors.limePrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(
+                          color: _selectedCategory == null
+                              ? AppColors.limePrimary
+                              : AppColors.darkBorder,
+                        ),
                       ),
-                      checkmarkColor: AppColors.darkPrimary,
+                      showCheckmark: false,
                     ),
                     const SizedBox(width: AppSpacing.xs),
                     ...QuestCategory.values.map((cat) {
+                      final isSelected = _selectedCategory == cat;
                       return Padding(
                         padding: const EdgeInsets.only(right: AppSpacing.xs),
                         child: FilterChip(
-                          avatar: Icon(cat.icon, size: 16),
-                          label: Text(cat.displayName),
-                          selected: _selectedCategory == cat,
-                          onSelected: (_) => setState(() {
-                            _selectedCategory = _selectedCategory == cat
-                                ? null
-                                : cat;
-                          }),
-                          backgroundColor: isDark
-                              ? AppColors.darkCardSurface
-                              : AppColors.lightCardSurface,
-                          selectedColor: AppColors.darkPrimary.withValues(
-                            alpha: 0.25,
+                          avatar: Icon(
+                            cat.icon,
+                            size: 14,
+                            color: isSelected
+                                ? AppColors.darkBase
+                                : AppColors.textPrimary,
                           ),
-                          checkmarkColor: AppColors.darkPrimary,
+                          label: Text(cat.displayName.toUpperCase()),
+                          labelStyle: TextStyle(
+                            color: isSelected
+                                ? AppColors.darkBase
+                                : AppColors.textPrimary,
+                            fontWeight: isSelected
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            fontSize: 11,
+                          ),
+                          selected: isSelected,
+                          onSelected: (_) => setState(() {
+                            _selectedCategory = isSelected ? null : cat;
+                          }),
+                          backgroundColor: AppColors.darkCard,
+                          selectedColor: AppColors.limePrimary,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                              color: isSelected
+                                  ? AppColors.limePrimary
+                                  : AppColors.darkBorder,
+                            ),
+                          ),
+                          showCheckmark: false,
                         ),
                       );
                     }),
@@ -107,100 +158,166 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
 
               // List of Quests
               Expanded(
-                child: filtered.isEmpty
-                    ? EmptyState(
+                child: FutureBuilder<List<Quest>>(
+                  future: questRepo.getQuests(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(
+                          color: AppColors.limePrimary,
+                        ),
+                      );
+                    }
+
+                    final allQuests = snapshot.data ?? [];
+                    final filtered = _selectedCategory == null
+                        ? allQuests
+                        : allQuests
+                              .where((q) => q.category == _selectedCategory)
+                              .toList();
+
+                    if (filtered.isEmpty) {
+                      return EmptyState(
                         icon: Icons.explore_off_rounded,
-                        title: 'No Quests Found',
-                        description: 'Create a new quest to begin your productivity adventure!',
-                        actionLabel: 'Create Quest',
-                        onAction: () =>
-                            context.pushNamed(RouteNames.createQuest),
-                      )
-                    : ListView.separated(
-                        padding: AppSpacing.screenPadding,
-                        itemCount: filtered.length,
-                        separatorBuilder: (context, index) =>
-                            const SizedBox(height: AppSpacing.sm),
-                        itemBuilder: (context, index) {
-                          final quest = filtered[index];
-                          return AppCard(
-                            onTap: () => context.pushNamed(
-                              RouteNames.questDetail,
-                              pathParameters: {'id': quest.id},
+                        title: 'NO QUESTS FOUND',
+                        description: 'Create a new mission to begin your productivity adventure!',
+                        actionLabel: 'NEW QUEST',
+                        onAction: () => context.push(RoutePaths.createQuest),
+                      );
+                    }
+
+                    return ListView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.all(AppSpacing.md),
+                      itemCount: filtered.length,
+                      itemBuilder: (context, index) {
+                        final quest = filtered[index];
+                        final completedSubtasks = quest.subtasks
+                            .where((s) => s.isCompleted)
+                            .length;
+                        final totalSubtasks = quest.subtasks.length;
+                        final isDone = quest.status == QuestStatus.completed;
+
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
+                          child: QuestlyCard(
+                            borderColor: isDone
+                                ? AppColors.limePrimary.withValues(alpha: 0.4)
+                                : AppColors.darkBorder,
+                            onTap: () => context.push(
+                              RoutePaths.questDetail.replaceAll(
+                                ':id',
+                                quest.id,
+                              ),
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Icon(
-                                      quest.category.icon,
-                                      size: 18,
-                                      color: isDark
-                                          ? AppColors.darkPrimary
-                                          : AppColors.lightPrimary,
+                                    Row(
+                                      children: [
+                                        Icon(
+                                          quest.category.icon,
+                                          size: 16,
+                                          color: AppColors.limePrimary,
+                                        ),
+                                        const SizedBox(width: 6),
+                                        Text(
+                                          quest.category.displayName
+                                              .toUpperCase(),
+                                          style: AppTypography.captionBold
+                                              .copyWith(
+                                                color: AppColors.limePrimary,
+                                                letterSpacing: 1.0,
+                                              ),
+                                        ),
+                                      ],
                                     ),
-                                    const SizedBox(width: AppSpacing.xs),
-                                    Expanded(
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8,
+                                        vertical: 2,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.limePrimary.withValues(
+                                          alpha: 0.15,
+                                        ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
                                       child: Text(
-                                        quest.title,
-                                        style: theme.textTheme.titleMedium
-                                            ?.copyWith(
-                                              fontWeight: FontWeight.w700,
-                                              color: isDark
-                                                  ? AppColors.darkTextPrimary
-                                                  : AppColors.lightTextPrimary,
+                                        '+${quest.xpReward} XP',
+                                        style: AppTypography.captionBold
+                                            .copyWith(
+                                              color: AppColors.limePrimary,
                                             ),
                                       ),
                                     ),
-                                    StatBadge(
-                                      label: '+${quest.xpReward} XP',
-                                      color: AppColors.darkAccent,
-                                    ),
                                   ],
                                 ),
+                                const SizedBox(height: AppSpacing.xs),
+                                Text(
+                                  quest.title.toUpperCase(),
+                                  style: AppTypography.titleMedium.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    decoration: isDone
+                                        ? TextDecoration.lineThrough
+                                        : null,
+                                  ),
+                                ),
                                 if (quest.description.isNotEmpty) ...[
-                                  const SizedBox(height: AppSpacing.xs),
+                                  const SizedBox(height: 4),
                                   Text(
                                     quest.description,
-                                    style: theme.textTheme.bodyMedium?.copyWith(
-                                      color: isDark
-                                          ? AppColors.darkTextSecondary
-                                          : AppColors.lightTextSecondary,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: AppTypography.bodySmall.copyWith(
+                                      color: AppColors.textSecondary,
                                     ),
                                   ),
                                 ],
                                 const SizedBox(height: AppSpacing.sm),
                                 Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
-                                    StatBadge(
-                                      label: quest.difficulty.displayName,
-                                      color: quest.difficulty.badgeColor,
-                                    ),
-                                    const SizedBox(width: AppSpacing.xs),
-                                    StatBadge(
-                                      label: quest.status.displayName,
-                                      color:
-                                          quest.status == QuestStatus.completed
-                                          ? AppColors.darkSuccess
-                                          : AppColors.darkTextMuted,
-                                    ),
-                                    const Spacer(),
                                     Text(
-                                      '${quest.subtasks.where((s) => s.isCompleted).length}/${quest.subtasks.length} tasks',
-                                      style: theme.textTheme.bodySmall,
+                                      '$completedSubtasks/$totalSubtasks SUBTASKS',
+                                      style: AppTypography.captionBold.copyWith(
+                                        color: AppColors.textTertiary,
+                                        fontSize: 11,
+                                      ),
+                                    ),
+                                    QuestlyButton(
+                                      text: 'FOCUS',
+                                      icon: Icons.timer_outlined,
+                                      variant: QuestlyButtonVariant.darkOutline,
+                                      size: QuestlyButtonSize.small,
+                                      onPressed: () =>
+                                          context.push(RoutePaths.focus),
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                        );
+                      },
+                    );
+                  },
+                ),
               ),
             ],
-          );
-        },
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.limePrimary,
+        foregroundColor: AppColors.darkBase,
+        child: const Icon(Icons.add, size: 28),
+        onPressed: () => context.push(RoutePaths.createQuest),
       ),
     );
   }

@@ -3,9 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
+import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/core/utils/date_utils.dart';
 import 'package:questly/shared/models/user_profile.dart';
-import 'package:questly/shared/widgets/stat_badge.dart';
+import 'package:questly/shared/widgets/questly_xp_indicator.dart';
 
 class DashboardHeader extends StatelessWidget {
   final UserProfile profile;
@@ -14,61 +15,64 @@ class DashboardHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final greeting = AppDateUtils.getGreeting();
 
     return Row(
       children: [
-        // Avatar with level badge ring
-        Stack(
-          clipBehavior: Clip.none,
-          children: [
-            Container(
-              width: 50,
-              height: 50,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: AppColors.primaryGradient,
-                border: Border.all(
-                  color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
-                  width: 2,
-                ),
-              ),
-              child: const Center(
-                child: Icon(
-                  Icons.person_rounded,
-                  color: Colors.white,
-                  size: 28,
-                ),
-              ),
-            ),
-            Positioned(
-              bottom: -4,
-              right: -4,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        // Avatar with level badge ring (tapping opens Profile)
+        GestureDetector(
+          onTap: () => context.push(RoutePaths.profile),
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Container(
+                width: 48,
+                height: 48,
                 decoration: BoxDecoration(
-                  color: AppColors.darkAccent,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
-                  border: Border.all(
-                    color: isDark
-                        ? AppColors.darkBackground
-                        : AppColors.lightBackground,
-                    width: 1.5,
-                  ),
+                  shape: BoxShape.circle,
+                  color: AppColors.darkCard,
+                  border: Border.all(color: AppColors.limePrimary, width: 2),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.limePrimary.withValues(alpha: 0.3),
+                      blurRadius: 8,
+                      spreadRadius: 1,
+                    ),
+                  ],
                 ),
-                child: Text(
-                  'L${profile.level}',
-                  style: theme.textTheme.labelSmall?.copyWith(
-                    color: Colors.black,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 10,
+                child: const Center(
+                  child: Icon(
+                    Icons.person_rounded,
+                    color: AppColors.limePrimary,
+                    size: 26,
                   ),
                 ),
               ),
-            ),
-          ],
+              Positioned(
+                bottom: -2,
+                right: -2,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 5,
+                    vertical: 1,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AppColors.lavenderAccent,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: AppColors.darkBase, width: 1.5),
+                  ),
+                  child: Text(
+                    'L${profile.level}',
+                    style: const TextStyle(
+                      color: AppColors.darkBase,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 9,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
         const SizedBox(width: AppSpacing.sm),
 
@@ -79,20 +83,17 @@ class DashboardHeader extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                '$greeting,',
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: isDark
-                      ? AppColors.darkTextSecondary
-                      : AppColors.lightTextSecondary,
+                greeting.toUpperCase(),
+                style: AppTypography.captionBold.copyWith(
+                  color: AppColors.lavenderAccent,
+                  letterSpacing: 1.2,
                 ),
               ),
               Text(
-                profile.displayName,
-                style: theme.textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.w700,
-                  color: isDark
-                      ? AppColors.darkTextPrimary
-                      : AppColors.lightTextPrimary,
+                profile.displayName.toUpperCase(),
+                style: AppTypography.titleLarge.copyWith(
+                  letterSpacing: 0.8,
+                  fontWeight: FontWeight.bold,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -101,23 +102,21 @@ class DashboardHeader extends StatelessWidget {
           ),
         ),
 
-        // Stage Badge
-        StatBadge(
-          label: profile.currentStage.stageName,
-          icon: Icons.shield_rounded,
-          color: AppColors.darkPrimary,
+        // Matiks-style XP Pill
+        QuestlyXPIndicator(
+          currentXp: profile.totalXp,
+          level: profile.level,
+          compact: true,
         ),
         const SizedBox(width: AppSpacing.xs),
 
         // Notification Bell Icon Button
         IconButton(
-          icon: Icon(
+          icon: const Icon(
             Icons.notifications_none_rounded,
-            color: isDark
-                ? AppColors.darkTextPrimary
-                : AppColors.lightTextPrimary,
+            color: AppColors.textPrimary,
           ),
-          onPressed: () => context.pushNamed(RouteNames.notifications),
+          onPressed: () => context.push(RoutePaths.notifications),
           tooltip: 'Notifications',
         ),
       ],

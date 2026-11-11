@@ -4,11 +4,13 @@ import 'package:questly/app/theme/app_colors.dart';
 class QuestlyGridBackground extends StatelessWidget {
   final Widget child;
   final bool showGrid;
+  final double gridStep;
 
   const QuestlyGridBackground({
     super.key,
     required this.child,
     this.showGrid = true,
+    this.gridStep = 32.0,
   });
 
   @override
@@ -24,7 +26,7 @@ class QuestlyGridBackground extends StatelessWidget {
       children: [
         Positioned.fill(
           child: CustomPaint(
-            painter: _GridPatternPainter(gridColor: gridColor),
+            painter: _GridPatternPainter(gridColor: gridColor, step: gridStep),
           ),
         ),
         child,
@@ -37,10 +39,7 @@ class _GridPatternPainter extends CustomPainter {
   final Color gridColor;
   final double step;
 
-  const _GridPatternPainter({
-    required this.gridColor,
-    this.step = 32.0,
-  });
+  const _GridPatternPainter({required this.gridColor, required this.step});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -60,6 +59,7 @@ class _GridPatternPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant _GridPatternPainter oldDelegate) =>
-      oldDelegate.gridColor != gridColor || oldDelegate.step != step;
+  bool shouldRepaint(covariant _GridPatternPainter oldDelegate) {
+    return oldDelegate.gridColor != gridColor || oldDelegate.step != step;
+  }
 }

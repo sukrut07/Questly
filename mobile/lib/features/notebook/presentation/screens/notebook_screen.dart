@@ -89,7 +89,9 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
     );
     final saved = await repo.saveNote(newNote);
     if (mounted) {
-      context.push(RoutePaths.noteEditor.replaceAll(':id', saved.id)).then((_) => _loadData());
+      context
+          .push(RoutePaths.noteEditor.replaceAll(':id', saved.id))
+          .then((_) => _loadData());
     }
   }
 
@@ -118,16 +120,23 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                       children: [
                         Text(
                           'NOTEBOOK',
-                          style: AppTypography.displayMedium.copyWith(letterSpacing: 1.2),
+                          style: AppTypography.displayMedium.copyWith(
+                            letterSpacing: 1.2,
+                          ),
                         ),
                         Text(
                           'Capture insights, checklists & quest-linked notes',
-                          style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.note_add, color: AppColors.limePrimary),
+                      icon: const Icon(
+                        Icons.note_add,
+                        color: AppColors.limePrimary,
+                      ),
                       onPressed: _createQuickNote,
                     ),
                   ],
@@ -136,17 +145,28 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
 
               // Search Bar
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
                 child: TextField(
                   controller: _searchController,
                   style: const TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     hintText: 'Search notes, tags, or concepts...',
                     hintStyle: const TextStyle(color: AppColors.textTertiary),
-                    prefixIcon: const Icon(Icons.search, color: AppColors.textTertiary, size: 20),
+                    prefixIcon: const Icon(
+                      Icons.search,
+                      color: AppColors.textTertiary,
+                      size: 20,
+                    ),
                     suffixIcon: _searchController.text.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.clear, color: AppColors.textTertiary, size: 18),
+                            icon: const Icon(
+                              Icons.clear,
+                              color: AppColors.textTertiary,
+                              size: 18,
+                            ),
                             onPressed: () {
                               _searchController.clear();
                               _filterNotes();
@@ -155,7 +175,10 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                         : null,
                     filled: true,
                     fillColor: AppColors.darkCard,
-                    contentPadding: const EdgeInsets.symmetric(vertical: 0, horizontal: 12),
+                    contentPadding: const EdgeInsets.symmetric(
+                      vertical: 0,
+                      horizontal: 12,
+                    ),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: AppColors.darkBorder),
@@ -167,10 +190,14 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               // Folder chips row
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: AppSpacing.xs),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppSpacing.md,
+                  vertical: AppSpacing.xs,
+                ),
                 child: Row(
                   children: _folders.map((folder) {
-                    final isSelected = (_selectedFolderId == null && folder.id == 'f_all') ||
+                    final isSelected =
+                        (_selectedFolderId == null && folder.id == 'f_all') ||
                         _selectedFolderId == folder.id;
                     return Padding(
                       padding: const EdgeInsets.only(right: 8),
@@ -178,8 +205,12 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                         selected: isSelected,
                         label: Text(folder.name),
                         labelStyle: TextStyle(
-                          color: isSelected ? AppColors.darkBase : AppColors.textPrimary,
-                          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                          color: isSelected
+                              ? AppColors.darkBase
+                              : AppColors.textPrimary,
+                          fontWeight: isSelected
+                              ? FontWeight.bold
+                              : FontWeight.normal,
                           fontSize: 12,
                         ),
                         selectedColor: AppColors.limePrimary,
@@ -187,7 +218,9 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20),
                           side: BorderSide(
-                            color: isSelected ? AppColors.limePrimary : AppColors.darkBorder,
+                            color: isSelected
+                                ? AppColors.limePrimary
+                                : AppColors.darkBorder,
                           ),
                         ),
                         showCheckmark: false,
@@ -209,125 +242,161 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
               Expanded(
                 child: _isLoading
                     ? const Center(
-                        child: CircularProgressIndicator(color: AppColors.limePrimary),
+                        child: CircularProgressIndicator(
+                          color: AppColors.limePrimary,
+                        ),
                       )
                     : _notes.isEmpty
-                        ? Center(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Icon(Icons.edit_note, size: 54, color: AppColors.textTertiary),
-                                const SizedBox(height: AppSpacing.md),
-                                Text(
-                                  'NO NOTES FOUND',
-                                  style: AppTypography.headlineSmall.copyWith(color: AppColors.textSecondary),
-                                ),
-                                const SizedBox(height: AppSpacing.xs),
-                                Text(
-                                  'Tap the button below to capture your first note.',
-                                  style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
-                                ),
-                              ],
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Icon(
+                              Icons.edit_note,
+                              size: 54,
+                              color: AppColors.textTertiary,
                             ),
-                          )
-                        : ListView.builder(
-                            physics: const BouncingScrollPhysics(),
-                            padding: const EdgeInsets.all(AppSpacing.md),
-                            itemCount: _notes.length,
-                            itemBuilder: (context, index) {
-                              final note = _notes[index];
-                              return Padding(
-                                padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                                child: QuestlyCard(
-                                  borderColor: note.isPinned
-                                      ? AppColors.lavenderAccent.withValues(alpha: 0.4)
-                                      : AppColors.darkBorder,
-                                  onTap: () {
-                                    context
-                                        .push(RoutePaths.noteEditor.replaceAll(':id', note.id))
-                                        .then((_) => _loadData());
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                            const SizedBox(height: AppSpacing.md),
+                            Text(
+                              'NO NOTES FOUND',
+                              style: AppTypography.headlineSmall.copyWith(
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: AppSpacing.xs),
+                            Text(
+                              'Tap the button below to capture your first note.',
+                              style: AppTypography.bodySmall.copyWith(
+                                color: AppColors.textTertiary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        physics: const BouncingScrollPhysics(),
+                        padding: const EdgeInsets.all(AppSpacing.md),
+                        itemCount: _notes.length,
+                        itemBuilder: (context, index) {
+                          final note = _notes[index];
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                              bottom: AppSpacing.sm,
+                            ),
+                            child: QuestlyCard(
+                              borderColor: note.isPinned
+                                  ? AppColors.lavenderAccent.withValues(
+                                      alpha: 0.4,
+                                    )
+                                  : AppColors.darkBorder,
+                              onTap: () {
+                                context
+                                    .push(
+                                      RoutePaths.noteEditor.replaceAll(
+                                        ':id',
+                                        note.id,
+                                      ),
+                                    )
+                                    .then((_) => _loadData());
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Expanded(
-                                            child: Text(
-                                              note.title,
-                                              style: AppTypography.titleMedium.copyWith(
+                                      Expanded(
+                                        child: Text(
+                                          note.title,
+                                          style: AppTypography.titleMedium
+                                              .copyWith(
                                                 fontWeight: FontWeight.bold,
                                               ),
-                                              maxLines: 1,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            icon: Icon(
-                                              note.isPinned ? Icons.push_pin : Icons.push_pin_outlined,
-                                              size: 18,
-                                              color: note.isPinned
-                                                  ? AppColors.lavenderAccent
-                                                  : AppColors.textTertiary,
-                                            ),
-                                            onPressed: () => _togglePin(note.id),
-                                          ),
-                                        ],
-                                      ),
-                                      if (note.content.isNotEmpty) ...[
-                                        const SizedBox(height: 4),
-                                        Text(
-                                          note.content,
-                                          maxLines: 2,
+                                          maxLines: 1,
                                           overflow: TextOverflow.ellipsis,
-                                          style: AppTypography.bodySmall.copyWith(
-                                            color: AppColors.textSecondary,
-                                          ),
                                         ),
-                                      ],
-                                      const SizedBox(height: AppSpacing.sm),
-                                      Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          if (note.tags.isNotEmpty)
-                                            Wrap(
-                                              spacing: 6,
-                                              children: note.tags.take(3).map((tag) {
-                                                return Container(
-                                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                                  decoration: BoxDecoration(
-                                                    color: AppColors.darkBase,
-                                                    borderRadius: BorderRadius.circular(6),
-                                                    border: Border.all(color: AppColors.darkBorder),
-                                                  ),
-                                                  child: Text(
-                                                    '#$tag',
-                                                    style: AppTypography.caption.copyWith(
-                                                      color: AppColors.limePrimary,
-                                                      fontSize: 10,
-                                                    ),
-                                                  ),
-                                                );
-                                              }).toList(),
-                                            )
-                                          else
-                                            const SizedBox.shrink(),
-                                          Text(
-                                            DateFormat('MMM d, h:mm a').format(note.updatedAt),
-                                            style: AppTypography.caption.copyWith(
-                                              color: AppColors.textTertiary,
-                                              fontSize: 11,
-                                            ),
-                                          ),
-                                        ],
+                                      ),
+                                      IconButton(
+                                        icon: Icon(
+                                          note.isPinned
+                                              ? Icons.push_pin
+                                              : Icons.push_pin_outlined,
+                                          size: 18,
+                                          color: note.isPinned
+                                              ? AppColors.lavenderAccent
+                                              : AppColors.textTertiary,
+                                        ),
+                                        onPressed: () => _togglePin(note.id),
                                       ),
                                     ],
                                   ),
-                                ),
-                              );
-                            },
-                          ),
+                                  if (note.content.isNotEmpty) ...[
+                                    const SizedBox(height: 4),
+                                    Text(
+                                      note.content,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: AppTypography.bodySmall.copyWith(
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                  const SizedBox(height: AppSpacing.sm),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      if (note.tags.isNotEmpty)
+                                        Wrap(
+                                          spacing: 6,
+                                          children: note.tags.take(3).map((
+                                            tag,
+                                          ) {
+                                            return Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 6,
+                                                    vertical: 2,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: AppColors.darkBase,
+                                                borderRadius:
+                                                    BorderRadius.circular(6),
+                                                border: Border.all(
+                                                  color: AppColors.darkBorder,
+                                                ),
+                                              ),
+                                              child: Text(
+                                                '#$tag',
+                                                style: AppTypography.caption
+                                                    .copyWith(
+                                                      color:
+                                                          AppColors.limePrimary,
+                                                      fontSize: 10,
+                                                    ),
+                                              ),
+                                            );
+                                          }).toList(),
+                                        )
+                                      else
+                                        const SizedBox.shrink(),
+                                      Text(
+                                        DateFormat('MMM d, h:mm a')
+                                            .format(note.updatedAt),
+                                        style: AppTypography.caption.copyWith(
+                                          color: AppColors.textTertiary,
+                                          fontSize: 11,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
               ),
             ],
           ),
@@ -336,8 +405,8 @@ class _NotebookScreenState extends ConsumerState<NotebookScreen> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: AppColors.limePrimary,
         foregroundColor: AppColors.darkBase,
-        child: const Icon(Icons.add, size: 28),
         onPressed: _createQuickNote,
+        child: const Icon(Icons.add, size: 28),
       ),
     );
   }

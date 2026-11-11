@@ -13,7 +13,8 @@ class CreateRoadmapScreen extends ConsumerStatefulWidget {
   const CreateRoadmapScreen({super.key});
 
   @override
-  ConsumerState<CreateRoadmapScreen> createState() => _CreateRoadmapScreenState();
+  ConsumerState<CreateRoadmapScreen> createState() =>
+      _CreateRoadmapScreenState();
 }
 
 class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
@@ -41,7 +42,9 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
   void _addMilestone() {
     setState(() {
       _milestoneControllers.add(
-        TextEditingController(text: 'Phase ${_milestoneControllers.length + 1}: Next Milestone'),
+        TextEditingController(
+          text: 'Phase ${_milestoneControllers.length + 1}: Next Milestone',
+        ),
       );
     });
   }
@@ -96,7 +99,11 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () => context.pop(),
         ),
         title: Text(
@@ -133,7 +140,9 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
                     borderSide: const BorderSide(color: AppColors.darkBorder),
                   ),
                 ),
-                validator: (val) => val == null || val.trim().isEmpty ? 'Please enter a title' : null,
+                validator: (val) => val == null || val.trim().isEmpty
+                    ? 'Please enter a title'
+                    : null,
               ),
               const SizedBox(height: AppSpacing.md),
               TextFormField(
@@ -169,11 +178,26 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
                   ),
                 ),
                 items: const [
-                  DropdownMenuItem(value: 'Engineering', child: Text('Engineering')),
-                  DropdownMenuItem(value: 'Computer Science', child: Text('Computer Science')),
-                  DropdownMenuItem(value: 'Artificial Intelligence', child: Text('Artificial Intelligence')),
-                  DropdownMenuItem(value: 'Academics', child: Text('Academics')),
-                  DropdownMenuItem(value: 'Personal Growth', child: Text('Personal Growth')),
+                  DropdownMenuItem(
+                    value: 'Engineering',
+                    child: Text('Engineering'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Computer Science',
+                    child: Text('Computer Science'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Artificial Intelligence',
+                    child: Text('Artificial Intelligence'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Academics',
+                    child: Text('Academics'),
+                  ),
+                  DropdownMenuItem(
+                    value: 'Personal Growth',
+                    child: Text('Personal Growth'),
+                  ),
                 ],
                 onChanged: (val) {
                   if (val != null) setState(() => _category = val);
@@ -192,10 +216,16 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
                     ),
                   ),
                   TextButton.icon(
-                    icon: const Icon(Icons.add, size: 16, color: AppColors.lavenderAccent),
+                    icon: const Icon(
+                      Icons.add,
+                      size: 16,
+                      color: AppColors.lavenderAccent,
+                    ),
                     label: Text(
                       'ADD STAGE',
-                      style: AppTypography.captionBold.copyWith(color: AppColors.lavenderAccent),
+                      style: AppTypography.captionBold.copyWith(
+                        color: AppColors.lavenderAccent,
+                      ),
                     ),
                     onPressed: _addMilestone,
                   ),
@@ -211,17 +241,24 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
                       children: [
                         CircleAvatar(
                           radius: 12,
-                          backgroundColor: AppColors.limePrimary.withValues(alpha: 0.2),
+                          backgroundColor: AppColors.limePrimary.withValues(
+                            alpha: 0.2,
+                          ),
                           child: Text(
                             '${idx + 1}',
-                            style: AppTypography.captionBold.copyWith(color: AppColors.limePrimary),
+                            style: AppTypography.captionBold.copyWith(
+                              color: AppColors.limePrimary,
+                            ),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
                         Expanded(
                           child: TextFormField(
                             controller: _milestoneControllers[idx],
-                            style: const TextStyle(color: AppColors.textPrimary, fontSize: 14),
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 14,
+                            ),
                             decoration: const InputDecoration(
                               isDense: true,
                               border: InputBorder.none,
@@ -230,7 +267,11 @@ class _CreateRoadmapScreenState extends ConsumerState<CreateRoadmapScreen> {
                         ),
                         if (_milestoneControllers.length > 1)
                           IconButton(
-                            icon: const Icon(Icons.close, size: 18, color: AppColors.textTertiary),
+                            icon: const Icon(
+                              Icons.close,
+                              size: 18,
+                              color: AppColors.textTertiary,
+                            ),
                             onPressed: () => _removeMilestone(idx),
                           ),
                       ],

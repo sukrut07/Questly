@@ -17,4 +17,3 @@ class NetworkInfoImpl implements NetworkInfo {
     }
   }
 }
-

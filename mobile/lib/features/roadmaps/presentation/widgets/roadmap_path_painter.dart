@@ -19,10 +19,7 @@ class RoadmapSerpentinePainter extends CustomPainter {
   final List<MilestoneNodePosition> nodes;
   final double progress; // 0.0 to 1.0
 
-  RoadmapSerpentinePainter({
-    required this.nodes,
-    this.progress = 1.0,
-  });
+  RoadmapSerpentinePainter({required this.nodes, this.progress = 1.0});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -41,14 +38,7 @@ class RoadmapSerpentinePainter extends CustomPainter {
       final midY = (p1.dy + p2.dy) / 2;
 
       // Cubic bezier creating a smooth S-curve
-      basePath.cubicTo(
-        p1.dx,
-        midY,
-        p2.dx,
-        midY,
-        p2.dx,
-        p2.dy,
-      );
+      basePath.cubicTo(p1.dx, midY, p2.dx, midY, p2.dx, p2.dy);
     }
 
     // Paint dark base road track
@@ -75,14 +65,7 @@ class RoadmapSerpentinePainter extends CustomPainter {
         final p1 = nodes[i].center;
         final p2 = nodes[i + 1].center;
         final midY = (p1.dy + p2.dy) / 2;
-        completedPath.cubicTo(
-          p1.dx,
-          midY,
-          p2.dx,
-          midY,
-          p2.dx,
-          p2.dy,
-        );
+        completedPath.cubicTo(p1.dx, midY, p2.dx, midY, p2.dx, p2.dy);
       }
 
       // Glow effect behind completed path
@@ -137,7 +120,10 @@ class RoadmapSerpentinePainter extends CustomPainter {
         )..layout();
         textPainter.paint(
           canvas,
-          Offset(center.dx - textPainter.width / 2, center.dy - textPainter.height / 2),
+          Offset(
+            center.dx - textPainter.width / 2,
+            center.dy - textPainter.height / 2,
+          ),
         );
       } else if (node.isActive) {
         // Active lavender pulse
@@ -148,11 +134,7 @@ class RoadmapSerpentinePainter extends CustomPainter {
             ..color = AppColors.lavenderAccent.withValues(alpha: 0.4)
             ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
         );
-        canvas.drawCircle(
-          center,
-          radius,
-          Paint()..color = AppColors.darkCard,
-        );
+        canvas.drawCircle(center, radius, Paint()..color = AppColors.darkCard);
         canvas.drawCircle(
           center,
           radius,
@@ -175,15 +157,14 @@ class RoadmapSerpentinePainter extends CustomPainter {
         )..layout();
         textPainter.paint(
           canvas,
-          Offset(center.dx - textPainter.width / 2, center.dy - textPainter.height / 2),
+          Offset(
+            center.dx - textPainter.width / 2,
+            center.dy - textPainter.height / 2,
+          ),
         );
       } else {
         // Locked / upcoming node
-        canvas.drawCircle(
-          center,
-          radius,
-          Paint()..color = AppColors.darkCard,
-        );
+        canvas.drawCircle(center, radius, Paint()..color = AppColors.darkCard);
         canvas.drawCircle(
           center,
           radius,
@@ -205,7 +186,10 @@ class RoadmapSerpentinePainter extends CustomPainter {
         )..layout();
         textPainter.paint(
           canvas,
-          Offset(center.dx - textPainter.width / 2, center.dy - textPainter.height / 2),
+          Offset(
+            center.dx - textPainter.width / 2,
+            center.dy - textPainter.height / 2,
+          ),
         );
       }
     }

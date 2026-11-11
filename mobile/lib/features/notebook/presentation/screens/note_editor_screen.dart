@@ -10,10 +10,7 @@ import 'package:questly/features/notebook/domain/models/note.dart';
 class NoteEditorScreen extends ConsumerStatefulWidget {
   final String noteId;
 
-  const NoteEditorScreen({
-    super.key,
-    required this.noteId,
-  });
+  const NoteEditorScreen({super.key, required this.noteId});
 
   @override
   ConsumerState<NoteEditorScreen> createState() => _NoteEditorScreenState();
@@ -58,7 +55,9 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
     setState(() => _isSaving = true);
     final repo = ref.read(notebookRepositoryProvider);
     final updated = _note!.copyWith(
-      title: _titleController.text.trim().isEmpty ? 'Untitled Note' : _titleController.text.trim(),
+      title: _titleController.text.trim().isEmpty
+          ? 'Untitled Note'
+          : _titleController.text.trim(),
       content: _contentController.text,
       updatedAt: DateTime.now(),
     );
@@ -73,18 +72,27 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
       context: context,
       builder: (ctx) => AlertDialog(
         backgroundColor: AppColors.darkCard,
-        title: Text('DELETE NOTE', style: AppTypography.titleMedium.copyWith(color: AppColors.error)),
+        title: Text(
+          'DELETE NOTE',
+          style: AppTypography.titleMedium.copyWith(color: AppColors.error),
+        ),
         content: const Text(
           'Are you sure you want to permanently delete this note?',
           style: TextStyle(color: AppColors.textSecondary),
         ),
         actions: [
           TextButton(
-            child: const Text('CANCEL', style: TextStyle(color: AppColors.textTertiary)),
+            child: const Text(
+              'CANCEL',
+              style: TextStyle(color: AppColors.textTertiary),
+            ),
             onPressed: () => Navigator.pop(ctx, false),
           ),
           TextButton(
-            child: const Text('DELETE', style: TextStyle(color: AppColors.error)),
+            child: const Text(
+              'DELETE',
+              style: TextStyle(color: AppColors.error),
+            ),
             onPressed: () => Navigator.pop(ctx, true),
           ),
         ],
@@ -128,7 +136,11 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: AppColors.textPrimary, size: 20),
+          icon: const Icon(
+            Icons.arrow_back_ios_new,
+            color: AppColors.textPrimary,
+            size: 20,
+          ),
           onPressed: () async {
             await _autoSave();
             if (context.mounted) context.pop();
@@ -151,8 +163,12 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             ),
           IconButton(
             icon: Icon(
-              _note?.isPinned == true ? Icons.push_pin : Icons.push_pin_outlined,
-              color: _note?.isPinned == true ? AppColors.lavenderAccent : AppColors.textSecondary,
+              _note?.isPinned == true
+                  ? Icons.push_pin
+                  : Icons.push_pin_outlined,
+              color: _note?.isPinned == true
+                  ? AppColors.lavenderAccent
+                  : AppColors.textSecondary,
             ),
             onPressed: () async {
               if (_note == null) return;
@@ -162,7 +178,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
             },
           ),
           IconButton(
-            icon: const Icon(Icons.delete_outline, color: AppColors.textSecondary),
+            icon: const Icon(
+              Icons.delete_outline,
+              color: AppColors.textSecondary,
+            ),
             onPressed: _deleteNote,
           ),
         ],
@@ -191,7 +210,8 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
                     keyboardType: TextInputType.multiline,
                     style: AppTypography.bodyLarge.copyWith(height: 1.6),
                     decoration: const InputDecoration(
-                      hintText: 'Start writing markdown, checklists, concepts...',
+                      hintText:
+                          'Start writing markdown, checklists, concepts...',
                       hintStyle: TextStyle(color: AppColors.textTertiary),
                       border: InputBorder.none,
                     ),
@@ -203,7 +223,10 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
 
             // Quick Formatting Toolbar
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md, vertical: 8),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: 8,
+              ),
               decoration: const BoxDecoration(
                 color: AppColors.darkCard,
                 border: Border(top: BorderSide(color: AppColors.darkBorder)),
@@ -211,29 +234,47 @@ class _NoteEditorScreenState extends ConsumerState<NoteEditorScreen> {
               child: Row(
                 children: [
                   IconButton(
-                    icon: const Icon(Icons.check_box_outlined, color: AppColors.limePrimary, size: 20),
+                    icon: const Icon(
+                      Icons.check_box_outlined,
+                      color: AppColors.limePrimary,
+                      size: 20,
+                    ),
                     tooltip: 'Checklist Item',
                     onPressed: () => _insertText('\n- [ ] '),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.format_list_bulleted, color: AppColors.lavenderAccent, size: 20),
+                    icon: const Icon(
+                      Icons.format_list_bulleted,
+                      color: AppColors.lavenderAccent,
+                      size: 20,
+                    ),
                     tooltip: 'Bullet',
                     onPressed: () => _insertText('\n• '),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.tag, color: AppColors.limePrimary, size: 20),
+                    icon: const Icon(
+                      Icons.tag,
+                      color: AppColors.limePrimary,
+                      size: 20,
+                    ),
                     tooltip: 'Tag',
                     onPressed: () => _insertText('#'),
                   ),
                   IconButton(
-                    icon: const Icon(Icons.code, color: AppColors.lavenderAccent, size: 20),
+                    icon: const Icon(
+                      Icons.code,
+                      color: AppColors.lavenderAccent,
+                      size: 20,
+                    ),
                     tooltip: 'Code snippet',
                     onPressed: () => _insertText('\n```\n\n```'),
                   ),
                   const Spacer(),
                   Text(
                     '${_contentController.text.split(RegExp(r'\s+')).where((s) => s.isNotEmpty).length} words',
-                    style: AppTypography.caption.copyWith(color: AppColors.textTertiary),
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textTertiary,
+                    ),
                   ),
                 ],
               ),
