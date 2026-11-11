@@ -20,6 +20,8 @@ class RouteNames {
   static const String createRoadmap = 'createRoadmap';
   static const String profile = 'profile';
   static const String settings = 'settings';
+  static const String skillTree = 'skillTree';
+  static const String arcade = 'arcade';
   static const String achievements = 'achievements';
   static const String notifications = 'notifications';
   static const String onboarding = 'onboarding';
@@ -47,6 +49,8 @@ class RoutePaths {
   static const String createRoadmap = '/roadmaps/create';
   static const String profile = '/profile';
   static const String settings = '/settings';
+  static const String skillTree = '/skill-tree';
+  static const String arcade = '/arcade';
   static const String achievements = '/achievements';
   static const String notifications = '/notifications';
   static const String onboarding = '/onboarding';
