@@ -7,8 +7,14 @@ import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/core/storage/secure_storage.dart';
 import 'package:questly/features/dashboard/data/repositories/mock_dashboard_repository.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:questly/features/focus/data/repositories/focus_repository_impl.dart';
+import 'package:questly/features/focus/domain/repositories/focus_repository.dart';
+import 'package:questly/features/notebook/data/repositories/notebook_repository_impl.dart';
+import 'package:questly/features/notebook/domain/repositories/notebook_repository.dart';
 import 'package:questly/features/quests/data/repositories/quest_repository_impl.dart';
 import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
+import 'package:questly/features/roadmaps/data/repositories/roadmap_repository_impl.dart';
+import 'package:questly/features/roadmaps/domain/repositories/roadmap_repository.dart';
 import 'package:questly/features/tasks/data/repositories/task_repository_impl.dart';
 import 'package:questly/features/tasks/domain/repositories/task_repository.dart';
 
@@ -78,4 +84,22 @@ final taskRepositoryProvider = Provider<TaskRepository>((ref) {
 /// Dashboard Repository Provider
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   return MockDashboardRepository();
+});
+
+/// Notebook Repository Provider
+final notebookRepositoryProvider = Provider<NotebookRepository>((ref) {
+  final storage = ref.watch(localStorageProvider);
+  return NotebookRepositoryImpl(storage);
+});
+
+/// Roadmap Repository Provider
+final roadmapRepositoryProvider = Provider<RoadmapRepository>((ref) {
+  final storage = ref.watch(localStorageProvider);
+  return RoadmapRepositoryImpl(storage);
+});
+
+/// Focus Repository Provider
+final focusRepositoryProvider = Provider<FocusRepository>((ref) {
+  final storage = ref.watch(localStorageProvider);
+  return FocusRepositoryImpl(storage);
 });
