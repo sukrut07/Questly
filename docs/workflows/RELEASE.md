@@ -45,3 +45,4 @@ Questly follows Semantic Versioning (`MAJOR.MINOR.PATCH`):
 - `mobile/pubspec.yaml`: `version: 2.0.0+1`
 - `package.json`: `"version": "0.1.0"` (web application)
 - All releases are tagged using standard Git annotated tags: `git tag -a v2.0.0 -m "Questly 2.0.0 release"`
+

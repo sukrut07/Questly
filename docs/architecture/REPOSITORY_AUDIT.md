@@ -80,3 +80,4 @@ This audit evaluates the codebase before removing legacy standalone Android file
 4. **Preserve Next.js Web Application**: Keep `src/`, `public/`, `test/`, and `package.json` intact and operational.
 5. **Establish Structured Documentation**: Create `docs/architecture/`, `docs/features/`, and `docs/workflows/`.
 6. **Add Automated CI Workflow**: Create `.github/workflows/ci.yml` running Flutter analyze/test and Web lint/typecheck/test/build.
+

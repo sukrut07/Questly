@@ -131,3 +131,4 @@ This document provides a 1-to-1 mapping between every implemented feature and it
 | **Web Layout** | `src/app/layout.tsx` | Next.js root html layout & metadata |
 | **Global Styles** | `src/app/globals.css` | Tailwind CSS v4 styling rules |
 | **Web Test** | `test/progression.test.mjs` | Automated progression unit tests |
+

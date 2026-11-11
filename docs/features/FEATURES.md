@@ -86,3 +86,4 @@
   - Categorized tabs: All, Focus, Streaks, Quests.
   - Tier badges: Bronze, Silver, Gold, Diamond, Legendary.
   - Detailed unlocking criteria and XP values.
+

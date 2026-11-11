@@ -59,3 +59,4 @@ npm run build
 ## 3. Continuous Integration (CI)
 
 Every pull request and push to `main` triggers `.github/workflows/ci.yml` which executes both test suites in parallel.
+

@@ -52,3 +52,4 @@ The following dependencies belonging to the obsolete standalone Kotlin Android a
 - `androidx.datastore:datastore-preferences`
 - `org.jetbrains.kotlinx:kotlinx-coroutines-android`
 - `androidx.glance:glance-appwidget`
+

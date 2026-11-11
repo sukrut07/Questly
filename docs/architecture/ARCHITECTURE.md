@@ -80,3 +80,4 @@ Contextual modal screens (`/focus`, `/notebook/edit/:id`, `/roadmaps/:id`, `/pro
 - **No Mobile Code in Web**: `mobile/` is completely self-contained with its own `pubspec.yaml` and Dart toolchain.
 - **No Web Code in Mobile**: Web packages in `package.json` never leak into Flutter.
 - **Offline Resilience**: Both clients operate flawlessly in zero-connectivity environments with instant optimistic local persistence.
+
