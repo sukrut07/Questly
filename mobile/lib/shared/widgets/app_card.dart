@@ -27,8 +27,12 @@ class AppCard extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
-    final defaultBg = isDark ? AppColors.darkCardSurface : AppColors.lightCardSurface;
-    final defaultBorderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
+    final defaultBg = isDark
+        ? AppColors.darkCardSurface
+        : AppColors.lightCardSurface;
+    final defaultBorderColor = isDark
+        ? AppColors.darkBorder
+        : AppColors.lightBorder;
 
     final boxDecoration = BoxDecoration(
       color: gradient == null ? (backgroundColor ?? defaultBg) : null,
@@ -38,7 +42,8 @@ class AppCard extends StatelessWidget {
       boxShadow: hasGlow
           ? [
               BoxShadow(
-                color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary).withValues(alpha: 0.15),
+                color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                    .withValues(alpha: 0.15),
                 blurRadius: 16,
                 spreadRadius: 2,
                 offset: const Offset(0, 4),
@@ -55,19 +60,12 @@ class AppCard extends StatelessWidget {
           child: InkWell(
             onTap: onTap,
             borderRadius: BorderRadius.circular(AppSpacing.radiusMd),
-            child: Padding(
-              padding: padding,
-              child: child,
-            ),
+            child: Padding(padding: padding, child: child),
           ),
         ),
       );
     }
 
-    return Container(
-      decoration: boxDecoration,
-      padding: padding,
-      child: child,
-    );
+    return Container(decoration: boxDecoration, padding: padding, child: child);
   }
 }

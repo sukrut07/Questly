@@ -22,7 +22,9 @@ class DailyProductivityCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final progress = totalTasks > 0 ? (completedTasks / totalTasks).clamp(0.0, 1.0) : 0.0;
+    final progress = totalTasks > 0
+        ? (completedTasks / totalTasks).clamp(0.0, 1.0)
+        : 0.0;
     final remaining = (totalTasks - completedTasks).clamp(0, totalTasks);
 
     return AppCard(
@@ -36,7 +38,9 @@ class DailyProductivityCard extends StatelessWidget {
                 'Today\'s Productivity',
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
                 ),
               ),
               Container(
@@ -84,14 +88,18 @@ class DailyProductivityCard extends StatelessWidget {
                       backgroundColor: isDark
                           ? AppColors.darkElevatedSurface
                           : AppColors.lightElevatedSurface,
-                      valueColor: const AlwaysStoppedAnimation<Color>(AppColors.darkSecondary),
+                      valueColor: const AlwaysStoppedAnimation<Color>(
+                        AppColors.darkSecondary,
+                      ),
                     ),
                     Center(
                       child: Text(
                         '$productivityScore',
                         style: theme.textTheme.titleLarge?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
                     ),
@@ -110,7 +118,9 @@ class DailyProductivityCard extends StatelessWidget {
                       '$completedTasks of $totalTasks subtasks completed',
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w600,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxs),
@@ -119,19 +129,25 @@ class DailyProductivityCard extends StatelessWidget {
                           ? '🎉 All daily tasks cleared!'
                           : '$remaining remaining to maintain optimal flow',
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusPill,
+                      ),
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 5,
                         backgroundColor: isDark
                             ? AppColors.darkElevatedSurface
                             : AppColors.lightElevatedSurface,
-                        valueColor: const AlwaysStoppedAnimation<Color>(AppColors.darkSecondary),
+                        valueColor: const AlwaysStoppedAnimation<Color>(
+                          AppColors.darkSecondary,
+                        ),
                       ),
                     ),
                   ],

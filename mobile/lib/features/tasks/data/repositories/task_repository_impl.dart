@@ -19,7 +19,10 @@ class TaskRepositoryImpl implements TaskRepository {
     for (final q in quests) {
       for (final s in q.subtasks) {
         if (s.id == taskId) {
-          final updatedQuest = await _questRepository.toggleSubtask(q.id, taskId);
+          final updatedQuest = await _questRepository.toggleSubtask(
+            q.id,
+            taskId,
+          );
           return updatedQuest.subtasks.firstWhere((sub) => sub.id == taskId);
         }
       }

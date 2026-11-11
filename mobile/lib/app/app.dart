@@ -24,10 +24,8 @@ class QuestlyApp extends ConsumerWidget {
         return MediaQuery(
           // Protect against extreme OS font scaling disrupting layouts
           data: MediaQuery.of(context).copyWith(
-            textScaler: MediaQuery.of(context).textScaler.clamp(
-                  minScaleFactor: 0.85,
-                  maxScaleFactor: 1.25,
-                ),
+            textScaler: MediaQuery.of(context).textScaler
+                .clamp(minScaleFactor: 0.85, maxScaleFactor: 1.25),
           ),
           child: child ?? const SizedBox.shrink(),
         );

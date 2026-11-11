@@ -19,7 +19,7 @@ class MockDashboardRepository implements DashboardRepository {
     createdAt: DateTime.now().subtract(const Duration(days: 14)),
   );
 
-  StreakInfo _streak = StreakInfo(
+  final StreakInfo _streak = StreakInfo(
     currentStreak: 5,
     longestStreak: 8,
     lastActiveDate: DateTime.now().toIso8601String().split('T').first,
@@ -41,9 +41,24 @@ class MockDashboardRepository implements DashboardRepository {
       status: QuestStatus.inProgress,
       createdAt: DateTime.now().subtract(const Duration(hours: 3)),
       subtasks: const [
-        QuestSubtask(id: 'sub_1', questId: 'quest_1', title: 'Define Domain Models', isCompleted: true),
-        QuestSubtask(id: 'sub_2', questId: 'quest_1', title: 'Setup GoRouter Shell Navigation', isCompleted: true),
-        QuestSubtask(id: 'sub_3', questId: 'quest_1', title: 'Implement Dashboard UI Components', isCompleted: false),
+        QuestSubtask(
+          id: 'sub_1',
+          questId: 'quest_1',
+          title: 'Define Domain Models',
+          isCompleted: true,
+        ),
+        QuestSubtask(
+          id: 'sub_2',
+          questId: 'quest_1',
+          title: 'Setup GoRouter Shell Navigation',
+          isCompleted: true,
+        ),
+        QuestSubtask(
+          id: 'sub_3',
+          questId: 'quest_1',
+          title: 'Implement Dashboard UI Components',
+          isCompleted: false,
+        ),
       ],
     ),
     Quest(
@@ -58,8 +73,18 @@ class MockDashboardRepository implements DashboardRepository {
       status: QuestStatus.notStarted,
       createdAt: DateTime.now().subtract(const Duration(hours: 1)),
       subtasks: const [
-        QuestSubtask(id: 'sub_4', questId: 'quest_2', title: 'Prepare tea & notebook', isCompleted: true),
-        QuestSubtask(id: 'sub_5', questId: 'quest_2', title: 'Execute focus block', isCompleted: false),
+        QuestSubtask(
+          id: 'sub_4',
+          questId: 'quest_2',
+          title: 'Prepare tea & notebook',
+          isCompleted: true,
+        ),
+        QuestSubtask(
+          id: 'sub_5',
+          questId: 'quest_2',
+          title: 'Execute focus block',
+          isCompleted: false,
+        ),
       ],
     ),
     Quest(

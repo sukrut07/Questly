@@ -13,7 +13,8 @@ class ApiClient {
     required SecureStorage secureStorage,
   }) {
     final conf = config ?? EnvironmentConfig.current;
-    _dio = dio ??
+    _dio =
+        dio ??
         Dio(
           BaseOptions(
             baseUrl: conf.apiBaseUrl,
@@ -119,22 +120,17 @@ class ApiClient {
       case DioExceptionType.receiveTimeout:
       case DioExceptionType.connectionError:
         return NetworkException(
-          message: 'Connection timed out. Please check your network connection.',
+          message:
+              'Connection timed out. Please check your network connection.',
           details: error.message,
         );
       case DioExceptionType.badResponse:
         final statusCode = error.response?.statusCode;
         final data = error.response?.data;
         if (statusCode == 401 || statusCode == 403) {
-          return UnauthorizedException(
-            statusCode: statusCode,
-            details: data,
-          );
+          return UnauthorizedException(statusCode: statusCode, details: data);
         } else if (statusCode == 404) {
-          return NotFoundException(
-            statusCode: statusCode,
-            details: data,
-          );
+          return NotFoundException(statusCode: statusCode, details: data);
         } else if (statusCode == 422 || statusCode == 400) {
           return ValidationException(
             message: data is Map && data['message'] != null

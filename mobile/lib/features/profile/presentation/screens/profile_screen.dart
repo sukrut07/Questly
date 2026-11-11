@@ -52,12 +52,18 @@ class ProfileScreen extends ConsumerWidget {
                         shape: BoxShape.circle,
                         gradient: AppColors.primaryGradient,
                         border: Border.all(
-                          color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                          color: isDark
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder,
                           width: 2.5,
                         ),
                       ),
                       child: const Center(
-                        child: Icon(Icons.person_rounded, size: 44, color: Colors.white),
+                        child: Icon(
+                          Icons.person_rounded,
+                          size: 44,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -65,14 +71,18 @@ class ProfileScreen extends ConsumerWidget {
                       profile.displayName,
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.w800,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
                       profile.title,
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
@@ -104,7 +114,9 @@ class ProfileScreen extends ConsumerWidget {
               // Appearance & Settings Section
               Text(
                 'Preferences & Display',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
 
@@ -114,11 +126,17 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     ListTile(
                       leading: Icon(
-                        isDark ? Icons.dark_mode_rounded : Icons.light_mode_rounded,
+                        isDark
+                            ? Icons.dark_mode_rounded
+                            : Icons.light_mode_rounded,
                         color: AppColors.darkPrimary,
                       ),
                       title: const Text('Dark Mode Theme'),
-                      subtitle: Text(themeMode == ThemeMode.dark ? 'Dark Mode Active' : 'Light Mode Active'),
+                      subtitle: Text(
+                        themeMode == ThemeMode.dark
+                            ? 'Dark Mode Active'
+                            : 'Light Mode Active',
+                      ),
                       trailing: Switch(
                         value: isDark,
                         onChanged: (_) {
@@ -129,21 +147,30 @@ class ProfileScreen extends ConsumerWidget {
                     ),
                     const Divider(),
                     ListTile(
-                      leading: const Icon(Icons.emoji_events_outlined, color: AppColors.darkAccent),
+                      leading: const Icon(
+                        Icons.emoji_events_outlined,
+                        color: AppColors.darkAccent,
+                      ),
                       title: const Text('Achievements & Badges'),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () => context.pushNamed(RouteNames.achievements),
                     ),
                     const Divider(),
                     ListTile(
-                      leading: const Icon(Icons.notifications_none_rounded, color: AppColors.darkSecondary),
+                      leading: const Icon(
+                        Icons.notifications_none_rounded,
+                        color: AppColors.darkSecondary,
+                      ),
                       title: const Text('Notification Preferences'),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () => context.pushNamed(RouteNames.notifications),
                     ),
                     const Divider(),
                     ListTile(
-                      leading: const Icon(Icons.tune_rounded, color: Color(0xFF67B8FF)),
+                      leading: const Icon(
+                        Icons.tune_rounded,
+                        color: Color(0xFF67B8FF),
+                      ),
                       title: const Text('Application Settings'),
                       trailing: const Icon(Icons.chevron_right_rounded),
                       onTap: () => context.pushNamed(RouteNames.settings),
@@ -158,7 +185,9 @@ class ProfileScreen extends ConsumerWidget {
                 child: Text(
                   'Questly Mobile v${AppConstants.appVersion}',
                   style: theme.textTheme.bodySmall?.copyWith(
-                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.lightTextMuted,
                   ),
                 ),
               ),

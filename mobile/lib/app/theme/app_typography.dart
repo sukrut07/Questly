@@ -4,7 +4,10 @@ import 'package:google_fonts/google_fonts.dart';
 class AppTypography {
   AppTypography._();
 
-  static TextTheme createTextTheme(Color primaryTextColor, Color secondaryTextColor) {
+  static TextTheme createTextTheme(
+    Color primaryTextColor,
+    Color secondaryTextColor,
+  ) {
     final fontFamily = GoogleFonts.inter().fontFamily;
 
     return TextTheme(

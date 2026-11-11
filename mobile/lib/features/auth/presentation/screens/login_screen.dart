@@ -54,11 +54,15 @@ class _LoginScreenState extends State<LoginScreen> {
                 child: Container(
                   width: 72,
                   height: 72,
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     shape: BoxShape.circle,
                     gradient: AppColors.primaryGradient,
                   ),
-                  child: const Icon(Icons.shield_rounded, size: 40, color: Colors.white),
+                  child: const Icon(
+                    Icons.shield_rounded,
+                    size: 40,
+                    color: Colors.white,
+                  ),
                 ),
               ),
               const SizedBox(height: AppSpacing.md),
@@ -66,7 +70,9 @@ class _LoginScreenState extends State<LoginScreen> {
                 'Welcome Back',
                 style: theme.textTheme.displaySmall?.copyWith(
                   fontWeight: FontWeight.w800,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -74,7 +80,9 @@ class _LoginScreenState extends State<LoginScreen> {
               Text(
                 'Resume your gamified productivity realm',
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
                 textAlign: TextAlign.center,
               ),

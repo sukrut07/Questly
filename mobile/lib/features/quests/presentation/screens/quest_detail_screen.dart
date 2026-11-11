@@ -15,10 +15,7 @@ import 'package:questly/shared/widgets/stat_badge.dart';
 class QuestDetailScreen extends ConsumerStatefulWidget {
   final String questId;
 
-  const QuestDetailScreen({
-    super.key,
-    required this.questId,
-  });
+  const QuestDetailScreen({super.key, required this.questId});
 
   @override
   ConsumerState<QuestDetailScreen> createState() => _QuestDetailScreenState();
@@ -61,7 +58,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
     ref.read(dashboardStateProvider.notifier).refresh();
     setState(() => _quest = updated);
     if (mounted) {
-      context.showSnackBar('🎉 Quest completed! +${_quest!.xpReward} XP earned!');
+      context.showSnackBar(
+        '🎉 Quest completed! +${_quest!.xpReward} XP earned!',
+      );
     }
   }
 
@@ -71,9 +70,7 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
     final isDark = theme.brightness == Brightness.dark;
 
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     if (_quest == null) {
@@ -119,7 +116,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
                     StatBadge(
                       label: quest.category.displayName,
                       icon: quest.category.icon,
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.darkPrimary
+                          : AppColors.lightPrimary,
                     ),
                     StatBadge(
                       label: '+${quest.xpReward} XP Reward',
@@ -133,7 +132,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
                   quest.title,
                   style: theme.textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w800,
-                    color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                    color: isDark
+                        ? AppColors.darkTextPrimary
+                        : AppColors.lightTextPrimary,
                   ),
                 ),
                 if (quest.description.isNotEmpty) ...[
@@ -141,7 +142,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
                   Text(
                     quest.description,
                     style: theme.textTheme.bodyLarge?.copyWith(
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
                     ),
                   ),
                 ],
@@ -170,7 +173,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
           // Subtasks Header
           Text(
             'Quest Milestones (${quest.subtasks.where((s) => s.isCompleted).length}/${quest.subtasks.length})',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
 
@@ -181,7 +186,9 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
                 child: Text(
                   'No subtasks for this quest. Mark it complete when done!',
                   style: theme.textTheme.bodyMedium?.copyWith(
-                    color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                    color: isDark
+                        ? AppColors.darkTextSecondary
+                        : AppColors.lightTextSecondary,
                   ),
                 ),
               ),
@@ -191,7 +198,10 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
               return Padding(
                 padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                 child: AppCard(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 8,
+                  ),
                   onTap: () => _toggleSubtask(sub.id),
                   child: Row(
                     children: [
@@ -204,10 +214,16 @@ class _QuestDetailScreenState extends ConsumerState<QuestDetailScreen> {
                         child: Text(
                           sub.title,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            decoration: sub.isCompleted ? TextDecoration.lineThrough : null,
+                            decoration: sub.isCompleted
+                                ? TextDecoration.lineThrough
+                                : null,
                             color: sub.isCompleted
-                                ? (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)
-                                : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                                ? (isDark
+                                      ? AppColors.darkTextMuted
+                                      : AppColors.lightTextMuted)
+                                : (isDark
+                                      ? AppColors.darkTextPrimary
+                                      : AppColors.lightTextPrimary),
                           ),
                         ),
                       ),

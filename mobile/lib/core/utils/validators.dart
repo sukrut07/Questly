@@ -1,7 +1,10 @@
 class Validators {
   Validators._();
 
-  static String? required(String? value, {String message = 'This field is required'}) {
+  static String? required(
+    String? value, {
+    String message = 'This field is required',
+  }) {
     if (value == null || value.trim().isEmpty) {
       return message;
     }
@@ -26,7 +29,10 @@ class Validators {
     return null;
   }
 
-  static String? positiveNumber(String? value, {String message = 'Must be a positive number'}) {
+  static String? positiveNumber(
+    String? value, {
+    String message = 'Must be a positive number',
+  }) {
     if (value == null || value.trim().isEmpty) return null;
     final parsed = int.tryParse(value);
     if (parsed == null || parsed <= 0) {

@@ -1,9 +1,5 @@
 /// Environment configuration for Questly Mobile.
-enum AppEnvironment {
-  development,
-  staging,
-  production,
-}
+enum AppEnvironment { development, staging, production }
 
 class EnvironmentConfig {
   final AppEnvironment environment;

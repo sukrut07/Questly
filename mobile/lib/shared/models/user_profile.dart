@@ -68,7 +68,9 @@ class UserProfile {
       avatarId: json['avatarId'] as String? ?? 'avatar_mage',
       level: (json['level'] as num?)?.toInt() ?? 1,
       totalXp: (json['totalXp'] as num?)?.toInt() ?? 0,
-      currentStage: ProgressionStage.fromLevel((json['level'] as num?)?.toInt() ?? 1),
+      currentStage: ProgressionStage.fromLevel(
+        (json['level'] as num?)?.toInt() ?? 1,
+      ),
       visualTheme: json['visualTheme'] as String? ?? 'dark',
       title: json['title'] as String? ?? 'The Novice Adventurer',
       createdAt: json['createdAt'] != null

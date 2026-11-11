@@ -10,10 +10,7 @@ import 'package:questly/shared/widgets/stat_badge.dart';
 class ActiveQuestsSection extends StatelessWidget {
   final List<Quest> quests;
 
-  const ActiveQuestsSection({
-    super.key,
-    required this.quests,
-  });
+  const ActiveQuestsSection({super.key, required this.quests});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +27,9 @@ class ActiveQuestsSection extends StatelessWidget {
               'Active Quests',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
               ),
             ),
             TextButton(
@@ -41,7 +40,9 @@ class ActiveQuestsSection extends StatelessWidget {
                   Text(
                     'View all (${quests.length})',
                     style: theme.textTheme.labelMedium?.copyWith(
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.darkPrimary
+                          : AppColors.lightPrimary,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
@@ -49,7 +50,9 @@ class ActiveQuestsSection extends StatelessWidget {
                   Icon(
                     Icons.arrow_forward_ios_rounded,
                     size: 12,
-                    color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                    color: isDark
+                        ? AppColors.darkPrimary
+                        : AppColors.lightPrimary,
                   ),
                 ],
               ),
@@ -75,7 +78,9 @@ class ActiveQuestsSection extends StatelessWidget {
                     Text(
                       'No active quests right now',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                        color: isDark
+                            ? AppColors.darkTextSecondary
+                            : AppColors.lightTextSecondary,
                       ),
                     ),
                   ],
@@ -88,7 +93,8 @@ class ActiveQuestsSection extends StatelessWidget {
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: quests.take(3).length,
-            separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+            separatorBuilder: (context, index) =>
+                const SizedBox(height: AppSpacing.sm),
             itemBuilder: (context, index) {
               final quest = quests[index];
               return _QuestItemCard(quest: quest);
@@ -124,16 +130,22 @@ class _QuestItemCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface,
+                  color: isDark
+                      ? AppColors.darkElevatedSurface
+                      : AppColors.lightElevatedSurface,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
+                    color: isDark
+                        ? AppColors.darkBorder
+                        : AppColors.lightBorder,
                   ),
                 ),
                 child: Icon(
                   quest.category.icon,
                   size: 20,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color: isDark
+                      ? AppColors.darkPrimary
+                      : AppColors.lightPrimary,
                 ),
               ),
 
@@ -148,7 +160,9 @@ class _QuestItemCard extends StatelessWidget {
                       quest.title,
                       style: theme.textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w700,
-                        color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                        color: isDark
+                            ? AppColors.darkTextPrimary
+                            : AppColors.lightTextPrimary,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -158,7 +172,9 @@ class _QuestItemCard extends StatelessWidget {
                       Text(
                         quest.description,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -184,7 +200,9 @@ class _QuestItemCard extends StatelessWidget {
             children: [
               StatBadge(
                 label: quest.category.displayName,
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
               const SizedBox(width: AppSpacing.xs),
               StatBadge(
@@ -198,13 +216,17 @@ class _QuestItemCard extends StatelessWidget {
                   Icon(
                     Icons.schedule_rounded,
                     size: 14,
-                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.lightTextMuted,
                   ),
                   const SizedBox(width: AppSpacing.xxs),
                   Text(
                     '${quest.estimatedMinutes}m',
                     style: theme.textTheme.labelSmall?.copyWith(
-                      color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                      color: isDark
+                          ? AppColors.darkTextMuted
+                          : AppColors.lightTextMuted,
                     ),
                   ),
                 ],

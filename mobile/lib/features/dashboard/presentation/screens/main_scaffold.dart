@@ -5,10 +5,7 @@ import 'package:questly/app/theme/app_colors.dart';
 class MainScaffold extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const MainScaffold({
-    super.key,
-    required this.navigationShell,
-  });
+  const MainScaffold({super.key, required this.navigationShell});
 
   void _onDestinationSelected(int index) {
     navigationShell.goBranch(
@@ -40,27 +37,42 @@ class MainScaffold extends StatelessWidget {
           destinations: const [
             NavigationDestination(
               icon: Icon(Icons.home_outlined),
-              selectedIcon: Icon(Icons.home_rounded, color: AppColors.darkPrimary),
+              selectedIcon: Icon(
+                Icons.home_rounded,
+                color: AppColors.darkPrimary,
+              ),
               label: 'Home',
             ),
             NavigationDestination(
               icon: Icon(Icons.explore_outlined),
-              selectedIcon: Icon(Icons.explore_rounded, color: AppColors.darkPrimary),
+              selectedIcon: Icon(
+                Icons.explore_rounded,
+                color: AppColors.darkPrimary,
+              ),
               label: 'Quests',
             ),
             NavigationDestination(
               icon: Icon(Icons.check_circle_outline_rounded),
-              selectedIcon: Icon(Icons.check_circle_rounded, color: AppColors.darkPrimary),
+              selectedIcon: Icon(
+                Icons.check_circle_rounded,
+                color: AppColors.darkPrimary,
+              ),
               label: 'Tasks',
             ),
             NavigationDestination(
               icon: Icon(Icons.insights_outlined),
-              selectedIcon: Icon(Icons.insights_rounded, color: AppColors.darkPrimary),
+              selectedIcon: Icon(
+                Icons.insights_rounded,
+                color: AppColors.darkPrimary,
+              ),
               label: 'Analytics',
             ),
             NavigationDestination(
               icon: Icon(Icons.person_outline_rounded),
-              selectedIcon: Icon(Icons.person_rounded, color: AppColors.darkPrimary),
+              selectedIcon: Icon(
+                Icons.person_rounded,
+                color: AppColors.darkPrimary,
+              ),
               label: 'Profile',
             ),
           ],

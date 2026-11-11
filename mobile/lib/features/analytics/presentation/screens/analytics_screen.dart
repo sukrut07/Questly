@@ -15,9 +15,7 @@ class AnalyticsScreen extends ConsumerWidget {
     final dashboardAsync = ref.watch(dashboardStateProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Productivity Analytics'),
-      ),
+      appBar: AppBar(title: const Text('Productivity Analytics')),
       body: dashboardAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (err, _) => Center(child: Text('Error: $err')),
@@ -33,7 +31,7 @@ class AnalyticsScreen extends ConsumerWidget {
                     Container(
                       width: 68,
                       height: 68,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         gradient: AppColors.primaryGradient,
                       ),
@@ -56,7 +54,9 @@ class AnalyticsScreen extends ConsumerWidget {
                             'Flow State Rating',
                             style: theme.textTheme.titleMedium?.copyWith(
                               fontWeight: FontWeight.w700,
-                              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                              color: isDark
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.xxs),
@@ -127,7 +127,9 @@ class AnalyticsScreen extends ConsumerWidget {
               // Weekly Activity Cadence
               Text(
                 'Weekly Rhythm',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
 
@@ -137,47 +139,68 @@ class AnalyticsScreen extends ConsumerWidget {
                   children: [
                     Text(
                       'Last 7 Days Activity Heatmap',
-                      style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                      style: theme.textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                     const SizedBox(height: AppSpacing.md),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) {
-                        final isDone = day != 'Sun';
-                        return Column(
-                          children: [
-                            Container(
-                              width: 34,
-                              height: 34,
-                              decoration: BoxDecoration(
-                                color: isDone
-                                    ? AppColors.darkSecondary.withValues(alpha: 0.25)
-                                    : (isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface),
-                                borderRadius: BorderRadius.circular(AppSpacing.radiusXs),
-                                border: Border.all(
-                                  color: isDone
-                                      ? AppColors.darkSecondary
-                                      : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
+                      children:
+                          [
+                            'Mon',
+                            'Tue',
+                            'Wed',
+                            'Thu',
+                            'Fri',
+                            'Sat',
+                            'Sun',
+                          ].map((day) {
+                            final isDone = day != 'Sun';
+                            return Column(
+                              children: [
+                                Container(
+                                  width: 34,
+                                  height: 34,
+                                  decoration: BoxDecoration(
+                                    color: isDone
+                                        ? AppColors.darkSecondary.withValues(
+                                            alpha: 0.25,
+                                          )
+                                        : (isDark
+                                              ? AppColors.darkElevatedSurface
+                                              : AppColors.lightElevatedSurface),
+                                    borderRadius: BorderRadius.circular(
+                                      AppSpacing.radiusXs,
+                                    ),
+                                    border: Border.all(
+                                      color: isDone
+                                          ? AppColors.darkSecondary
+                                          : (isDark
+                                                ? AppColors.darkBorder
+                                                : AppColors.lightBorder),
+                                    ),
+                                  ),
+                                  child: isDone
+                                      ? const Icon(
+                                          Icons.check_rounded,
+                                          size: 18,
+                                          color: AppColors.darkSecondary,
+                                        )
+                                      : null,
                                 ),
-                              ),
-                              child: isDone
-                                  ? const Icon(
-                                      Icons.check_rounded,
-                                      size: 18,
-                                      color: AppColors.darkSecondary,
-                                    )
-                                  : null,
-                            ),
-                            const SizedBox(height: AppSpacing.xxs),
-                            Text(
-                              day,
-                              style: theme.textTheme.labelSmall?.copyWith(
-                                color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
-                              ),
-                            ),
-                          ],
-                        );
-                      }).toList(),
+                                const SizedBox(height: AppSpacing.xxs),
+                                Text(
+                                  day,
+                                  style: theme.textTheme.labelSmall?.copyWith(
+                                    color: isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted,
+                                  ),
+                                ),
+                              ],
+                            );
+                          }).toList(),
                     ),
                   ],
                 ),
@@ -219,7 +242,9 @@ class _MetricCard extends StatelessWidget {
               Text(
                 title,
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
             ],
@@ -229,7 +254,9 @@ class _MetricCard extends StatelessWidget {
             value,
             style: theme.textTheme.headlineSmall?.copyWith(
               fontWeight: FontWeight.w800,
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
             ),
           ),
         ],

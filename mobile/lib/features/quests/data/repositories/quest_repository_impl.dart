@@ -23,9 +23,24 @@ class QuestRepositoryImpl implements QuestRepository {
           status: QuestStatus.inProgress,
           createdAt: DateTime.now().subtract(const Duration(hours: 3)),
           subtasks: const [
-            QuestSubtask(id: 'sub_1', questId: 'quest_1', title: 'Define Domain Models', isCompleted: true),
-            QuestSubtask(id: 'sub_2', questId: 'quest_1', title: 'Setup GoRouter Navigation', isCompleted: true),
-            QuestSubtask(id: 'sub_3', questId: 'quest_1', title: 'Implement Dashboard UI', isCompleted: false),
+            QuestSubtask(
+              id: 'sub_1',
+              questId: 'quest_1',
+              title: 'Define Domain Models',
+              isCompleted: true,
+            ),
+            QuestSubtask(
+              id: 'sub_2',
+              questId: 'quest_1',
+              title: 'Setup GoRouter Navigation',
+              isCompleted: true,
+            ),
+            QuestSubtask(
+              id: 'sub_3',
+              questId: 'quest_1',
+              title: 'Implement Dashboard UI',
+              isCompleted: false,
+            ),
           ],
         ),
         Quest(
@@ -40,8 +55,18 @@ class QuestRepositoryImpl implements QuestRepository {
           status: QuestStatus.notStarted,
           createdAt: DateTime.now().subtract(const Duration(hours: 1)),
           subtasks: const [
-            QuestSubtask(id: 'sub_4', questId: 'quest_2', title: 'Prepare tea & workspace', isCompleted: true),
-            QuestSubtask(id: 'sub_5', questId: 'quest_2', title: 'Execute focus block', isCompleted: false),
+            QuestSubtask(
+              id: 'sub_4',
+              questId: 'quest_2',
+              title: 'Prepare tea & workspace',
+              isCompleted: true,
+            ),
+            QuestSubtask(
+              id: 'sub_5',
+              questId: 'quest_2',
+              title: 'Execute focus block',
+              isCompleted: false,
+            ),
           ],
         ),
       ]);
@@ -58,13 +83,19 @@ class QuestRepositoryImpl implements QuestRepository {
   @override
   Future<List<Quest>> getActiveQuests() async {
     return _localQuests
-        .where((q) => q.status == QuestStatus.notStarted || q.status == QuestStatus.inProgress)
+        .where(
+          (q) =>
+              q.status == QuestStatus.notStarted ||
+              q.status == QuestStatus.inProgress,
+        )
         .toList();
   }
 
   @override
   Future<List<Quest>> getCompletedQuests() async {
-    return _localQuests.where((q) => q.status == QuestStatus.completed).toList();
+    return _localQuests
+        .where((q) => q.status == QuestStatus.completed)
+        .toList();
   }
 
   @override

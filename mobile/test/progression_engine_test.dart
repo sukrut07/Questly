@@ -30,13 +30,22 @@ void main() {
       expect(lvl10.stage, ProgressionStage.master);
     });
 
-    test('calculateQuestXp awards appropriate XP per difficulty and duration', () {
-      final easyXp = XpProgressionEngine.calculateQuestXp(QuestDifficulty.easy, 30);
-      expect(easyXp, 25); // base 20 + 5
+    test(
+      'calculateQuestXp awards appropriate XP per difficulty and duration',
+      () {
+        final easyXp = XpProgressionEngine.calculateQuestXp(
+          QuestDifficulty.easy,
+          30,
+        );
+        expect(easyXp, 25); // base 20 + 5
 
-      final epicXp = XpProgressionEngine.calculateQuestXp(QuestDifficulty.epic, 60);
-      expect(epicXp, 110); // base 100 + 10
-    });
+        final epicXp = XpProgressionEngine.calculateQuestXp(
+          QuestDifficulty.epic,
+          60,
+        );
+        expect(epicXp, 110); // base 100 + 10
+      },
+    );
   });
 
   group('StreakEngine Tests', () {
@@ -67,20 +76,23 @@ void main() {
       expect(updated.activeDaysCount, 4);
     });
 
-    test('Missed 1 day with streak freeze consumes freeze and preserves streak', () {
-      const current = StreakInfo(
-        currentStreak: 7,
-        longestStreak: 7,
-        lastActiveDate: '2026-11-08',
-        freezesRemaining: 1,
-      );
-      final updated = StreakEngine.updateStreak(
-        currentStreak: current,
-        todayDate: DateTime(2026, 11, 10), // 2 days gap
-      );
-      expect(updated.currentStreak, 7);
-      expect(updated.freezesRemaining, 0);
-      expect(updated.isProtectedToday, true);
-    });
+    test(
+      'Missed 1 day with streak freeze consumes freeze and preserves streak',
+      () {
+        const current = StreakInfo(
+          currentStreak: 7,
+          longestStreak: 7,
+          lastActiveDate: '2026-11-08',
+          freezesRemaining: 1,
+        );
+        final updated = StreakEngine.updateStreak(
+          currentStreak: current,
+          todayDate: DateTime(2026, 11, 10), // 2 days gap
+        );
+        expect(updated.currentStreak, 7);
+        expect(updated.freezesRemaining, 0);
+        expect(updated.isProtectedToday, true);
+      },
+    );
   });
 }

@@ -4,11 +4,7 @@ abstract class AppException implements Exception {
   final int? statusCode;
   final dynamic details;
 
-  const AppException({
-    required this.message,
-    this.statusCode,
-    this.details,
-  });
+  const AppException({required this.message, this.statusCode, this.details});
 
   @override
   String toString() => '$runtimeType: $message (code: $statusCode)';

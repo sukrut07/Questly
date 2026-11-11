@@ -19,7 +19,9 @@ class QuickActionsBar extends StatelessWidget {
           'Quick Actions',
           style: theme.textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.w700,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
         ),
         const SizedBox(height: AppSpacing.sm),
@@ -94,16 +96,16 @@ class _QuickActionButton extends StatelessWidget {
                   width: 1.2,
                 ),
               ),
-              child: Center(
-                child: Icon(icon, color: color, size: 24),
-              ),
+              child: Center(child: Icon(icon, color: color, size: 24)),
             ),
             const SizedBox(height: AppSpacing.xs),
             Text(
               label,
               style: theme.textTheme.labelSmall?.copyWith(
                 fontWeight: FontWeight.w600,
-                color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
               ),
             ),
           ],

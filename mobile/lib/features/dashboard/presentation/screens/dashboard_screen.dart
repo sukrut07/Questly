@@ -36,9 +36,8 @@ class DashboardScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.md),
                   Text(
                     'Failed to load dashboard',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
+                    style: Theme.of(context).textTheme.titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w700),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
@@ -49,7 +48,8 @@ class DashboardScreen extends ConsumerWidget {
                   const SizedBox(height: AppSpacing.lg),
                   AppButton(
                     label: 'Retry',
-                    onPressed: () => ref.read(dashboardStateProvider.notifier).refresh(),
+                    onPressed: () =>
+                        ref.read(dashboardStateProvider.notifier).refresh(),
                   ),
                 ],
               ),
@@ -57,7 +57,8 @@ class DashboardScreen extends ConsumerWidget {
           ),
           data: (data) {
             return RefreshIndicator(
-              onRefresh: () => ref.read(dashboardStateProvider.notifier).refresh(),
+              onRefresh: () =>
+                  ref.read(dashboardStateProvider.notifier).refresh(),
               color: AppColors.darkPrimary,
               child: ListView(
                 padding: AppSpacing.screenPadding,

@@ -14,15 +14,15 @@ class SettingsScreen extends ConsumerWidget {
     final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Settings'),
-      ),
+      appBar: AppBar(title: const Text('Settings')),
       body: ListView(
         padding: AppSpacing.screenPadding,
         children: [
           Text(
             'General',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           AppCard(
@@ -30,7 +30,10 @@ class SettingsScreen extends ConsumerWidget {
             child: Column(
               children: [
                 ListTile(
-                  leading: const Icon(Icons.volume_up_outlined, color: AppColors.darkPrimary),
+                  leading: const Icon(
+                    Icons.volume_up_outlined,
+                    color: AppColors.darkPrimary,
+                  ),
                   title: const Text('Sound Effects & Audio'),
                   trailing: Switch(
                     value: true,
@@ -40,7 +43,10 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const Divider(),
                 ListTile(
-                  leading: const Icon(Icons.vibration_rounded, color: AppColors.darkSecondary),
+                  leading: const Icon(
+                    Icons.vibration_rounded,
+                    color: AppColors.darkSecondary,
+                  ),
                   title: const Text('Haptic Feedback'),
                   trailing: Switch(
                     value: true,
@@ -50,7 +56,10 @@ class SettingsScreen extends ConsumerWidget {
                 ),
                 const Divider(),
                 ListTile(
-                  leading: const Icon(Icons.cloud_sync_outlined, color: AppColors.darkAccent),
+                  leading: const Icon(
+                    Icons.cloud_sync_outlined,
+                    color: AppColors.darkAccent,
+                  ),
                   title: const Text('Cloud Synchronization'),
                   subtitle: const Text('Local offline-first mode active'),
                   trailing: const Icon(Icons.chevron_right_rounded),
@@ -62,7 +71,9 @@ class SettingsScreen extends ConsumerWidget {
           const SizedBox(height: AppSpacing.lg),
           Text(
             'About Questly',
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           const SizedBox(height: AppSpacing.xs),
           AppCard(
@@ -74,7 +85,9 @@ class SettingsScreen extends ConsumerWidget {
                   trailing: Text(
                     AppConstants.appVersion,
                     style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
                     ),
                   ),
                 ),
@@ -84,7 +97,9 @@ class SettingsScreen extends ConsumerWidget {
                   trailing: Text(
                     'Flutter 3 + Riverpod + GoRouter',
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                      color: isDark
+                          ? AppColors.darkPrimary
+                          : AppColors.lightPrimary,
                     ),
                   ),
                 ),

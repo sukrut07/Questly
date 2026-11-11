@@ -48,7 +48,9 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           final allQuests = snapshot.data ?? [];
           final filtered = _selectedCategory == null
               ? allQuests
-              : allQuests.where((q) => q.category == _selectedCategory).toList();
+              : allQuests
+                    .where((q) => q.category == _selectedCategory)
+                    .toList();
 
           return Column(
             children: [
@@ -57,14 +59,21 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                 height: 48,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: AppSpacing.md),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppSpacing.md,
+                  ),
                   children: [
                     FilterChip(
                       label: const Text('All Categories'),
                       selected: _selectedCategory == null,
-                      onSelected: (_) => setState(() => _selectedCategory = null),
-                      backgroundColor: isDark ? AppColors.darkCardSurface : AppColors.lightCardSurface,
-                      selectedColor: AppColors.darkPrimary.withValues(alpha: 0.25),
+                      onSelected: (_) =>
+                          setState(() => _selectedCategory = null),
+                      backgroundColor: isDark
+                          ? AppColors.darkCardSurface
+                          : AppColors.lightCardSurface,
+                      selectedColor: AppColors.darkPrimary.withValues(
+                        alpha: 0.25,
+                      ),
                       checkmarkColor: AppColors.darkPrimary,
                     ),
                     const SizedBox(width: AppSpacing.xs),
@@ -76,11 +85,16 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                           label: Text(cat.displayName),
                           selected: _selectedCategory == cat,
                           onSelected: (_) => setState(() {
-                            _selectedCategory = _selectedCategory == cat ? null : cat;
+                            _selectedCategory = _selectedCategory == cat
+                                ? null
+                                : cat;
                           }),
-                          backgroundColor:
-                              isDark ? AppColors.darkCardSurface : AppColors.lightCardSurface,
-                          selectedColor: AppColors.darkPrimary.withValues(alpha: 0.25),
+                          backgroundColor: isDark
+                              ? AppColors.darkCardSurface
+                              : AppColors.lightCardSurface,
+                          selectedColor: AppColors.darkPrimary.withValues(
+                            alpha: 0.25,
+                          ),
                           checkmarkColor: AppColors.darkPrimary,
                         ),
                       );
@@ -99,12 +113,14 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                         title: 'No Quests Found',
                         description: 'Create a new quest to begin your productivity adventure!',
                         actionLabel: 'Create Quest',
-                        onAction: () => context.pushNamed(RouteNames.createQuest),
+                        onAction: () =>
+                            context.pushNamed(RouteNames.createQuest),
                       )
                     : ListView.separated(
                         padding: AppSpacing.screenPadding,
                         itemCount: filtered.length,
-                        separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: AppSpacing.sm),
                         itemBuilder: (context, index) {
                           final quest = filtered[index];
                           return AppCard(
@@ -120,18 +136,21 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                                     Icon(
                                       quest.category.icon,
                                       size: 18,
-                                      color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                                      color: isDark
+                                          ? AppColors.darkPrimary
+                                          : AppColors.lightPrimary,
                                     ),
                                     const SizedBox(width: AppSpacing.xs),
                                     Expanded(
                                       child: Text(
                                         quest.title,
-                                        style: theme.textTheme.titleMedium?.copyWith(
-                                          fontWeight: FontWeight.w700,
-                                          color: isDark
-                                              ? AppColors.darkTextPrimary
-                                              : AppColors.lightTextPrimary,
-                                        ),
+                                        style: theme.textTheme.titleMedium
+                                            ?.copyWith(
+                                              fontWeight: FontWeight.w700,
+                                              color: isDark
+                                                  ? AppColors.darkTextPrimary
+                                                  : AppColors.lightTextPrimary,
+                                            ),
                                       ),
                                     ),
                                     StatBadge(
@@ -161,7 +180,8 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                                     const SizedBox(width: AppSpacing.xs),
                                     StatBadge(
                                       label: quest.status.displayName,
-                                      color: quest.status == QuestStatus.completed
+                                      color:
+                                          quest.status == QuestStatus.completed
                                           ? AppColors.darkSuccess
                                           : AppColors.darkTextMuted,
                                     ),

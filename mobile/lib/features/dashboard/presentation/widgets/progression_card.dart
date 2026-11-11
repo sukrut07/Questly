@@ -41,14 +41,18 @@ class ProgressionCard extends StatelessWidget {
                         'Level ${levelInfo.currentLevel}',
                         style: theme.textTheme.headlineMedium?.copyWith(
                           fontWeight: FontWeight.w800,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
                       const SizedBox(width: AppSpacing.xs),
                       Text(
                         '• ${levelInfo.stage.stageName}',
                         style: theme.textTheme.titleMedium?.copyWith(
-                          color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                          color: isDark
+                              ? AppColors.darkPrimary
+                              : AppColors.lightPrimary,
                           fontWeight: FontWeight.w600,
                         ),
                       ),
@@ -58,7 +62,9 @@ class ProgressionCard extends StatelessWidget {
                   Text(
                     levelInfo.stage.subtitle,
                     style: theme.textTheme.bodySmall?.copyWith(
-                      color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                      color: isDark
+                          ? AppColors.darkTextSecondary
+                          : AppColors.lightTextSecondary,
                     ),
                   ),
                 ],
@@ -88,10 +94,12 @@ class ProgressionCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary).withValues(alpha: 0.1),
+              color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                  .withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               border: Border.all(
-                color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary).withValues(alpha: 0.2),
+                color: (isDark ? AppColors.darkPrimary : AppColors.lightPrimary)
+                    .withValues(alpha: 0.2),
               ),
             ),
             child: Row(
@@ -99,7 +107,9 @@ class ProgressionCard extends StatelessWidget {
                 Icon(
                   Icons.lock_open_rounded,
                   size: 16,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color: isDark
+                      ? AppColors.darkPrimary
+                      : AppColors.lightPrimary,
                 ),
                 const SizedBox(width: AppSpacing.xs),
                 Expanded(
@@ -107,7 +117,9 @@ class ProgressionCard extends StatelessWidget {
                     levelInfo.nextLevelUnlock,
                     style: theme.textTheme.bodySmall?.copyWith(
                       fontWeight: FontWeight.w600,
-                      color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                      color: isDark
+                          ? AppColors.darkTextPrimary
+                          : AppColors.lightTextPrimary,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer' as dev;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -21,25 +22,28 @@ Future<void> bootstrap({EnvironmentConfig? config}) async {
     );
   };
 
-  await runZonedGuarded(() async {
-    WidgetsFlutterBinding.ensureInitialized();
+  await runZonedGuarded(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
 
-    // Initialize SharedPreferences
-    final sharedPreferences = await SharedPreferences.getInstance();
+      // Initialize SharedPreferences
+      final sharedPreferences = await SharedPreferences.getInstance();
 
-    runApp(
-      ProviderScope(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(sharedPreferences),
-        ],
-        child: const QuestlyApp(),
-      ),
-    );
-  }, (error, stack) {
-    dev.log(
-      'Uncaught async error: $error',
-      name: 'ZoneGuard',
-      stackTrace: stack,
-    );
-  });
+      runApp(
+        ProviderScope(
+          overrides: [
+            sharedPreferencesProvider.overrideWithValue(sharedPreferences),
+          ],
+          child: const QuestlyApp(),
+        ),
+      );
+    },
+    (error, stack) {
+      dev.log(
+        'Uncaught async error: $error',
+        name: 'ZoneGuard',
+        stackTrace: stack,
+      );
+    },
+  );
 }

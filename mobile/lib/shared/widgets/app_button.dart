@@ -68,10 +68,14 @@ class AppButton extends StatelessWidget {
       case AppButtonVariant.primary:
         button = Container(
           decoration: BoxDecoration(
-            gradient: onPressed != null && !isLoading ? AppColors.primaryGradient : null,
+            gradient: onPressed != null && !isLoading
+                ? AppColors.primaryGradient
+                : null,
             borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
             color: onPressed == null || isLoading
-                ? (isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface)
+                ? (isDark
+                      ? AppColors.darkElevatedSurface
+                      : AppColors.lightElevatedSurface)
                 : null,
           ),
           child: Material(
@@ -80,7 +84,9 @@ class AppButton extends StatelessWidget {
               onTap: isLoading ? null : onPressed,
               borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
               child: Padding(
-                padding: padding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                padding:
+                    padding ??
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                 child: childContent,
               ),
             ),
@@ -92,8 +98,12 @@ class AppButton extends StatelessWidget {
         button = ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface,
-            foregroundColor: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            backgroundColor: isDark
+                ? AppColors.darkElevatedSurface
+                : AppColors.lightElevatedSurface,
+            foregroundColor: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
             padding: padding,
           ),
           child: childContent,
@@ -118,8 +128,12 @@ class AppButton extends StatelessWidget {
         button = TextButton(
           onPressed: isLoading ? null : onPressed,
           style: TextButton.styleFrom(
-            padding: padding ?? const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            foregroundColor: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+            padding:
+                padding ??
+                const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            foregroundColor: isDark
+                ? AppColors.darkPrimary
+                : AppColors.lightPrimary,
           ),
           child: childContent,
         );
@@ -129,7 +143,9 @@ class AppButton extends StatelessWidget {
         button = ElevatedButton(
           onPressed: isLoading ? null : onPressed,
           style: ElevatedButton.styleFrom(
-            backgroundColor: isDark ? AppColors.darkError : AppColors.lightError,
+            backgroundColor: isDark
+                ? AppColors.darkError
+                : AppColors.lightError,
             foregroundColor: Colors.white,
             padding: padding,
           ),
@@ -145,10 +161,12 @@ class AppButton extends StatelessWidget {
   }
 
   Color? _getTextColor(bool isDark) {
-    if (variant == AppButtonVariant.primary || variant == AppButtonVariant.danger) {
+    if (variant == AppButtonVariant.primary ||
+        variant == AppButtonVariant.danger) {
       return Colors.white;
     }
-    if (variant == AppButtonVariant.outline || variant == AppButtonVariant.secondary) {
+    if (variant == AppButtonVariant.outline ||
+        variant == AppButtonVariant.secondary) {
       return isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
     }
     if (variant == AppButtonVariant.text) {

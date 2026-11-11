@@ -6,15 +6,15 @@ import 'package:questly/app/app.dart';
 import 'package:questly/app/providers/app_providers.dart';
 
 void main() {
-  testWidgets('Questly app boots and renders initial navigation shell', (WidgetTester tester) async {
+  testWidgets('Questly app boots and renders initial navigation shell', (
+    WidgetTester tester,
+  ) async {
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
 
     await tester.pumpWidget(
       ProviderScope(
-        overrides: [
-          sharedPreferencesProvider.overrideWithValue(prefs),
-        ],
+        overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
         child: const QuestlyApp(),
       ),
     );

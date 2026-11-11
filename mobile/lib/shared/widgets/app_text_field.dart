@@ -43,7 +43,9 @@ class AppTextField extends StatelessWidget {
           Text(
             label!,
             style: theme.textTheme.titleSmall?.copyWith(
-              color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+              color: isDark
+                  ? AppColors.darkTextPrimary
+                  : AppColors.lightTextPrimary,
               fontWeight: FontWeight.w600,
             ),
           ),
@@ -58,7 +60,9 @@ class AppTextField extends StatelessWidget {
           maxLines: maxLines,
           enabled: enabled,
           style: theme.textTheme.bodyLarge?.copyWith(
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
           decoration: InputDecoration(
             hintText: hintText,
@@ -66,7 +70,9 @@ class AppTextField extends StatelessWidget {
                 ? Icon(
                     prefixIcon,
                     size: 20,
-                    color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                    color: isDark
+                        ? AppColors.darkTextMuted
+                        : AppColors.lightTextMuted,
                   )
                 : null,
             suffixIcon: suffixIcon,

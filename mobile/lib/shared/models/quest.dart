@@ -160,7 +160,9 @@ class Quest {
       priority: QuestPriority.fromString(json['priority'] as String?),
       estimatedMinutes: (json['estimatedMinutes'] as num?)?.toInt() ?? 30,
       actualMinutes: (json['actualMinutes'] as num?)?.toInt() ?? 0,
-      dueDate: json['dueDate'] != null ? DateTime.tryParse(json['dueDate'] as String) : null,
+      dueDate: json['dueDate'] != null
+          ? DateTime.tryParse(json['dueDate'] as String)
+          : null,
       status: QuestStatus.fromString(json['status'] as String?),
       xpReward: (json['xpReward'] as num?)?.toInt() ?? 40,
       isRecurring: json['isRecurring'] as bool? ?? false,
@@ -171,7 +173,8 @@ class Quest {
       completedAt: json['completedAt'] != null
           ? DateTime.tryParse(json['completedAt'] as String)
           : null,
-      subtasks: (json['subtasks'] as List<dynamic>?)
+      subtasks:
+          (json['subtasks'] as List<dynamic>?)
               ?.map((s) => QuestSubtask.fromJson(s as Map<String, dynamic>))
               .toList() ??
           const [],

@@ -11,13 +11,15 @@ class XpProgressionEngine {
     if (level <= 1) return 0;
     var total = 0;
     for (var i = 1; i < level; i++) {
-      total += AppConstants.baselineLevelXp + (i - 1) * AppConstants.levelXpStep;
+      total +=
+          AppConstants.baselineLevelXp + (i - 1) * AppConstants.levelXpStep;
     }
     return total;
   }
 
   static int getXpRequiredForNextLevel(int level) {
-    return AppConstants.baselineLevelXp + (level - 1) * AppConstants.levelXpStep;
+    return AppConstants.baselineLevelXp +
+        (level - 1) * AppConstants.levelXpStep;
   }
 
   static LevelInfo calculateLevelInfo(int totalXp) {
@@ -70,7 +72,10 @@ class XpProgressionEngine {
     }
   }
 
-  static int calculateQuestXp(QuestDifficulty difficulty, int estimatedMinutes) {
+  static int calculateQuestXp(
+    QuestDifficulty difficulty,
+    int estimatedMinutes,
+  ) {
     final base = difficulty.xpReward;
     final bonus = ((estimatedMinutes / 30).floor().clamp(0, 2)) * 5;
     return (base + bonus).clamp(10, 150);

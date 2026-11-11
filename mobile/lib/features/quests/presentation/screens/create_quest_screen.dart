@@ -63,7 +63,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
       ref.read(dashboardStateProvider.notifier).refresh();
 
       if (mounted) {
-        context.showSnackBar('✨ Quest "${newQuest.title}" forged successfully!');
+        context.showSnackBar(
+          '✨ Quest "${newQuest.title}" forged successfully!',
+        );
         context.pop();
       }
     } catch (e) {
@@ -80,9 +82,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Forge New Quest'),
-      ),
+      appBar: AppBar(title: const Text('Forge New Quest')),
       body: SafeArea(
         child: Form(
           key: _formKey,
@@ -94,7 +94,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 label: 'Quest Title',
                 hintText: 'e.g. Master Clean Architecture in Flutter',
                 prefixIcon: Icons.flag_rounded,
-                validator: (val) => Validators.required(val, message: 'Title is required'),
+                validator: (val) =>
+                    Validators.required(val, message: 'Title is required'),
               ),
               const SizedBox(height: AppSpacing.md),
 
@@ -110,7 +111,9 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
               // Category Selector
               Text(
                 'Category',
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
               DropdownButtonFormField<QuestCategory>(
@@ -124,14 +127,17 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                     child: Text(cat.displayName),
                   );
                 }).toList(),
-                onChanged: (cat) => setState(() => _category = cat ?? _category),
+                onChanged: (cat) =>
+                    setState(() => _category = cat ?? _category),
               ),
               const SizedBox(height: AppSpacing.md),
 
               // Difficulty Selector
               Text(
                 'Difficulty & XP Reward',
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
               DropdownButtonFormField<QuestDifficulty>(
@@ -157,7 +163,8 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                     ),
                   );
                 }).toList(),
-                onChanged: (diff) => setState(() => _difficulty = diff ?? _difficulty),
+                onChanged: (diff) =>
+                    setState(() => _difficulty = diff ?? _difficulty),
               ),
               const SizedBox(height: AppSpacing.md),
 

@@ -27,7 +27,8 @@ class LocalStorageImpl implements LocalStorage {
   LocalStorageImpl(this._prefs);
 
   @override
-  Future<bool> setString(String key, String value) => _prefs.setString(key, value);
+  Future<bool> setString(String key, String value) =>
+      _prefs.setString(key, value);
 
   @override
   String? getString(String key) => _prefs.getString(key);
@@ -45,13 +46,15 @@ class LocalStorageImpl implements LocalStorage {
   int? getInt(String key) => _prefs.getInt(key);
 
   @override
-  Future<bool> setDouble(String key, double value) => _prefs.setDouble(key, value);
+  Future<bool> setDouble(String key, double value) =>
+      _prefs.setDouble(key, value);
 
   @override
   double? getDouble(String key) => _prefs.getDouble(key);
 
   @override
-  Future<bool> setStringList(String key, List<String> value) => _prefs.setStringList(key, value);
+  Future<bool> setStringList(String key, List<String> value) =>
+      _prefs.setStringList(key, value);
 
   @override
   List<String>? getStringList(String key) => _prefs.getStringList(key);

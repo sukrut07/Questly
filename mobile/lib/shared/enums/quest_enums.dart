@@ -17,7 +17,9 @@ enum QuestCategory {
   static QuestCategory fromString(String? name) {
     if (name == null) return QuestCategory.coding;
     return QuestCategory.values.firstWhere(
-      (e) => e.name.toLowerCase() == name.toLowerCase() || e.displayName.toLowerCase() == name.toLowerCase(),
+      (e) =>
+          e.name.toLowerCase() == name.toLowerCase() ||
+          e.displayName.toLowerCase() == name.toLowerCase(),
       orElse: () => QuestCategory.coding,
     );
   }
@@ -35,12 +37,19 @@ enum QuestDifficulty {
   final int xpReward;
   final Color badgeColor;
 
-  const QuestDifficulty(this.displayName, this.baseMultiplier, this.xpReward, this.badgeColor);
+  const QuestDifficulty(
+    this.displayName,
+    this.baseMultiplier,
+    this.xpReward,
+    this.badgeColor,
+  );
 
   static QuestDifficulty fromString(String? name) {
     if (name == null) return QuestDifficulty.medium;
     return QuestDifficulty.values.firstWhere(
-      (e) => e.name.toLowerCase() == name.toLowerCase() || e.displayName.toLowerCase() == name.toLowerCase(),
+      (e) =>
+          e.name.toLowerCase() == name.toLowerCase() ||
+          e.displayName.toLowerCase() == name.toLowerCase(),
       orElse: () => QuestDifficulty.medium,
     );
   }
@@ -86,17 +95,42 @@ enum QuestStatus {
 }
 
 enum ProgressionStage {
-  explorer('Explorer', 'Getting Started', 1, 'Clean, minimal workspace. Learning quest fundamentals.'),
-  builder('Builder', 'Consistent Progress', 3, 'Rich stats, streak aura, and expanding capabilities.'),
-  strategist('Strategist', 'Advanced Progression', 6, 'Skill tree specialization and quest chains.'),
-  master('Master', 'Long-term Mastery', 10, 'Prestige achievements, golden UI accents, and pinnacle focus.');
+  explorer(
+    'Explorer',
+    'Getting Started',
+    1,
+    'Clean, minimal workspace. Learning quest fundamentals.',
+  ),
+  builder(
+    'Builder',
+    'Consistent Progress',
+    3,
+    'Rich stats, streak aura, and expanding capabilities.',
+  ),
+  strategist(
+    'Strategist',
+    'Advanced Progression',
+    6,
+    'Skill tree specialization and quest chains.',
+  ),
+  master(
+    'Master',
+    'Long-term Mastery',
+    10,
+    'Prestige achievements, golden UI accents, and pinnacle focus.',
+  );
 
   final String stageName;
   final String subtitle;
   final int minLevel;
   final String description;
 
-  const ProgressionStage(this.stageName, this.subtitle, this.minLevel, this.description);
+  const ProgressionStage(
+    this.stageName,
+    this.subtitle,
+    this.minLevel,
+    this.description,
+  );
 
   static ProgressionStage fromLevel(int level) {
     if (level >= 10) return ProgressionStage.master;
@@ -107,19 +141,54 @@ enum ProgressionStage {
 }
 
 enum WorldStage {
-  forgottenOutpost(1, 'The Forgotten Outpost', 'A quiet starter camp under twilight skies', 0),
-  firstSparks(2, 'First Sparks', 'Glowing campfire and awakening crystal embers', 2),
-  awakening(3, 'The Awakening', 'Vibrant flora, stone paths, and rising structures', 5),
-  growingRealm(4, 'The Growing Realm', 'Expanded watchtowers and fortified stone pathways', 10),
-  radiantCitadel(5, 'The Radiant Citadel', 'Gilded landmarks, floating obelisks, and aurora', 20),
-  celestialKingdom(6, 'The Celestial Kingdom', 'Pinnacle realm bathed in stardust', 30);
+  forgottenOutpost(
+    1,
+    'The Forgotten Outpost',
+    'A quiet starter camp under twilight skies',
+    0,
+  ),
+  firstSparks(
+    2,
+    'First Sparks',
+    'Glowing campfire and awakening crystal embers',
+    2,
+  ),
+  awakening(
+    3,
+    'The Awakening',
+    'Vibrant flora, stone paths, and rising structures',
+    5,
+  ),
+  growingRealm(
+    4,
+    'The Growing Realm',
+    'Expanded watchtowers and fortified stone pathways',
+    10,
+  ),
+  radiantCitadel(
+    5,
+    'The Radiant Citadel',
+    'Gilded landmarks, floating obelisks, and aurora',
+    20,
+  ),
+  celestialKingdom(
+    6,
+    'The Celestial Kingdom',
+    'Pinnacle realm bathed in stardust',
+    30,
+  );
 
   final int stageNumber;
   final String title;
   final String subtitle;
   final int minStreakDays;
 
-  const WorldStage(this.stageNumber, this.title, this.subtitle, this.minStreakDays);
+  const WorldStage(
+    this.stageNumber,
+    this.title,
+    this.subtitle,
+    this.minStreakDays,
+  );
 
   static WorldStage fromStreak(int streakDays) {
     if (streakDays >= 30) return WorldStage.celestialKingdom;
@@ -132,9 +201,18 @@ enum WorldStage {
 }
 
 enum WorldPresentationMode {
-  flourishing('Flourishing', 'Active today! Your realm radiates maximum magical energy and light.'),
-  stable('Stable', 'Recent activity maintained. Your structures remain steady and clear.'),
-  resting('Resting', 'World at rest. Complete any quest or focus session to awaken radiance!');
+  flourishing(
+    'Flourishing',
+    'Active today! Your realm radiates maximum magical energy and light.',
+  ),
+  stable(
+    'Stable',
+    'Recent activity maintained. Your structures remain steady and clear.',
+  ),
+  resting(
+    'Resting',
+    'World at rest. Complete any quest or focus session to awaken radiance!',
+  );
 
   final String displayName;
   final String recoveryTip;

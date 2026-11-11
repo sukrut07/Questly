@@ -24,9 +24,11 @@ class StreakInfo {
     try {
       final last = DateTime.parse(lastActiveDate);
       final now = DateTime.now();
-      final diff = DateTime(now.year, now.month, now.day)
-          .difference(DateTime(last.year, last.month, last.day))
-          .inDays;
+      final diff = DateTime(
+        now.year,
+        now.month,
+        now.day,
+      ).difference(DateTime(last.year, last.month, last.day)).inDays;
       if (diff == 0) return WorldPresentationMode.flourishing;
       if (diff <= 1) return WorldPresentationMode.stable;
       return WorldPresentationMode.resting;

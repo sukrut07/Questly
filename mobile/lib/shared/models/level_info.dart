@@ -34,8 +34,11 @@ class LevelInfo {
       currentLevelXp: (json['currentLevelXp'] as num?)?.toInt() ?? 0,
       requiredLevelXp: (json['requiredLevelXp'] as num?)?.toInt() ?? 250,
       progressPercent: (json['progressPercent'] as num?)?.toDouble() ?? 0.0,
-      stage: ProgressionStage.fromLevel((json['currentLevel'] as num?)?.toInt() ?? 1),
-      nextLevelUnlock: json['nextLevelUnlock'] as String? ?? 'Next level rewards',
+      stage: ProgressionStage.fromLevel(
+        (json['currentLevel'] as num?)?.toInt() ?? 1,
+      ),
+      nextLevelUnlock:
+          json['nextLevelUnlock'] as String? ?? 'Next level rewards',
     );
   }
 }

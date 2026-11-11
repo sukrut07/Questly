@@ -22,8 +22,9 @@ class DashboardData {
     required this.productivityScore,
   });
 
-  double get todayProgress =>
-      todayTotalCount > 0 ? (todayCompletedCount / todayTotalCount).clamp(0.0, 1.0) : 0.0;
+  double get todayProgress => todayTotalCount > 0
+      ? (todayCompletedCount / todayTotalCount).clamp(0.0, 1.0)
+      : 0.0;
 }
 
 abstract class DashboardRepository {

@@ -4,7 +4,8 @@ class AppConstants {
 
   static const String appName = 'Questly';
   static const String appVersion = '2.0.0';
-  static const String appTagline = 'Turn your goals into quests. Build your streak. Level up your life.';
+  static const String appTagline =
+      'Turn your goals into quests. Build your streak. Level up your life.';
 
   // Storage Keys
   static const String themeModeKey = 'questly_theme_mode';

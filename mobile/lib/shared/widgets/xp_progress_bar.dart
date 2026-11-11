@@ -35,14 +35,18 @@ class XpProgressBar extends StatelessWidget {
               Text(
                 'XP Progress',
                 style: theme.textTheme.labelMedium?.copyWith(
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
               Text(
                 '$currentXp / $requiredXp XP (${(clampedProgress * 100).toInt()}%)',
                 style: theme.textTheme.labelMedium?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                  color: isDark
+                      ? AppColors.darkPrimary
+                      : AppColors.lightPrimary,
                 ),
               ),
             ],
@@ -53,7 +57,9 @@ class XpProgressBar extends StatelessWidget {
           height: height,
           width: double.infinity,
           decoration: BoxDecoration(
-            color: isDark ? AppColors.darkElevatedSurface : AppColors.lightElevatedSurface,
+            color: isDark
+                ? AppColors.darkElevatedSurface
+                : AppColors.lightElevatedSurface,
             borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
             border: Border.all(
               color: isDark ? AppColors.darkBorder : AppColors.lightBorder,

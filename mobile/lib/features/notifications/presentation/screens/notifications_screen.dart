@@ -14,7 +14,8 @@ class NotificationsScreen extends StatelessWidget {
     final notifications = [
       {
         'title': 'Streak Protected!',
-        'body': 'Your active streak of 5 days is safe today. Keep pushing forward!',
+        'body':
+            'Your active streak of 5 days is safe today. Keep pushing forward!',
         'time': '2h ago',
         'icon': Icons.local_fire_department_rounded,
         'color': AppColors.darkAccent,
@@ -29,13 +30,12 @@ class NotificationsScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Notifications'),
-      ),
+      appBar: AppBar(title: const Text('Notifications')),
       body: ListView.separated(
         padding: AppSpacing.screenPadding,
         itemCount: notifications.length,
-        separatorBuilder: (context, index) => const SizedBox(height: AppSpacing.sm),
+        separatorBuilder: (context, index) =>
+            const SizedBox(height: AppSpacing.sm),
         itemBuilder: (context, index) {
           final item = notifications[index];
           final color = item['color'] as Color;
@@ -61,21 +61,27 @@ class NotificationsScreen extends StatelessWidget {
                         item['title'] as String,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w700,
-                          color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                          color: isDark
+                              ? AppColors.darkTextPrimary
+                              : AppColors.lightTextPrimary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xxs),
                       Text(
                         item['body'] as String,
                         style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                          color: isDark
+                              ? AppColors.darkTextSecondary
+                              : AppColors.lightTextSecondary,
                         ),
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
                         item['time'] as String,
                         style: theme.textTheme.labelSmall?.copyWith(
-                          color: isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                          color: isDark
+                              ? AppColors.darkTextMuted
+                              : AppColors.lightTextMuted,
                         ),
                       ),
                     ],

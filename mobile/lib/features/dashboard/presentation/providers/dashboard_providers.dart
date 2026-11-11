@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
@@ -21,4 +22,6 @@ class DashboardNotifier extends AsyncNotifier<DashboardData> {
 }
 
 final dashboardStateProvider =
-    AsyncNotifierProvider<DashboardNotifier, DashboardData>(DashboardNotifier.new);
+    AsyncNotifierProvider<DashboardNotifier, DashboardData>(
+      DashboardNotifier.new,
+    );

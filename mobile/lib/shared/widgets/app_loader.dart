@@ -6,11 +6,7 @@ class AppLoader extends StatelessWidget {
   final String? message;
   final double size;
 
-  const AppLoader({
-    super.key,
-    this.message,
-    this.size = 36.0,
-  });
+  const AppLoader({super.key, this.message, this.size = 36.0});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +32,9 @@ class AppLoader extends StatelessWidget {
             Text(
               message!,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                color: isDark
+                    ? AppColors.darkTextSecondary
+                    : AppColors.lightTextSecondary,
               ),
               textAlign: TextAlign.center,
             ),

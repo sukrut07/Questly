@@ -65,18 +65,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Container(
                           width: 120,
                           height: 120,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             gradient: AppColors.primaryGradient,
                           ),
-                          child: Icon(p['icon'] as IconData, size: 60, color: Colors.white),
+                          child: Icon(
+                            p['icon'] as IconData,
+                            size: 60,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(height: AppSpacing.xl),
                         Text(
                           p['title'] as String,
                           style: theme.textTheme.headlineMedium?.copyWith(
                             fontWeight: FontWeight.w800,
-                            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -84,7 +90,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         Text(
                           p['subtitle'] as String,
                           style: theme.textTheme.bodyLarge?.copyWith(
-                            color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                            color: isDark
+                                ? AppColors.darkTextSecondary
+                                : AppColors.lightTextSecondary,
                           ),
                           textAlign: TextAlign.center,
                         ),
@@ -105,15 +113,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     decoration: BoxDecoration(
                       color: active
                           ? AppColors.darkPrimary
-                          : (isDark ? AppColors.darkBorder : AppColors.lightBorder),
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                          : (isDark
+                                ? AppColors.darkBorder
+                                : AppColors.lightBorder),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusPill,
+                      ),
                     ),
                   );
                 }),
               ),
               const SizedBox(height: AppSpacing.xl),
               AppButton(
-                label: _currentIndex == _pages.length - 1 ? 'Begin Adventure' : 'Continue',
+                label: _currentIndex == _pages.length - 1
+                    ? 'Begin Adventure'
+                    : 'Continue',
                 onPressed: () {
                   if (_currentIndex < _pages.length - 1) {
                     _pageController.nextPage(

@@ -23,9 +23,7 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
     final taskRepo = ref.watch(taskRepositoryProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Daily Tasks'),
-      ),
+      appBar: AppBar(title: const Text('Daily Tasks')),
       body: FutureBuilder<List<QuestSubtask>>(
         future: taskRepo.getDailyTasks(),
         builder: (context, snapshot) {
@@ -59,20 +57,26 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                       children: [
                         Text(
                           'Daily Completion Rate',
-                          style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
                         Text(
                           '$completedCount / ${tasks.length}',
                           style: theme.textTheme.titleSmall?.copyWith(
                             fontWeight: FontWeight.w800,
-                            color: isDark ? AppColors.darkPrimary : AppColors.lightPrimary,
+                            color: isDark
+                                ? AppColors.darkPrimary
+                                : AppColors.lightPrimary,
                           ),
                         ),
                       ],
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     ClipRRect(
-                      borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
+                      borderRadius: BorderRadius.circular(
+                        AppSpacing.radiusPill,
+                      ),
                       child: LinearProgressIndicator(
                         value: progress,
                         minHeight: 8,
@@ -80,7 +84,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                             ? AppColors.darkElevatedSurface
                             : AppColors.lightElevatedSurface,
                         valueColor: AlwaysStoppedAnimation<Color>(
-                          progress >= 1.0 ? AppColors.darkSuccess : AppColors.darkPrimary,
+                          progress >= 1.0
+                              ? AppColors.darkSuccess
+                              : AppColors.darkPrimary,
                         ),
                       ),
                     ),
@@ -92,7 +98,9 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
 
               Text(
                 'Tasks Breakdown',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
               ),
               const SizedBox(height: AppSpacing.xs),
 
@@ -100,7 +108,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                 return Padding(
                   padding: const EdgeInsets.only(bottom: AppSpacing.xs),
                   child: AppCard(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     onTap: () async {
                       await taskRepo.toggleTask(task.id, !task.isCompleted);
                       ref.read(dashboardStateProvider.notifier).refresh();
@@ -111,7 +122,10 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                         Checkbox(
                           value: task.isCompleted,
                           onChanged: (_) async {
-                            await taskRepo.toggleTask(task.id, !task.isCompleted);
+                            await taskRepo.toggleTask(
+                              task.id,
+                              !task.isCompleted,
+                            );
                             ref.read(dashboardStateProvider.notifier).refresh();
                             setState(() {});
                           },
@@ -121,10 +135,16 @@ class _TasksScreenState extends ConsumerState<TasksScreen> {
                           child: Text(
                             task.title,
                             style: theme.textTheme.bodyMedium?.copyWith(
-                              decoration: task.isCompleted ? TextDecoration.lineThrough : null,
+                              decoration: task.isCompleted
+                                  ? TextDecoration.lineThrough
+                                  : null,
                               color: task.isCompleted
-                                  ? (isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted)
-                                  : (isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary),
+                                  ? (isDark
+                                        ? AppColors.darkTextMuted
+                                        : AppColors.lightTextMuted)
+                                  : (isDark
+                                        ? AppColors.darkTextPrimary
+                                        : AppColors.lightTextPrimary),
                             ),
                           ),
                         ),

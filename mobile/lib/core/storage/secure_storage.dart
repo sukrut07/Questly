@@ -12,10 +12,11 @@ class SecureStorageImpl implements SecureStorage {
   final FlutterSecureStorage _storage;
 
   const SecureStorageImpl([FlutterSecureStorage? storage])
-      : _storage = storage ?? const FlutterSecureStorage();
+    : _storage = storage ?? const FlutterSecureStorage();
 
   @override
-  Future<void> write(String key, String value) => _storage.write(key: key, value: value);
+  Future<void> write(String key, String value) =>
+      _storage.write(key: key, value: value);
 
   @override
   Future<String?> read(String key) => _storage.read(key: key);

@@ -14,7 +14,9 @@ import 'package:questly/features/tasks/domain/repositories/task_repository.dart'
 
 /// Provider for raw SharedPreferences (overridden during bootstrap)
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('sharedPreferencesProvider must be overridden in bootstrap');
+  throw UnimplementedError(
+    'sharedPreferencesProvider must be overridden in bootstrap',
+  );
 });
 
 /// Local storage provider wrapping SharedPreferences
@@ -57,7 +59,9 @@ class ThemeModeNotifier extends Notifier<ThemeMode> {
   }
 }
 
-final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
+  ThemeModeNotifier.new,
+);
 
 /// Quest Repository Provider
 final questRepositoryProvider = Provider<QuestRepository>((ref) {

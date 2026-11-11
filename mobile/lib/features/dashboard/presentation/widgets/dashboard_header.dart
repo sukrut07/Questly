@@ -10,10 +10,7 @@ import 'package:questly/shared/widgets/stat_badge.dart';
 class DashboardHeader extends StatelessWidget {
   final UserProfile profile;
 
-  const DashboardHeader({
-    super.key,
-    required this.profile,
-  });
+  const DashboardHeader({super.key, required this.profile});
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +52,9 @@ class DashboardHeader extends StatelessWidget {
                   color: AppColors.darkAccent,
                   borderRadius: BorderRadius.circular(AppSpacing.radiusPill),
                   border: Border.all(
-                    color: isDark ? AppColors.darkBackground : AppColors.lightBackground,
+                    color: isDark
+                        ? AppColors.darkBackground
+                        : AppColors.lightBackground,
                     width: 1.5,
                   ),
                 ),
@@ -82,14 +81,18 @@ class DashboardHeader extends StatelessWidget {
               Text(
                 '$greeting,',
                 style: theme.textTheme.bodySmall?.copyWith(
-                  color: isDark ? AppColors.darkTextSecondary : AppColors.lightTextSecondary,
+                  color: isDark
+                      ? AppColors.darkTextSecondary
+                      : AppColors.lightTextSecondary,
                 ),
               ),
               Text(
                 profile.displayName,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.w700,
-                  color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+                  color: isDark
+                      ? AppColors.darkTextPrimary
+                      : AppColors.lightTextPrimary,
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
@@ -110,7 +113,9 @@ class DashboardHeader extends StatelessWidget {
         IconButton(
           icon: Icon(
             Icons.notifications_none_rounded,
-            color: isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary,
+            color: isDark
+                ? AppColors.darkTextPrimary
+                : AppColors.lightTextPrimary,
           ),
           onPressed: () => context.pushNamed(RouteNames.notifications),
           tooltip: 'Notifications',
