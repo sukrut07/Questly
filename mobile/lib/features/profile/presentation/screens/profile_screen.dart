@@ -124,7 +124,7 @@ class ProfileScreen extends ConsumerWidget {
                         onChanged: (_) {
                           ref.read(themeModeProvider.notifier).toggleTheme();
                         },
-                        activeColor: AppColors.darkPrimary,
+                        activeThumbColor: AppColors.darkPrimary,
                       ),
                     ),
                     const Divider(),

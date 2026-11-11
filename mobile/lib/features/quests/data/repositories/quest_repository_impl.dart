@@ -48,6 +48,8 @@ class QuestRepositoryImpl implements QuestRepository {
     }
   }
 
+  ApiClient? get apiClient => _apiClient;
+
   @override
   Future<List<Quest>> getQuests() async {
     return List.unmodifiable(_localQuests);

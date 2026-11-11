@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:questly/app/providers/app_providers.dart';
-import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/core/extensions/context_extensions.dart';
 import 'package:questly/core/utils/validators.dart';
@@ -27,7 +26,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   QuestCategory _category = QuestCategory.coding;
   QuestDifficulty _difficulty = QuestDifficulty.medium;
-  QuestPriority _priority = QuestPriority.medium;
+  final QuestPriority _priority = QuestPriority.medium;
   bool _isLoading = false;
 
   @override
@@ -79,7 +78,6 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       appBar: AppBar(
@@ -116,7 +114,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
               ),
               const SizedBox(height: AppSpacing.xs),
               DropdownButtonFormField<QuestCategory>(
-                value: _category,
+                initialValue: _category,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.category_rounded),
                 ),
@@ -137,7 +135,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
               ),
               const SizedBox(height: AppSpacing.xs),
               DropdownButtonFormField<QuestDifficulty>(
-                value: _difficulty,
+                initialValue: _difficulty,
                 decoration: const InputDecoration(
                   prefixIcon: Icon(Icons.shield_outlined),
                 ),

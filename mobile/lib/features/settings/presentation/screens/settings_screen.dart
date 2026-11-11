@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/core/constants/app_constants.dart';
@@ -36,7 +35,7 @@ class SettingsScreen extends ConsumerWidget {
                   trailing: Switch(
                     value: true,
                     onChanged: (val) {},
-                    activeColor: AppColors.darkPrimary,
+                    activeThumbColor: AppColors.darkPrimary,
                   ),
                 ),
                 const Divider(),
@@ -46,7 +45,7 @@ class SettingsScreen extends ConsumerWidget {
                   trailing: Switch(
                     value: true,
                     onChanged: (val) {},
-                    activeColor: AppColors.darkSecondary,
+                    activeThumbColor: AppColors.darkSecondary,
                   ),
                 ),
                 const Divider(),
