@@ -117,3 +117,4 @@ From `android-app/src/main/java/com/example/ui/theme/Color.kt`:
 - **Text Muted**: `#6B6E7B` / `#6C738E`
 
 These exact tokens have been ported into `mobile/lib/app/theme/app_colors.dart` and integrated into the Material 3 `ThemeData` configuration.
+

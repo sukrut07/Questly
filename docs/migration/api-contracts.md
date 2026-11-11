@@ -121,3 +121,4 @@ Accept: application/json
 - `POST /focus/sessions`
   - **Body**: `{ "questId": "quest_1", "durationMinutes": 45, "notes": "Deep work sprint" }`
   - **Response**: `{ "sessionId": "foc_123", "xpEarned": 40 }`
+

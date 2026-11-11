@@ -52,3 +52,4 @@ This matrix maps every major subsystem from the original Kotlin Android and Next
 - Dark-first aesthetic with custom deep dark surfaces (`#101114`, `#191B20`, `#22252C`).
 - Dynamic theme toggle in Profile screen persisting via SharedPreferences.
 - Custom typography utilizing Google Fonts `Inter` with platform fallback.
+

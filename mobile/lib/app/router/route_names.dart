@@ -31,3 +31,4 @@ class RoutePaths {
   static const String achievements = '/achievements';
   static const String notifications = '/notifications';
 }
+

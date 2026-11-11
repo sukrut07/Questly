@@ -98,3 +98,4 @@ Navigation utilizes `go_router` with a root navigator and nested `StatefulShellR
 - Maintains navigation state across the 5 primary tabs: **Home**, **Quests**, **Tasks**, **Analytics**, and **Profile**.
 - Root navigator handles modal routes (`createQuest`, `questDetail`, `settings`, `achievements`, `notifications`).
 - Deep-linking prepared via centralized `RoutePaths` and `RouteNames`.
+

@@ -46,3 +46,4 @@ The following features from the original Kotlin Android app will be migrated inc
    - Port the 4 mini-games (`CrystalMaze`, `QuestDefender`, `SnakeGame`, `MemoryMatch`) into Flutter CustomPainter / Flame game canvases.
 4. **Local Database Migration (Drift / SQLite)**:
    - When persistent offline database tables matching Room entities are required, introduce `drift` with DAOs mirroring `QuestDao`, `ProfileDao`, and `FocusSessionDao`.
+
