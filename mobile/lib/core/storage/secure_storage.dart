@@ -12,11 +12,7 @@ class SecureStorageImpl implements SecureStorage {
   final FlutterSecureStorage _storage;
 
   const SecureStorageImpl([FlutterSecureStorage? storage])
-      : _storage = storage ??
-            const FlutterSecureStorage(
-              aOptions: AndroidOptions(encryptedSharedPreferences: true),
-              iOptions: IOSOptions(accessibility: KeychainItemAccessibility.first_unlock),
-            );
+      : _storage = storage ?? const FlutterSecureStorage();
 
   @override
   Future<void> write(String key, String value) => _storage.write(key: key, value: value);

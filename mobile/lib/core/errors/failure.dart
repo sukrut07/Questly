@@ -3,7 +3,7 @@ abstract class Failure {
   final String message;
   final int? code;
 
-  const Failure(this.message, {this.code});
+  const Failure({required this.message, this.code});
 
   @override
   String toString() => '$runtimeType(message: $message, code: $code)';

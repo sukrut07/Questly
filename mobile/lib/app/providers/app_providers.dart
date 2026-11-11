@@ -34,43 +34,30 @@ final apiClientProvider = Provider<ApiClient>((ref) {
   return ApiClient(secureStorage: secureStorage);
 });
 
-/// Theme Mode State Notifier
-class ThemeModeNotifier extends StateNotifier<ThemeMode> {
-  final LocalStorage _localStorage;
-
-  ThemeModeNotifier(this._localStorage) : super(ThemeMode.dark) {
-    _loadThemeMode();
-  }
-
-  void _loadThemeMode() {
-    final saved = _localStorage.getString(AppConstants.themeModeKey);
-    if (saved == 'light') {
-      state = ThemeMode.light;
-    } else if (saved == 'system') {
-      state = ThemeMode.system;
-    } else {
-      state = ThemeMode.dark;
-    }
+/// Theme Mode Notifier using Riverpod 3 Notifier pattern
+class ThemeModeNotifier extends Notifier<ThemeMode> {
+  @override
+  ThemeMode build() {
+    final storage = ref.watch(localStorageProvider);
+    final saved = storage.getString(AppConstants.themeModeKey);
+    if (saved == 'light') return ThemeMode.light;
+    if (saved == 'system') return ThemeMode.system;
+    return ThemeMode.dark;
   }
 
   Future<void> setThemeMode(ThemeMode mode) async {
     state = mode;
-    await _localStorage.setString(AppConstants.themeModeKey, mode.name);
+    final storage = ref.read(localStorageProvider);
+    await storage.setString(AppConstants.themeModeKey, mode.name);
   }
 
   void toggleTheme() {
-    if (state == ThemeMode.dark) {
-      setThemeMode(ThemeMode.light);
-    } else {
-      setThemeMode(ThemeMode.dark);
-    }
+    final next = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    setThemeMode(next);
   }
 }
 
-final themeModeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
-  final storage = ref.watch(localStorageProvider);
-  return ThemeModeNotifier(storage);
-});
+final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(ThemeModeNotifier.new);
 
 /// Quest Repository Provider
 final questRepositoryProvider = Provider<QuestRepository>((ref) {
