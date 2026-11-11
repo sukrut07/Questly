@@ -5,3 +5,4 @@ abstract class FocusRepository {
   Future<FocusSession> saveSession(FocusSession session);
   Future<int> getTotalFocusMinutes();
 }
+

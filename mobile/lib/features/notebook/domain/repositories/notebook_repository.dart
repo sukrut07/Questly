@@ -8,3 +8,4 @@ abstract class NotebookRepository {
   Future<void> togglePin(String id);
   Future<List<NotebookFolder>> getFolders();
 }
+
