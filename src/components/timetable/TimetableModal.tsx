@@ -34,7 +34,7 @@ function TimetableModalForm({
   const [startTime, setStartTime] = useState('09:30');
   const [endTime, setEndTime] = useState('11:00');
   const [locationRoom, setLocationRoom] = useState('');
-  const [slotType, setSlotType] = useState<'lecture' | 'lab' | 'tutorial' | 'study_group'>('lecture');
+  const [slotType, setSlotType] = useState<'lecture' | 'lab' | 'tutorial'>('lecture');
   const [notes, setNotes] = useState('');
 
   const days = [
@@ -169,7 +169,6 @@ function TimetableModalForm({
                 <option value="lecture">Lecture</option>
                 <option value="lab">Laboratory Work</option>
                 <option value="tutorial">Tutorial / Discussion</option>
-                <option value="study_group">Deep Focus Block</option>
               </select>
             </div>
 

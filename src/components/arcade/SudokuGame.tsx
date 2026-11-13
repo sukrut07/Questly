@@ -75,7 +75,7 @@ export function SudokuGame({ onBack }: SudokuProps) {
 
       if (allFilled) {
         setIsCompleted(true);
-        awardXp('arcade_challenge', 'sudoku_solve', 10, 'Sudoku Solved');
+        awardXp('arcade_challenge', 'sudoku_solve', 'Sudoku Solved', 10);
         recordArcadeScore('sudoku', Math.max(1000 - timer * 2, 100));
         sound.playLevelUp();
       }

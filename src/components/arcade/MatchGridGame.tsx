@@ -138,7 +138,7 @@ export function MatchGridGame({ onBack }: MatchGridProps) {
 
       if (newScore >= 500 && !xpAwarded) {
         setXpAwarded(true);
-        awardXp('arcade_challenge', 'match_grid_500', 10, 'Match Grid Target Reached');
+        awardXp('arcade_challenge', 'match_grid_500', 'Match Grid Target Reached', 10);
         sound.playLevelUp();
       }
     }

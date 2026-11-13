@@ -27,7 +27,7 @@ export function ArcadeHub() {
   const todayStart = new Date().setHours(0, 0, 0, 0);
   const todayArcadeXp = xpTransactions
     .filter((tx) => tx.sourceEvent === 'arcade_challenge' && tx.timestamp >= todayStart)
-    .reduce((sum, tx) => sum + tx.amount, 0);
+    .reduce((sum, tx) => sum + tx.xpAmount, 0);
 
   const getHighScore = (type: ArcadeGameType) => {
     const record = arcadeRecords.find((r) => r.gameType === type);

@@ -212,7 +212,7 @@ export function SpaceDefenderGame({ onBack }: SpaceDefenderProps) {
             // XP Milestone award
             if (state.score >= 300 && !xpAwarded) {
               setXpAwarded(true);
-              awardXp('arcade_challenge', 'space_defender_300', 10, 'Space Defender Milestone');
+              awardXp('arcade_challenge', 'space_defender_300', 'Space Defender Milestone', 10);
               sound.playLevelUp();
             }
             break;

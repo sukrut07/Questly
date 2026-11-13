@@ -83,7 +83,7 @@ export function PatternMemoryGame({ onBack }: PatternMemoryProps) {
 
         if (nextRound >= 6 && !xpAwarded) {
           setXpAwarded(true);
-          awardXp('arcade_challenge', 'pattern_memory_round_6', 10, 'Memory Challenge Master');
+          awardXp('arcade_challenge', 'pattern_memory_round_6', 'Memory Challenge Master', 10);
           sound.playLevelUp();
         }
 

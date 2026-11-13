@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useQuestly } from '@/lib/store';
-import { Quest, QuestPriority, Difficulty } from '@/lib/types';
+import { Quest, QuestPriority } from '@/lib/types';
 import {
   CheckSquare,
   Plus,
@@ -278,16 +278,16 @@ export function TasksView() {
                             >
                               <div
                                 className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
-                                  st.completed
+                                  st.isCompleted
                                     ? 'bg-[#B5FF55] border-[#B5FF55] text-[#090A0D]'
                                     : 'border-[#303642] group-hover:border-[#B5FF55]'
                                 }`}
                               >
-                                {st.completed && <CheckCircle2 className="w-3 h-3" />}
+                                {st.isCompleted && <CheckCircle2 className="w-3 h-3" />}
                               </div>
                               <span
                                 className={`${
-                                  st.completed
+                                  st.isCompleted
                                     ? 'text-[#777] line-through'
                                     : 'text-[#D0D0D0] group-hover:text-[#F5F5F0]'
                                 }`}

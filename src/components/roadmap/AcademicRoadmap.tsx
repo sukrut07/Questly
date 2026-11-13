@@ -40,7 +40,7 @@ export function AcademicRoadmap() {
           {LEVEL_CONFIG.map((lvl) => {
             const isUnlocked = currentLevel >= lvl.level;
             const isCurrent = currentLevel === lvl.level;
-            const xpNeeded = lvl.threshold;
+            const xpNeeded = lvl.minXp;
 
             return (
               <div
@@ -77,7 +77,7 @@ export function AcademicRoadmap() {
                 {/* Rank title */}
                 <div className="space-y-1 mb-3">
                   <h4 className="text-sm font-black text-[#F5F5F0] font-display uppercase tracking-tight">
-                    {lvl.rank}
+                    {lvl.title}
                   </h4>
                   <span className="text-[10px] font-mono text-[#A1A1A1] block">
                     {xpNeeded} XP Req

@@ -6,6 +6,7 @@ import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
 import android.widget.RemoteViews
+import org.json.JSONObject
 
 class QuestlyWidgetProvider : AppWidgetProvider() {
 
@@ -25,16 +26,33 @@ class QuestlyWidgetProvider : AppWidgetProvider() {
             appWidgetManager: AppWidgetManager,
             appWidgetId: Int
         ) {
-            val views = RemoteViews(context.packageName, R.layout.questly_widget_layout)
+            val views = RemoteViews(context.packageName, R.layout.widget_small)
 
-            // Read cached widget preferences from SharedPreferences if available
+            // Read JSON snapshot from Flutter SharedPreferences
             val prefs = context.getSharedPreferences("FlutterSharedPreferences", Context.MODE_PRIVATE)
-            val streak = prefs.getLong("flutter.cached_widget_streak", 14L)
-            val completed = prefs.getLong("flutter.cached_widget_completed", 3L)
-            val total = prefs.getLong("flutter.cached_widget_total", 5L)
+            val jsonStr = prefs.getString("flutter.questly_home_widget_data", null)
 
-            views.setTextViewText(R.id.widget_streak_count, streak.toString())
-            views.setTextViewText(R.id.widget_today_status, "$completed / $total Quests Completed")
+            var xp = 0
+            var level = 1
+            var rank = "INITIATE"
+            var streak = 0
+
+            if (jsonStr != null) {
+                try {
+                    val obj = JSONObject(jsonStr)
+                    xp = obj.optInt("totalXp", 0)
+                    level = obj.optInt("userLevel", 1)
+                    rank = obj.optString("academicRank", "INITIATE").uppercase()
+                    streak = obj.optInt("streakDays", 0)
+                } catch (e: Exception) {
+                    // fallback to defaults
+                }
+            }
+
+            views.setTextViewText(R.id.widget_title, "QUESTLY")
+            views.setTextViewText(R.id.widget_streak, "${streak}d 🔥")
+            views.setTextViewText(R.id.widget_xp, "$xp XP")
+            views.setTextViewText(R.id.widget_rank, "LVL $level $rank")
 
             // Setup deep link to launch MainActivity
             val launchIntent = Intent(context, MainActivity::class.java).apply {
@@ -46,10 +64,9 @@ class QuestlyWidgetProvider : AppWidgetProvider() {
                 launchIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
-            views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
+            views.setOnClickPendingIntent(R.id.widget_title, pendingIntent)
 
             appWidgetManager.updateAppWidget(appWidgetId, views)
         }
     }
 }
-
