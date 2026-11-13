@@ -329,3 +329,4 @@ export function CrossMathGame({ onBack }: CrossMathProps) {
     </div>
   );
 }
+

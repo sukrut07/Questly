@@ -400,3 +400,4 @@ export function MathSprintGame({ onBack }: MathSprintProps) {
     </div>
   );
 }
+

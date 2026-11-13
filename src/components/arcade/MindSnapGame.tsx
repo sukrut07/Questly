@@ -333,3 +333,4 @@ export function MindSnapGame({ onBack }: MindSnapProps) {
     </div>
   );
 }
+
