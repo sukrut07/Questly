@@ -77,3 +77,4 @@ The audit confirms the following 6 core academic workflows are missing or incomp
 4. Redesign `HomeDashboard.tsx` with clean editorial hierarchy and zero AI slop.
 5. Provide dedicated tabs for **Subjects & Syllabus**, **Planner & Timetable**, **Inbox**, **Focus**, and **Analytics**.
 6. Verify locally in browser, execute end-to-end tests, and capture live demo results.
+

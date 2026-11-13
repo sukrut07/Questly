@@ -73,3 +73,4 @@
   2. *Reflect:* Inspect incomplete or carried-over tasks with options to defer, drop, or reprioritize.
   3. *Align:* Review upcoming deadlines for the following 7 days.
   4. *Commit:* Set top 3 academic priorities for the new week.
+

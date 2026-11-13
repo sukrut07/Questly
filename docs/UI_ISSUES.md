@@ -51,3 +51,4 @@
 - **Contrast Ratios:** Muted text (`text-zinc-500` on dark surfaces) in some modal footers drops below 4.5:1. Updated to `text-zinc-400` to guarantee $\ge 5.2:1$.
 - **Focus Rings:** Ensure all interactive elements, modal inputs, and command palette items feature high-visibility outline rings (`focus-visible:ring-2 focus-visible:ring-lime-400 focus-visible:outline-none`).
 - **Escape Key Handling:** Every modal and popover must dismiss on `Escape` keypress.
+
