@@ -1,22 +1,25 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { Space_Grotesk, Space_Mono } from 'next/font/google';
 import './globals.css';
 import { QuestlyProvider } from '@/lib/store';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
+const spaceGrotesk = Space_Grotesk({
+  variable: '--font-sans',
   subsets: ['latin'],
+  display: 'swap',
 });
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
+const spaceMono = Space_Mono({
+  variable: '--font-mono',
   subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: 'Questly — The Living Productivity Game',
+  title: 'Questly — Personal Academic & Productivity Operating System',
   description:
-    'Build habits, complete quests, and watch your kingdom evolve with every minute of deep focus.',
+    'Make progress. Make it count. Questly brings your tasks, learning goals, checklists, and daily progress into one system you control.',
   icons: {
     icon: '/favicon.ico',
   },
@@ -28,8 +31,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${geistSans.variable} ${geistMono.variable} dark h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-theme-main text-theme-main selection:bg-purple-600 selection:text-white">
+    <html lang="en" className={`${spaceGrotesk.variable} ${spaceMono.variable} dark h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-theme-main text-theme-main selection:bg-[#B5FF55] selection:text-[#101010] font-sans">
         <QuestlyProvider>{children}</QuestlyProvider>
       </body>
     </html>

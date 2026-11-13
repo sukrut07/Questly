@@ -1,4 +1,4 @@
-export type SubjectColor = '#A3E635' | '#C084FC' | '#38BDF8' | '#F59E0B' | '#FB7185' | '#34D399';
+export type SubjectColor = '#B5FF55' | '#B9A3FF' | '#62D9FF' | '#FF806B' | '#FFD76A' | '#34D399';
 
 export interface TopicChecklistItem {
   id: string;
@@ -31,7 +31,7 @@ export interface AcademicSubject {
   code: string;
   instructorName?: string;
   colorHex: SubjectColor;
-  iconName: string;
+  iconName?: string;
   credits: number;
   targetGrade?: string;
   syllabusProgress: number; // 0 to 100
@@ -118,21 +118,20 @@ export interface AcademicInboxItem {
   createdAt: number;
 }
 
-export interface AcademicTemplate {
-  id: string;
+export type DashboardWidgetId =
+  | 'workload'
+  | 'focus_chamber'
+  | 'tasks_list'
+  | 'subjects_tree'
+  | 'deadlines_radar'
+  | 'quick_capture';
+
+export interface DashboardWidgetConfig {
+  id: DashboardWidgetId;
   title: string;
-  category: 'dsa' | 'exam_prep' | 'research' | 'math' | 'project';
   description: string;
-  estimatedWeeks: number;
-  totalTasks: number;
-  subjectCode: string;
-  tasks: Array<{
-    title: string;
-    taskType: TaskType;
-    estimatedMinutes: number;
-    priority: QuestPriority;
-    subtasks: string[];
-  }>;
+  isEnabled: boolean;
+  orderIndex: number;
 }
 
 export type AcademicRank =
@@ -147,7 +146,7 @@ export type AcademicRank =
 export interface UserProfile {
   id: string;
   displayName: string;
-  academicRole: string; // e.g. "Computer Science • Semester 3"
+  academicRole: string;
   avatarId: string;
   academicRank: AcademicRank;
   level: number;
@@ -205,11 +204,12 @@ export interface DailyActivity {
 
 export interface AppSettings {
   theme: 'dark' | 'light' | 'system';
-  dailyFocusTargetMinutes: number; // e.g. 180 (3 hrs)
-  dailyTaskTargetCount: number;    // e.g. 5
+  dailyFocusTargetMinutes: number;
+  dailyTaskTargetCount: number;
   soundEnabled: boolean;
-  soundVolume: number; // 0 to 1
+  soundVolume: number;
   reducedMotion: boolean;
   compactDensity: boolean;
   weekStartDay: 'monday' | 'sunday';
+  showGraphBackground: boolean;
 }

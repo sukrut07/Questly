@@ -9,30 +9,29 @@ import {
   AcademicDeadline,
   TimetableSlot,
   AcademicInboxItem,
-  AcademicTemplate,
   FocusSession,
   DailyActivity,
   Achievement,
   AppSettings,
-  AcademicRank,
+  DashboardWidgetConfig,
+  DashboardWidgetId,
 } from './types';
 import {
   INITIAL_USER,
   INITIAL_STREAK,
   INITIAL_SETTINGS,
+  INITIAL_WIDGETS,
   INITIAL_SUBJECTS,
   INITIAL_QUESTS,
   INITIAL_DEADLINES,
   INITIAL_TIMETABLE,
   INITIAL_INBOX,
-  INITIAL_TEMPLATES,
   INITIAL_FOCUS_SESSIONS,
   INITIAL_ACTIVITY_HISTORY,
   INITIAL_ACHIEVEMENTS,
 } from './initialData';
 import {
   calculateLevelFromTotalXp,
-  calculateAcademicRank,
   getTodayDateString,
   getRelativeDateString,
   calculateWorkloadBalance,
@@ -41,7 +40,8 @@ import {
 import { sound } from '@/common/SoundService';
 import { fireCelebrationConfetti } from '@/common/Confetti';
 
-export type AppTab = 'home' | 'planner' | 'subjects' | 'inbox' | 'focus' | 'analytics' | 'profile';
+export type AppMode = 'landing' | 'app';
+export type AppTab = 'home' | 'tasks' | 'subjects' | 'planner' | 'inbox' | 'focus' | 'analytics' | 'settings';
 
 export interface ToastData {
   id: string;
@@ -52,7 +52,9 @@ export interface ToastData {
 }
 
 interface QuestlyContextValue {
-  // Navigation & UI Modals
+  // Mode & Navigation
+  mode: AppMode;
+  setMode: (mode: AppMode) => void;
   currentTab: AppTab;
   setCurrentTab: (tab: AppTab) => void;
   activeModal: string | null;
@@ -75,7 +77,7 @@ interface QuestlyContextValue {
   deadlines: AcademicDeadline[];
   timetable: TimetableSlot[];
   inbox: AcademicInboxItem[];
-  templates: AcademicTemplate[];
+  widgets: DashboardWidgetConfig[];
   focusSessions: FocusSession[];
   activityHistory: DailyActivity[];
   achievements: Achievement[];
@@ -93,11 +95,16 @@ interface QuestlyContextValue {
   deleteQuest: (questId: string) => void;
   toggleSubtask: (questId: string, subtaskId: string) => void;
 
-  // Subject Actions
-  toggleTopicChecklist: (subjectId: string, moduleId: string, topicId: string, checklistId: string) => void;
-  addSubject: (subject: AcademicSubject) => void;
+  // Subject, Module & Topic Actions
+  addSubject: (subject: Omit<AcademicSubject, 'id' | 'syllabusProgress' | 'modules'>) => void;
   updateSubject: (subject: AcademicSubject) => void;
   deleteSubject: (subjectId: string) => void;
+  addModule: (subjectId: string, title: string) => void;
+  deleteModule: (subjectId: string, moduleId: string) => void;
+  addTopic: (subjectId: string, moduleId: string, topicData: { title: string; difficulty: 'beginner' | 'intermediate' | 'advanced'; estimatedMinutes: number }) => void;
+  deleteTopic: (subjectId: string, moduleId: string, topicId: string) => void;
+  addChecklistItem: (subjectId: string, moduleId: string, topicId: string, title: string) => void;
+  toggleTopicChecklist: (subjectId: string, moduleId: string, topicId: string, checklistId: string) => void;
 
   // Inbox Actions
   addInboxItem: (item: Omit<AcademicInboxItem, 'id' | 'createdAt'>) => void;
@@ -106,10 +113,12 @@ interface QuestlyContextValue {
 
   // Deadline Actions
   toggleDeadline: (id: string) => void;
-  addDeadline: (deadline: AcademicDeadline) => void;
+  addDeadline: (deadline: Omit<AcademicDeadline, 'id' | 'isCompleted'>) => void;
+  deleteDeadline: (id: string) => void;
 
-  // Template Actions
-  instantiateTemplate: (templateId: string, targetSubjectId?: string) => void;
+  // Widget Manager Actions
+  toggleWidget: (id: DashboardWidgetId) => void;
+  reorderWidgets: (newWidgets: DashboardWidgetConfig[]) => void;
 
   // Focus Actions
   recordFocusSession: (session: {
@@ -123,7 +132,7 @@ interface QuestlyContextValue {
     notes?: string;
   }) => void;
 
-  // Backup & Settings
+  // Profile & Settings
   updateProfile: (updates: Partial<UserProfile>) => void;
   updateSettings: (updates: Partial<AppSettings>) => void;
   resetAllData: () => void;
@@ -132,11 +141,12 @@ interface QuestlyContextValue {
   importDataJson: (json: string) => { success: boolean; message: string };
 }
 
-const STORAGE_KEY = 'questly_academic_state_v3';
+const STORAGE_KEY = 'questly_user_workspace_v4';
 
 const QuestlyContext = createContext<QuestlyContextValue | null>(null);
 
 export function QuestlyProvider({ children }: { children: React.ReactNode }) {
+  const [mode, setMode] = useState<AppMode>('landing');
   const [currentTab, setCurrentTab] = useState<AppTab>('home');
   const [activeModal, setActiveModal] = useState<string | null>(null);
   const [commandPaletteOpen, setCommandPaletteOpen] = useState(false);
@@ -145,7 +155,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<ToastData | null>(null);
   const [isHydrated, setIsHydrated] = useState(false);
 
-  // Core Academic Data States
+  // Core User Data States
   const [user, setUser] = useState<UserProfile>(INITIAL_USER);
   const [streak, setStreak] = useState<StreakInfo>(INITIAL_STREAK);
   const [subjects, setSubjects] = useState<AcademicSubject[]>(INITIAL_SUBJECTS);
@@ -153,13 +163,13 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
   const [deadlines, setDeadlines] = useState<AcademicDeadline[]>(INITIAL_DEADLINES);
   const [timetable, setTimetable] = useState<TimetableSlot[]>(INITIAL_TIMETABLE);
   const [inbox, setInbox] = useState<AcademicInboxItem[]>(INITIAL_INBOX);
-  const [templates] = useState<AcademicTemplate[]>(INITIAL_TEMPLATES);
+  const [widgets, setWidgets] = useState<DashboardWidgetConfig[]>(INITIAL_WIDGETS);
   const [focusSessions, setFocusSessions] = useState<FocusSession[]>(INITIAL_FOCUS_SESSIONS);
   const [activityHistory, setActivityHistory] = useState<DailyActivity[]>(INITIAL_ACTIVITY_HISTORY);
   const [achievements, setAchievements] = useState<Achievement[]>(INITIAL_ACHIEVEMENTS);
   const [settings, setSettings] = useState<AppSettings>(INITIAL_SETTINGS);
 
-  // Sync sound settings with SoundService
+  // Sync sound settings
   useEffect(() => {
     sound.enabled = settings.soundEnabled;
     sound.volume = settings.soundVolume;
@@ -187,7 +197,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     }
   }, [settings.theme]);
 
-  // Keyboard shortcut listener for Command Palette (Cmd/Ctrl + K)
+  // Command palette hotkey listener (Cmd+K / Ctrl+K)
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
@@ -209,6 +219,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       if (saved) {
         const parsed = JSON.parse(saved);
         queueMicrotask(() => {
+          if (parsed.mode) setMode(parsed.mode);
           if (parsed.user) setUser(parsed.user);
           if (parsed.streak) setStreak(parsed.streak);
           if (parsed.subjects) setSubjects(parsed.subjects);
@@ -216,6 +227,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
           if (parsed.deadlines) setDeadlines(parsed.deadlines);
           if (parsed.timetable) setTimetable(parsed.timetable);
           if (parsed.inbox) setInbox(parsed.inbox);
+          if (parsed.widgets) setWidgets(parsed.widgets);
           if (parsed.focusSessions) setFocusSessions(parsed.focusSessions);
           if (parsed.activityHistory) setActivityHistory(parsed.activityHistory);
           if (parsed.achievements) setAchievements(parsed.achievements);
@@ -232,11 +244,12 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     });
   }, []);
 
-  // Save to localStorage on state changes
+  // Persist state to localStorage
   useEffect(() => {
     if (!isHydrated) return;
     try {
       const payload = {
+        mode,
         user,
         streak,
         subjects,
@@ -244,6 +257,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         deadlines,
         timetable,
         inbox,
+        widgets,
         focusSessions,
         activityHistory,
         achievements,
@@ -255,6 +269,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     }
   }, [
     isHydrated,
+    mode,
     user,
     streak,
     subjects,
@@ -262,13 +277,13 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     deadlines,
     timetable,
     inbox,
+    widgets,
     focusSessions,
     activityHistory,
     achievements,
     settings,
   ]);
 
-  // Toast handler
   const showToast = useCallback((data: Omit<ToastData, 'id'>) => {
     const id = `toast_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     setToast({ ...data, id });
@@ -278,7 +293,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
   }, []);
 
-  // XP Granting & Level Progression helper
+  // XP Granting & Level Progression
   const awardXp = useCallback(
     (amount: number, reason: string) => {
       setUser((prevUser) => {
@@ -290,7 +305,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
           fireCelebrationConfetti();
           showToast({
             title: `Advanced to Level ${levelData.level}!`,
-            subtitle: `You earned the academic rank: ${levelData.academicRank}`,
+            subtitle: `Academic Rank: ${levelData.academicRank}`,
             xp: amount,
             type: 'level_up',
           });
@@ -341,7 +356,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     [showToast]
   );
 
-  // Workload balance memo
+  // Workload balance computation
   const workload = useMemo(() => {
     return calculateWorkloadBalance(quests, settings.dailyFocusTargetMinutes);
   }, [quests, settings.dailyFocusTargetMinutes]);
@@ -368,10 +383,8 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         )
       );
 
-      // Award XP
       awardXp(target.xpReward, target.title);
 
-      // Update daily activity task counter
       const todayStr = getTodayDateString();
       setActivityHistory((prev) => {
         const existingIdx = prev.findIndex((a) => a.date === todayStr);
@@ -389,7 +402,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
               date: todayStr,
               focusMinutes: 0,
               tasksCompleted: 1,
-              xpEarned: 0,
+              xpEarned: target.xpReward,
               goalMet: true,
             },
           ];
@@ -427,7 +440,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
 
       setQuests((prev) => [newQuest, ...prev]);
       showToast({
-        title: 'Academic Task Created',
+        title: 'Task Created',
         subtitle: newQuest.title,
         type: 'info',
       });
@@ -459,6 +472,131 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   // Subject Actions
+  const addSubject = useCallback(
+    (subjectData: Omit<AcademicSubject, 'id' | 'syllabusProgress' | 'modules'>) => {
+      sound.playButtonClick();
+      const newSubject: AcademicSubject = {
+        ...subjectData,
+        id: `sub_${Date.now()}`,
+        syllabusProgress: 0,
+        modules: [],
+      };
+      setSubjects((prev) => [...prev, newSubject]);
+      showToast({
+        title: 'Subject Added',
+        subtitle: `${newSubject.code}: ${newSubject.name}`,
+        type: 'success',
+      });
+    },
+    [showToast]
+  );
+
+  const updateSubject = useCallback((updated: AcademicSubject) => {
+    sound.playButtonClick();
+    setSubjects((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+  }, []);
+
+  const deleteSubject = useCallback((subjectId: string) => {
+    sound.playButtonClick();
+    setSubjects((prev) => prev.filter((s) => s.id !== subjectId));
+  }, []);
+
+  const addModule = useCallback((subjectId: string, title: string) => {
+    sound.playButtonClick();
+    setSubjects((prev) =>
+      prev.map((s) => {
+        if (s.id !== subjectId) return s;
+        const newMod = {
+          id: `mod_${Date.now()}`,
+          title,
+          orderIndex: s.modules.length + 1,
+          topics: [],
+        };
+        return { ...s, modules: [...s.modules, newMod] };
+      })
+    );
+  }, []);
+
+  const deleteModule = useCallback((subjectId: string, moduleId: string) => {
+    sound.playButtonClick();
+    setSubjects((prev) =>
+      prev.map((s) => {
+        if (s.id !== subjectId) return s;
+        return { ...s, modules: s.modules.filter((m) => m.id !== moduleId) };
+      })
+    );
+  }, []);
+
+  const addTopic = useCallback(
+    (
+      subjectId: string,
+      moduleId: string,
+      topicData: { title: string; difficulty: 'beginner' | 'intermediate' | 'advanced'; estimatedMinutes: number }
+    ) => {
+      sound.playButtonClick();
+      setSubjects((prev) =>
+        prev.map((s) => {
+          if (s.id !== subjectId) return s;
+          const updatedModules = s.modules.map((m) => {
+            if (m.id !== moduleId) return m;
+            const newTopic = {
+              id: `top_${Date.now()}`,
+              title: topicData.title,
+              difficulty: topicData.difficulty,
+              estimatedMinutes: topicData.estimatedMinutes,
+              isCompleted: false,
+              revisionCount: 0,
+              checklists: [],
+            };
+            return { ...m, topics: [...m.topics, newTopic] };
+          });
+          return { ...s, modules: updatedModules };
+        })
+      );
+    },
+    []
+  );
+
+  const deleteTopic = useCallback((subjectId: string, moduleId: string, topicId: string) => {
+    sound.playButtonClick();
+    setSubjects((prev) =>
+      prev.map((s) => {
+        if (s.id !== subjectId) return s;
+        const updatedModules = s.modules.map((m) => {
+          if (m.id !== moduleId) return m;
+          return { ...m, topics: m.topics.filter((t) => t.id !== topicId) };
+        });
+        return { ...s, modules: updatedModules };
+      })
+    );
+  }, []);
+
+  const addChecklistItem = useCallback(
+    (subjectId: string, moduleId: string, topicId: string, title: string) => {
+      sound.playButtonClick();
+      setSubjects((prev) =>
+        prev.map((s) => {
+          if (s.id !== subjectId) return s;
+          const updatedModules = s.modules.map((m) => {
+            if (m.id !== moduleId) return m;
+            const updatedTopics = m.topics.map((t) => {
+              if (t.id !== topicId) return t;
+              const newChk = {
+                id: `chk_${Date.now()}`,
+                title,
+                isCompleted: false,
+              };
+              return { ...t, checklists: [...t.checklists, newChk] };
+            });
+            return { ...m, topics: updatedTopics };
+          });
+          return { ...s, modules: updatedModules };
+        })
+      );
+    },
+    []
+  );
+
   const toggleTopicChecklist = useCallback(
     (subjectId: string, moduleId: string, topicId: string, checklistId: string) => {
       sound.playButtonClick();
@@ -483,8 +621,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
                 return chk;
               });
 
-              // Check if all checklists in topic are complete
-              const allChecklistsDone = updatedChecklists.every((c) => c.isCompleted);
+              const allChecklistsDone = updatedChecklists.length > 0 && updatedChecklists.every((c) => c.isCompleted);
 
               return {
                 ...top,
@@ -497,7 +634,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
             return { ...mod, topics: updatedTopics };
           });
 
-          // Recalculate syllabus progress
+          // Recalculate syllabus percentage
           let totalTopics = 0;
           let completedTopics = 0;
           updatedModules.forEach((m) => {
@@ -509,7 +646,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
           const newProgress = totalTopics > 0 ? Math.round((completedTopics / totalTopics) * 100) : 0;
 
           if (newlyCompleted) {
-            awardXp(10, 'Topic checklist step mastered');
+            awardXp(10, 'Checklist item mastered');
           }
 
           return {
@@ -523,21 +660,6 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     [awardXp]
   );
 
-  const addSubject = useCallback((subject: AcademicSubject) => {
-    sound.playButtonClick();
-    setSubjects((prev) => [...prev, subject]);
-  }, []);
-
-  const updateSubject = useCallback((updated: AcademicSubject) => {
-    sound.playButtonClick();
-    setSubjects((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
-  }, []);
-
-  const deleteSubject = useCallback((subjectId: string) => {
-    sound.playButtonClick();
-    setSubjects((prev) => prev.filter((s) => s.id !== subjectId));
-  }, []);
-
   // Inbox Actions
   const addInboxItem = useCallback(
     (item: Omit<AcademicInboxItem, 'id' | 'createdAt'>) => {
@@ -549,7 +671,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       };
       setInbox((prev) => [newItem, ...prev]);
       showToast({
-        title: 'Saved to Academic Inbox',
+        title: 'Saved to Inbox',
         subtitle: newItem.title,
         type: 'info',
       });
@@ -574,7 +696,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         description: item.notes || '',
         subjectId: matchedSubject?.id,
         subjectCode: matchedSubject?.code,
-        subjectColorHex: matchedSubject?.colorHex || '#A3E635',
+        subjectColorHex: matchedSubject?.colorHex || '#B5FF55',
         taskType: item.type === 'note' ? 'reading' : 'problem_solving',
         difficulty: 'MEDIUM',
         priority: 'MEDIUM',
@@ -592,7 +714,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     [inbox, subjects, createQuest, deleteInboxItem]
   );
 
-  // Deadlines Actions
+  // Deadline Actions
   const toggleDeadline = useCallback((id: string) => {
     sound.playButtonClick();
     setDeadlines((prev) =>
@@ -600,54 +722,32 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
-  const addDeadline = useCallback((deadline: AcademicDeadline) => {
+  const addDeadline = useCallback((deadlineData: Omit<AcademicDeadline, 'id' | 'isCompleted'>) => {
     sound.playButtonClick();
-    setDeadlines((prev) => [...prev, deadline]);
+    const newDeadline: AcademicDeadline = {
+      ...deadlineData,
+      id: `dead_${Date.now()}`,
+      isCompleted: false,
+    };
+    setDeadlines((prev) => [...prev, newDeadline]);
   }, []);
 
-  // Template Actions
-  const instantiateTemplate = useCallback(
-    (templateId: string, targetSubjectId?: string) => {
-      const tpl = templates.find((t) => t.id === templateId);
-      if (!tpl) return;
+  const deleteDeadline = useCallback((id: string) => {
+    sound.playButtonClick();
+    setDeadlines((prev) => prev.filter((d) => d.id !== id));
+  }, []);
 
-      sound.playQuestComplete();
-      const matchedSubject = subjects.find((s) => s.id === targetSubjectId) || subjects[0];
+  // Widget Manager Actions
+  const toggleWidget = useCallback((id: DashboardWidgetId) => {
+    sound.playButtonClick();
+    setWidgets((prev) =>
+      prev.map((w) => (w.id === id ? { ...w, isEnabled: !w.isEnabled } : w))
+    );
+  }, []);
 
-      const createdQuests: Quest[] = tpl.tasks.map((taskSpec, index) => ({
-        id: `tpl_task_${Date.now()}_${index}`,
-        title: taskSpec.title,
-        description: `Imported from academic template: ${tpl.title}`,
-        subjectId: matchedSubject.id,
-        subjectCode: matchedSubject.code,
-        subjectColorHex: matchedSubject.colorHex,
-        taskType: taskSpec.taskType,
-        difficulty: 'MEDIUM',
-        priority: taskSpec.priority,
-        estimatedMinutes: taskSpec.estimatedMinutes,
-        actualMinutes: 0,
-        dueDate: getRelativeDateString(index + 1),
-        status: 'IN_PROGRESS',
-        xpReward: 35,
-        isRecurring: false,
-        createdAt: Date.now(),
-        completedAt: null,
-        subtasks: taskSpec.subtasks.map((st, sidx) => ({
-          id: `tpl_sub_${Date.now()}_${index}_${sidx}`,
-          title: st,
-          isCompleted: false,
-        })),
-      }));
-
-      setQuests((prev) => [...createdQuests, ...prev]);
-      showToast({
-        title: `Template Applied: ${tpl.title}`,
-        subtitle: `${createdQuests.length} academic tasks added to ${matchedSubject.code}`,
-        type: 'success',
-      });
-    },
-    [templates, subjects, showToast]
-  );
+  const reorderWidgets = useCallback((newWidgets: DashboardWidgetConfig[]) => {
+    setWidgets(newWidgets);
+  }, []);
 
   // Focus Session Recording
   const recordFocusSession = useCallback(
@@ -680,9 +780,8 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       };
 
       setFocusSessions((prev) => [newSession, ...prev]);
-      awardXp(earnedXp, `Completed ${minutes}m deep focus block`);
+      awardXp(earnedXp, `Completed ${minutes}m focus session`);
 
-      // Update today's focus minutes
       const todayStr = getTodayDateString();
       setActivityHistory((prev) => {
         const existingIdx = prev.findIndex((a) => a.date === todayStr);
@@ -710,7 +809,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     [awardXp]
   );
 
-  // Settings & Profile updates
+  // Profile & Settings updates
   const updateProfile = useCallback((updates: Partial<UserProfile>) => {
     setUser((prev) => ({ ...prev, ...updates }));
   }, []);
@@ -727,6 +826,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     setDeadlines(INITIAL_DEADLINES);
     setTimetable(INITIAL_TIMETABLE);
     setInbox(INITIAL_INBOX);
+    setWidgets(INITIAL_WIDGETS);
     setFocusSessions(INITIAL_FOCUS_SESSIONS);
     setActivityHistory(INITIAL_ACTIVITY_HISTORY);
     setAchievements(INITIAL_ACHIEVEMENTS);
@@ -749,6 +849,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       deadlines,
       timetable,
       inbox,
+      widgets,
       focusSessions,
       activityHistory,
       achievements,
@@ -763,6 +864,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     deadlines,
     timetable,
     inbox,
+    widgets,
     focusSessions,
     activityHistory,
     achievements,
@@ -803,9 +905,8 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     try {
       const data = JSON.parse(jsonString);
 
-      // Validate schema
       if (!data.user || !data.quests || !Array.isArray(data.quests)) {
-        return { success: false, message: 'Invalid backup file: missing user or task records.' };
+        return { success: false, message: 'Invalid backup file: missing required records.' };
       }
 
       if (data.user) setUser(data.user);
@@ -815,12 +916,13 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
       if (data.deadlines && Array.isArray(data.deadlines)) setDeadlines(data.deadlines);
       if (data.timetable && Array.isArray(data.timetable)) setTimetable(data.timetable);
       if (data.inbox && Array.isArray(data.inbox)) setInbox(data.inbox);
+      if (data.widgets && Array.isArray(data.widgets)) setWidgets(data.widgets);
       if (data.focusSessions && Array.isArray(data.focusSessions)) setFocusSessions(data.focusSessions);
       if (data.activityHistory && Array.isArray(data.activityHistory)) setActivityHistory(data.activityHistory);
       if (data.achievements && Array.isArray(data.achievements)) setAchievements(data.achievements);
       if (data.settings) setSettings(data.settings);
 
-      return { success: true, message: 'Academic backup successfully restored!' };
+      return { success: true, message: 'Workspace data successfully restored!' };
     } catch (e: any) {
       return { success: false, message: `Failed to parse JSON backup: ${e.message}` };
     }
@@ -829,6 +931,8 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
   return (
     <QuestlyContext.Provider
       value={{
+        mode,
+        setMode,
         currentTab,
         setCurrentTab,
         activeModal,
@@ -849,7 +953,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         deadlines,
         timetable,
         inbox,
-        templates,
+        widgets,
         focusSessions,
         activityHistory,
         achievements,
@@ -862,16 +966,23 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         updateQuest,
         deleteQuest,
         toggleSubtask,
-        toggleTopicChecklist,
         addSubject,
         updateSubject,
         deleteSubject,
+        addModule,
+        deleteModule,
+        addTopic,
+        deleteTopic,
+        addChecklistItem,
+        toggleTopicChecklist,
         addInboxItem,
         deleteInboxItem,
         convertInboxItemToTask,
         toggleDeadline,
         addDeadline,
-        instantiateTemplate,
+        deleteDeadline,
+        toggleWidget,
+        reorderWidgets,
         recordFocusSession,
         updateProfile,
         updateSettings,
