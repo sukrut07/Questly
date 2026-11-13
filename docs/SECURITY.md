@@ -44,3 +44,4 @@ If an attacker attempts to read or mutate another user's goal by tampering with 
 2. **Idempotency Keys**:
    - Every completed activity requires a UUID v4 idempotency key.
    - Retrying network requests under bad connectivity will never generate duplicate XP records.
+

@@ -89,3 +89,4 @@ A PostgreSQL function declared as `SECURITY DEFINER` that:
 5. Updates `profiles.total_xp` and recalculates `profiles.level = FLOOR(SQRT(total_xp / 100)) + 1`.
 6. Upserts `daily_summaries`.
 7. Calls `recalculate_user_streak()`.
+

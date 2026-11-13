@@ -712,3 +712,4 @@ CREATE POLICY "Users can manage own notification preferences" ON public.notifica
   FOR ALL USING (auth.uid() = user_id);
 CREATE POLICY "Users can manage own device tokens" ON public.device_tokens
   FOR ALL USING (auth.uid() = user_id);
+

@@ -38,3 +38,4 @@ file_size_limit = "50MiB"
 
 [analytics]
 enabled = false
+

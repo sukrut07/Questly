@@ -80,3 +80,4 @@ flutter run \
 
 > [!CAUTION]
 > **Never commit or expose `SUPABASE_SERVICE_ROLE_KEY` to client apps.** Only the publishable `anon` key is permitted in browser or mobile bundles. All database operations are secured via Row Level Security (RLS).
+

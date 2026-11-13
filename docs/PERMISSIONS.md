@@ -33,3 +33,4 @@ Questly adheres to a **contextual, strictly opt-in** permissions philosophy.
 | **Camera** | Media | User taps "Scan Document / Whiteboard" in Notebook. | **Optional** | User manually types markdown note or selects existing file. |
 | **Photo Library** | Media | User taps "Attach Image" in Notebook. | **Optional** | Notes remain formatted text and code blocks. |
 | **Health & Fitness** | Health Connect / HealthKit | User opts into automatic workout activity synchronization. | **Optional** | User manually logs fitness quests by tapping the checkmark. |
+

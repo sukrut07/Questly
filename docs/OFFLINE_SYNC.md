@@ -47,3 +47,4 @@ stateDiagram-v2
 3. **Dispatch**: Transmitted to Supabase REST / Edge Functions.
 4. **Success**: Server responds; item marked `synced` and purged during cleanups.
 5. **Failure**: Retry count incremented; status set to `failed` with exponential retry scheduled.
+

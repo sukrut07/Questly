@@ -39,3 +39,4 @@ This document records the Agent Skills, plugins, and dependencies evaluated and 
 | `tailwindcss` | `^4.0.0` | Styling Engine | Modern zero-runtime CSS with custom Matiks design tokens. |
 | `lucide-react` | `^1.62.0` | Iconography | Clean, consistent developer-grade SVG icons. |
 | `canvas-confetti` | `^1.9.4` | Gamification Micro-Effects | Lightweight celebratory particles on quest/duel completion. |
+

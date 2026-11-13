@@ -52,3 +52,4 @@ $$\text{Daily Intensity} = \min\left(4, \left\lfloor \frac{\text{Completed Actio
 * **Level 2**: Moderate activity (2-3 tasks or 30-50 mins focus).
 * **Level 3**: High activity (4-5 tasks or 60-90 mins focus).
 * **Level 4**: Peak mastery ($\ge 6$ tasks or $> 90$ mins focus).
+

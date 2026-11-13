@@ -77,3 +77,4 @@ Content-Type: application/json
 
 * **GET `/rest/v1/streaks?select=*`**: Get current and longest streak with freezes.
 * **GET `/rest/v1/daily_summaries?summary_date=gte.<start_date>&summary_date=lte.<end_date>`**: Retrieve 52-week activity calendar breakdown.
+

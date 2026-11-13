@@ -58,3 +58,4 @@ Questly 2.0 features two complementary widget layers:
 > - **Android**: Enforces a minimum update period of 30 minutes for standard remote updates.
 > - **iOS**: Allocates a daily budget (typically 40-70 timeline reloads per 24-hour cycle).
 > Real-time streaming is neither expected nor permitted by the operating system for home-screen widgets. Updates are pushed whenever the parent Flutter application completes a qualifying quest or focus session.
+

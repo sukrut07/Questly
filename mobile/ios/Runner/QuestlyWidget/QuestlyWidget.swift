@@ -102,3 +102,4 @@ struct QuestlyWidget: Widget {
         .supportedFamilies([.systemSmall, .systemMedium])
     }
 }
+
