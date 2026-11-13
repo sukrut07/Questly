@@ -7,37 +7,108 @@ import {
   Quest,
 } from './types';
 
-export const ACADEMIC_RANKS: Record<AcademicRank, { minLevel: number; title: string; color: string }> = {
-  Initiate: { minLevel: 1, title: 'Initiate Scholar', color: '#71717A' },
-  Scholar: { minLevel: 6, title: 'Semester Scholar', color: '#C084FC' },
-  Practitioner: { minLevel: 11, title: 'Academic Practitioner', color: '#38BDF8' },
-  Specialist: { minLevel: 21, title: 'Coursework Specialist', color: '#A3E635' },
-  Strategist: { minLevel: 36, title: 'Honors Strategist', color: '#F59E0B' },
-  Expert: { minLevel: 51, title: 'Department Fellow', color: '#FB7185' },
-  'Academic Master': { minLevel: 76, title: 'Academic Master', color: '#E4E4E7' },
+export const LEVEL_CONFIG: {
+  level: number;
+  title: AcademicRank;
+  minXp: number;
+  requiredXp: number;
+  color: string;
+  unlockTitle: string;
+  unlockDescription: string;
+}[] = [
+  {
+    level: 1,
+    title: 'Initiate',
+    minXp: 0,
+    requiredXp: 200,
+    color: '#A0A4AE',
+    unlockTitle: 'Core Neon Lime',
+    unlockDescription: 'Standard high-contrast dark neon interface',
+  },
+  {
+    level: 2,
+    title: 'Explorer',
+    minXp: 200,
+    requiredXp: 300,
+    color: '#42DFFF',
+    unlockTitle: 'Electric Cyan Accent',
+    unlockDescription: 'Unlocked Electric Cyan and Violet workspace highlights',
+  },
+  {
+    level: 3,
+    title: 'Builder',
+    minXp: 500,
+    requiredXp: 400,
+    color: '#B5FF55',
+    unlockTitle: 'Graph Dot & Blueprint Grid',
+    unlockDescription: 'Alternate coordinate grid patterns for dashboard and focus modes',
+  },
+  {
+    level: 4,
+    title: 'Strategist',
+    minXp: 900,
+    requiredXp: 500,
+    color: '#FF9C45',
+    unlockTitle: 'Electric Halo Cursor',
+    unlockDescription: 'Interactive glowing cursor trails and proximity cell bursts',
+  },
+  {
+    level: 5,
+    title: 'Specialist',
+    minXp: 1400,
+    requiredXp: 600,
+    color: '#A879FF',
+    unlockTitle: 'Deep Study Audio Chimes',
+    unlockDescription: 'High-fidelity audio feedback on focus completion & leveling',
+  },
+  {
+    level: 6,
+    title: 'Architect',
+    minXp: 2000,
+    requiredXp: 800,
+    color: '#FF5EBB',
+    unlockTitle: 'Neon Obsidian Theme',
+    unlockDescription: 'Ultra-deep pure black OLED dashboard theme with neon magenta borders',
+  },
+  {
+    level: 7,
+    title: 'Master',
+    minXp: 2800,
+    requiredXp: 1200,
+    color: '#538CFF',
+    unlockTitle: 'Academic Master Emblem',
+    unlockDescription: 'Permanent animated golden voltage crest and custom profile flair',
+  },
+];
+
+export const XP_RULES = {
+  TASK_SMALL: 25,
+  TASK_NORMAL: 75,
+  TASK_MAJOR: 100,
+  FOCUS_SESSION: 50,
+  CHECKLIST_COMPLETED: 25,
+  WEEKLY_REVIEW: 50,
+  ARCADE_MIN: 5,
+  ARCADE_MAX: 10,
+  DAILY_ARCADE_CAP: 20,
 };
 
 /**
  * Calculates Academic Rank based on level
  */
 export function calculateAcademicRank(level: number): AcademicRank {
-  if (level >= 76) return 'Academic Master';
-  if (level >= 51) return 'Expert';
-  if (level >= 36) return 'Strategist';
-  if (level >= 21) return 'Specialist';
-  if (level >= 11) return 'Practitioner';
-  if (level >= 6) return 'Scholar';
+  if (level >= 7) return 'Master';
+  if (level >= 6) return 'Architect';
+  if (level >= 5) return 'Specialist';
+  if (level >= 4) return 'Strategist';
+  if (level >= 3) return 'Builder';
+  if (level >= 2) return 'Explorer';
   return 'Initiate';
 }
 
 /**
- * Level progression formula
- * Level 1 starts at 0 XP, requires 250 XP for Level 2
+ * Level progression formula mapping total XP to level, progress, rank, and unlocks
  */
-export function getRequiredXpForLevel(level: number): number {
-  return Math.floor(250 * Math.pow(level, 1.2));
-}
-
 export function calculateLevelFromTotalXp(totalXp: number): {
   level: number;
   currentXp: number;
@@ -45,32 +116,44 @@ export function calculateLevelFromTotalXp(totalXp: number): {
   progressPercent: number;
   academicRank: AcademicRank;
   stage: string;
+  unlockedFeatures: string[];
 } {
-  let level = 1;
-  let remainingXp = totalXp;
+  const safeXp = Math.max(0, totalXp);
 
-  while (true) {
-    const needed = getRequiredXpForLevel(level);
-    if (remainingXp < needed) {
-      const progressPercent = Math.min(100, Math.round((remainingXp / needed) * 100));
-      const rank = calculateAcademicRank(level);
-      let stage = 'EXPLORER';
-      if (level >= 10) stage = 'MASTER';
-      else if (level >= 6) stage = 'STRATEGIST';
-      else if (level >= 3) stage = 'BUILDER';
+  for (let i = LEVEL_CONFIG.length - 1; i >= 0; i--) {
+    const config = LEVEL_CONFIG[i];
+    if (safeXp >= config.minXp) {
+      const xpIntoLevel = safeXp - config.minXp;
+      const progressPercent = Math.min(
+        100,
+        Math.round((xpIntoLevel / config.requiredXp) * 100)
+      );
+
+      // Collect all unlocked features up to current level
+      const unlockedFeatures = LEVEL_CONFIG.slice(0, i + 1).map((c) => c.unlockTitle);
 
       return {
-        level,
-        currentXp: remainingXp,
-        nextLevelXp: needed,
+        level: config.level,
+        currentXp: xpIntoLevel,
+        nextLevelXp: config.requiredXp,
         progressPercent,
-        academicRank: rank,
-        stage,
+        academicRank: config.title,
+        stage: config.title.toUpperCase(),
+        unlockedFeatures,
       };
     }
-    remainingXp -= needed;
-    level++;
   }
+
+  // Fallback to level 1
+  return {
+    level: 1,
+    currentXp: safeXp,
+    nextLevelXp: 200,
+    progressPercent: Math.min(100, Math.round((safeXp / 200) * 100)),
+    academicRank: 'Initiate',
+    stage: 'INITIATE',
+    unlockedFeatures: [LEVEL_CONFIG[0].unlockTitle],
+  };
 }
 
 /**
@@ -79,15 +162,14 @@ export function calculateLevelFromTotalXp(totalXp: number): {
 export function getXpForDifficulty(difficulty: QuestDifficulty): number {
   switch (difficulty) {
     case 'EASY':
-      return 25;
+      return XP_RULES.TASK_SMALL; // 25
     case 'MEDIUM':
-      return 35;
+      return XP_RULES.TASK_NORMAL; // 75
     case 'HARD':
-      return 50;
     case 'EPIC':
-      return 75;
+      return XP_RULES.TASK_MAJOR; // 100
     default:
-      return 35;
+      return XP_RULES.TASK_NORMAL; // 75
   }
 }
 
@@ -100,8 +182,8 @@ export interface WorkloadBalance {
   remainingMinutes: number;
   loadPercentage: number;
   status: 'light' | 'balanced' | 'demanding' | 'overloaded';
-  overloadWarning: boolean;
   statusMessage: string;
+  overloadWarning: boolean;
 }
 
 export function calculateWorkloadBalance(
@@ -114,16 +196,16 @@ export function calculateWorkloadBalance(
   const loadPercentage = Math.round((totalPlannedMinutes / Math.max(1, dailyCapacityMinutes)) * 100);
 
   let status: 'light' | 'balanced' | 'demanding' | 'overloaded' = 'balanced';
+  let statusMessage = 'Workload is well balanced for deep learning.';
   let overloadWarning = false;
-  let statusMessage = 'Planned workload is within healthy capacity.';
 
   if (loadPercentage > 115) {
     status = 'overloaded';
+    statusMessage = 'Over capacity! Schedule overflow may risk cognitive fatigue.';
     overloadWarning = true;
-    statusMessage = `Overloaded by ${totalPlannedMinutes - dailyCapacityMinutes} minutes. Consider deferring lowest priority tasks.`;
   } else if (loadPercentage > 85) {
     status = 'demanding';
-    statusMessage = 'Intense study day planned. Ensure scheduled breaks.';
+    statusMessage = 'Challenging workload today. Stay focused on high-priority items.';
   } else if (loadPercentage < 40) {
     status = 'light';
     statusMessage = 'Light schedule today. Good opportunity for spaced revision.';
@@ -135,63 +217,14 @@ export function calculateWorkloadBalance(
     remainingMinutes,
     loadPercentage,
     status,
-    overloadWarning,
     statusMessage,
+    overloadWarning,
   };
 }
 
 /**
- * Retained for backward compatibility with existing tests
+ * Date Utilities
  */
-export function calculateWorldStage(streakDays: number): number {
-  if (streakDays >= 60) return 6;
-  if (streakDays >= 30) return 5;
-  if (streakDays >= 14) return 4;
-  if (streakDays >= 7) return 3;
-  if (streakDays >= 3) return 2;
-  return 1;
-}
-
-export function calculateProductivityScore(params: {
-  completionRatePercent: number;
-  weeklyFocusMinutes: number;
-  focusTargetMinutes: number;
-  dailyGoalConsistencyPercent: number;
-  streakDays: number;
-}): {
-  totalScore: number;
-  completionScore: number;
-  focusScore: number;
-  goalScore: number;
-  streakScore: number;
-  grade: 'S' | 'A' | 'B' | 'C' | 'D';
-} {
-  const C = Math.min(100, Math.max(0, params.completionRatePercent));
-  const focusTarget = Math.max(60, params.focusTargetMinutes * 5);
-  const F = Math.min(100, Math.max(0, (params.weeklyFocusMinutes / focusTarget) * 100));
-  const G = Math.min(100, Math.max(0, params.dailyGoalConsistencyPercent));
-  const S = Math.min(100, Math.max(0, (params.streakDays / 14) * 100));
-
-  const rawScore = 0.35 * C + 0.3 * F + 0.2 * G + 0.15 * S;
-  const totalScore = Math.round(rawScore);
-
-  let grade: 'S' | 'A' | 'B' | 'C' | 'D' = 'C';
-  if (totalScore >= 90) grade = 'S';
-  else if (totalScore >= 75) grade = 'A';
-  else if (totalScore >= 60) grade = 'B';
-  else if (totalScore >= 40) grade = 'C';
-  else grade = 'D';
-
-  return {
-    totalScore,
-    completionScore: Math.round(0.35 * C),
-    focusScore: Math.round(0.3 * F),
-    goalScore: Math.round(0.2 * G),
-    streakScore: Math.round(0.15 * S),
-    grade,
-  };
-}
-
 export function getTodayDateString(): string {
   const now = new Date();
   const year = now.getFullYear();
@@ -201,17 +234,10 @@ export function getTodayDateString(): string {
 }
 
 export function getRelativeDateString(daysOffset: number): string {
-  const d = new Date();
-  d.setDate(d.getDate() + daysOffset);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
+  const target = new Date();
+  target.setDate(target.getDate() + daysOffset);
+  const year = target.getFullYear();
+  const month = String(target.getMonth() + 1).padStart(2, '0');
+  const day = String(target.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
-}
-
-export function formatMinutes(mins: number): string {
-  if (mins < 60) return `${mins}m`;
-  const hours = Math.floor(mins / 60);
-  const remaining = mins % 60;
-  return remaining > 0 ? `${hours}h ${remaining}m` : `${hours}h`;
 }

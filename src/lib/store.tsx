@@ -15,6 +15,11 @@ import {
   AppSettings,
   DashboardWidgetConfig,
   DashboardWidgetId,
+  XpTransaction,
+  XpSourceEvent,
+  AcademicWorkspace,
+  ArcadeGameType,
+  ArcadeGameRecord,
 } from './types';
 import {
   INITIAL_USER,
@@ -36,12 +41,24 @@ import {
   getRelativeDateString,
   calculateWorkloadBalance,
   WorkloadBalance,
+  XP_RULES,
 } from './progressionEngine';
 import { sound } from '@/common/SoundService';
 import { fireCelebrationConfetti } from '@/common/Confetti';
 
 export type AppMode = 'landing' | 'app';
-export type AppTab = 'home' | 'tasks' | 'subjects' | 'planner' | 'inbox' | 'focus' | 'analytics' | 'profile';
+export type AppTab =
+  | 'home'
+  | 'tasks'
+  | 'subjects'
+  | 'planner'
+  | 'timetable'
+  | 'workspaces'
+  | 'arcade'
+  | 'inbox'
+  | 'focus'
+  | 'analytics'
+  | 'profile';
 
 export interface ToastData {
   id: string;
@@ -82,6 +99,10 @@ interface QuestlyContextValue {
   activityHistory: DailyActivity[];
   achievements: Achievement[];
   settings: AppSettings;
+  workspaces: AcademicWorkspace[];
+  activeWorkspaceId: string | null;
+  xpTransactions: XpTransaction[];
+  arcadeRecords: ArcadeGameRecord[];
   isHydrated: boolean;
 
   // Computed Values
@@ -115,6 +136,31 @@ interface QuestlyContextValue {
   toggleDeadline: (id: string) => void;
   addDeadline: (deadline: Omit<AcademicDeadline, 'id' | 'isCompleted'>) => void;
   deleteDeadline: (id: string) => void;
+
+  // Timetable Actions
+  addTimetableSlot: (slot: Omit<TimetableSlot, 'id'>) => void;
+  updateTimetableSlot: (slot: TimetableSlot) => void;
+  deleteTimetableSlot: (id: string) => void;
+
+  // Workspace Actions
+  createWorkspace: (ws: Omit<AcademicWorkspace, 'id' | 'createdAt'>) => void;
+  updateWorkspace: (ws: AcademicWorkspace) => void;
+  deleteWorkspace: (id: string) => void;
+  setActiveWorkspaceId: (id: string | null) => void;
+
+  // XP & Gamification Actions
+  awardXp: (
+    sourceEventOrAmount: XpSourceEvent | number,
+    idOrReason: string,
+    activityTitleOpt?: string,
+    amountOpt?: number
+  ) => boolean;
+
+  // Arcade Actions
+  recordArcadeScore: (
+    gameType: ArcadeGameType,
+    score: number
+  ) => { xpAwarded: number; isHighScore: boolean };
 
   // Widget Manager Actions
   toggleWidget: (id: DashboardWidgetId) => void;

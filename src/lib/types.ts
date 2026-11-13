@@ -65,6 +65,7 @@ export interface Quest {
   subjectId?: string;
   subjectCode?: string;
   subjectColorHex?: string;
+  workspaceId?: string;
   taskType: TaskType;
   difficulty: QuestDifficulty;
   priority: QuestPriority;
@@ -138,12 +139,12 @@ export interface DashboardWidgetConfig {
 
 export type AcademicRank =
   | 'Initiate'
-  | 'Scholar'
-  | 'Practitioner'
-  | 'Specialist'
+  | 'Explorer'
+  | 'Builder'
   | 'Strategist'
-  | 'Expert'
-  | 'Academic Master';
+  | 'Specialist'
+  | 'Architect'
+  | 'Master';
 
 export interface UserProfile {
   id: string;
@@ -214,4 +215,43 @@ export interface AppSettings {
   compactDensity: boolean;
   weekStartDay: 'monday' | 'sunday';
   showGraphBackground: boolean;
+  activeAccentColor?: 'lime' | 'cyan' | 'purple' | 'orange' | 'pink';
 }
+
+export type XpSourceEvent =
+  | 'task_completed'
+  | 'focus_session'
+  | 'checklist_completed'
+  | 'weekly_review'
+  | 'arcade_challenge';
+
+export interface XpTransaction {
+  id: string;
+  sourceEvent: XpSourceEvent;
+  activityId: string;
+  activityTitle: string;
+  xpAmount: number;
+  timestamp: number;
+}
+
+export interface AcademicWorkspace {
+  id: string;
+  name: string;
+  description: string;
+  colorHex: string;
+  iconName: string;
+  subjectIds: string[];
+  isArchived: boolean;
+  createdAt: number;
+}
+
+export type ArcadeGameType = 'sudoku' | 'space_defender' | 'match_grid' | 'pattern_memory';
+
+export interface ArcadeGameRecord {
+  gameType: ArcadeGameType;
+  highScore: number;
+  gamesPlayed: number;
+  lastPlayedAt: number;
+  xpEarnedToday: number;
+}
+
