@@ -6,7 +6,9 @@ import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/dashboard/domain/models/dashboard_widget_config.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/dashboard/presentation/providers/widget_providers.dart';
 import 'package:questly/features/dashboard/presentation/widgets/active_quests_section.dart';
 import 'package:questly/features/dashboard/presentation/widgets/daily_productivity_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/dashboard_header.dart';
@@ -14,6 +16,7 @@ import 'package:questly/features/dashboard/presentation/widgets/focus_squad_bar.
 import 'package:questly/features/dashboard/presentation/widgets/progression_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/quick_actions_bar.dart';
 import 'package:questly/features/dashboard/presentation/widgets/todays_challenge_banner.dart';
+import 'package:questly/features/dashboard/presentation/widgets/widget_customizer_sheet.dart';
 import 'package:questly/shared/widgets/app_button.dart';
 import 'package:questly/shared/widgets/app_loader.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
@@ -27,6 +30,7 @@ class DashboardScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardState = ref.watch(dashboardStateProvider);
+    final widgetsConfigState = ref.watch(dashboardWidgetsProvider);
 
     return Scaffold(
       backgroundColor: AppColors.darkBase,
@@ -82,6 +86,9 @@ class DashboardScreen extends ConsumerWidget {
                 );
               }
 
+              final activeWidgets = widgetsConfigState.value?.where((w) => w.isVisible).toList() ??
+                  DashboardWidgetConfig.defaultWidgets;
+
               return RefreshIndicator(
                 onRefresh: () =>
                     ref.read(dashboardStateProvider.notifier).refresh(),
@@ -91,55 +98,59 @@ class DashboardScreen extends ConsumerWidget {
                   children: [
                     // Header with Avatar (opens Profile) & XP pill
                     DashboardHeader(profile: data.profile),
-                    const SizedBox(height: AppSpacing.sm),
-
-                    // Focus Squad & Showdown Countdown
-                    const FocusSquadBar(),
-                    const SizedBox(height: AppSpacing.sm),
-
-                    // Today's Challenge Dual Banner (Puzzle & Focus)
-                    const TodaysChallengeBanner(),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Progression Card
-                    ProgressionCard(
-                      levelInfo: data.levelInfo,
-                      streak: data.streak,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Quick Actions Bar (New Quest, Deep Focus, Write Note, Roadmaps)
-                    const QuickActionsBar(),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Daily Productivity Card
-                    DailyProductivityCard(
-                      completedTasks: data.todayCompletedCount,
-                      totalTasks: data.todayTotalCount,
-                      productivityScore: data.productivityScore,
-                      streak: data.streak,
-                    ),
-                    const SizedBox(height: AppSpacing.md),
-
-                    // Compact Heatmap Cadence Card (Preview leading to Insights)
-                    QuestlySectionHeader(
-                      title: 'PRODUCTIVITY CADENCE',
-                      actionLabel: 'VIEW INSIGHTS',
-                      onAction: () => context.go(RoutePaths.insights),
-                    ),
                     const SizedBox(height: AppSpacing.xs),
-                    QuestlyCard(
-                      onTap: () => context.go(RoutePaths.insights),
-                      child: QuestlyHeatmap(
-                        activityData: previewHeatmap,
-                        weeksToShow: 14,
-                        onDateSelected: (_) => context.go(RoutePaths.insights),
-                      ),
-                    ),
-                    const SizedBox(height: AppSpacing.md),
 
-                    // Active Quests Section
-                    ActiveQuestsSection(quests: data.activeQuests),
+                    // Customizer Pill Bar
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'PERSONAL OS',
+                          style: AppTypography.labelSmall.copyWith(
+                            fontFamily: 'Oswald',
+                            letterSpacing: 1.2,
+                            color: AppColors.textTertiary,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () => WidgetCustomizerSheet.show(context),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.tune_rounded,
+                                  size: 14,
+                                  color: AppColors.limePrimary,
+                                ),
+                                const SizedBox(width: 4),
+                                Text(
+                                  'CUSTOMIZE',
+                                  style: AppTypography.labelSmall.copyWith(
+                                    color: AppColors.limePrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Dynamic Ordered Widgets Rendering
+                    for (final widgetConfig in activeWidgets) ...[
+                      _buildWidgetByType(
+                        context,
+                        widgetConfig.type,
+                        data,
+                        previewHeatmap,
+                      ),
+                      const SizedBox(height: AppSpacing.md),
+                    ],
+
                     const SizedBox(height: AppSpacing.xl),
                   ],
                 ),
@@ -149,5 +160,57 @@ class DashboardScreen extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildWidgetByType(
+    BuildContext context,
+    DashboardWidgetType type,
+    dynamic data,
+    Map<String, HeatmapDayData> previewHeatmap,
+  ) {
+    switch (type) {
+      case DashboardWidgetType.focusSquad:
+        return const FocusSquadBar();
+      case DashboardWidgetType.todaysChallenge:
+        return const TodaysChallengeBanner();
+      case DashboardWidgetType.progression:
+        return ProgressionCard(
+          levelInfo: data.levelInfo,
+          streak: data.streak,
+        );
+      case DashboardWidgetType.quickActions:
+        return const QuickActionsBar();
+      case DashboardWidgetType.dailyProductivity:
+        return DailyProductivityCard(
+          completedTasks: data.todayCompletedCount,
+          totalTasks: data.todayTotalCount,
+          productivityScore: data.productivityScore,
+          streak: data.streak,
+        );
+      case DashboardWidgetType.activityHeatmap:
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            QuestlySectionHeader(
+              title: 'PRODUCTIVITY CADENCE',
+              actionLabel: 'VIEW INSIGHTS',
+              onAction: () => context.go(RoutePaths.insights),
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            QuestlyCard(
+              onTap: () => context.go(RoutePaths.insights),
+              child: QuestlyHeatmap(
+                activityData: previewHeatmap,
+                weeksToShow: 14,
+                onDateSelected: (_) => context.go(RoutePaths.insights),
+              ),
+            ),
+          ],
+        );
+      case DashboardWidgetType.activeQuests:
+        return ActiveQuestsSection(quests: data.activeQuests);
+      default:
+        return const SizedBox.shrink();
+    }
   }
 }
