@@ -1,0 +1,138 @@
+# Questly 2.0 — Neon Gamified Redesign & Progression OS
+
+## Executive Overview
+
+Questly 2.0 has been transformed into a gamified academic productivity platform inspired by the visual language of high-performance gaming interfaces (such as Matiks) merged with the information-rich clarity of a modern academic operating system.
+
+The application retains its **zero-fabricated-data** guarantee: no fake tasks, no simulated streaks, and no pre-populated filler metrics. Every level, unlockable theme, and XP point is verified through authentic task completion, focus sessions, and syllabus progress.
+
+---
+
+## Architecture & Visual Identity
+
+### 1. Palette & Typography Tokens
+
+| Token | Hex Code | Visual Application |
+|---|---|---|
+| `--bg-main` | `#090A0D` | Obsidian deep canvas |
+| `--bg-secondary` | `#111319` | Dark charcoal cards & side panels |
+| `--surface-main` | `#171A21` | Elevated component surface |
+| `--surface-elevated` | `#20242D` | Hover states and inputs |
+| `--border-color` | `#303642` | High-contrast structural dividers |
+| `--primary-lime` | `#B5FF55` | Primary brand accent & task completion |
+| `--electric-purple` | `#A879FF` | Secondary accent & syllabus milestones |
+| `--electric-cyan` | `#42DFFF` | Timetable & active session highlight |
+| `--neon-orange` | `#FF9C45` | High priority tags & streak flames |
+| `--neon-pink` | `#FF5EBB` | Special achievements & arcade accents |
+| `font-display` | `Barlow_Condensed` | Bold condensed headers with tight tracking |
+| `font-mono` | `Space_Mono` | Timestamps, coordinates, and telemetry badges |
+
+### 2. Interactive Coordinate Graph Canvas (`InteractiveGraphBackground.tsx`)
+- Canvas-based stable coordinate grid (no translating or shifting lines).
+- Distance-weighted illumination on pointer hover with smooth radial falloff.
+- Multi-colored glowing cursor halo (`NeonCursor.tsx`) with smooth interpolation (`lerp`), touch-device auto-detection, and `prefers-reduced-motion` compliance.
+
+### 3. Questly Lightning Emblem (`QuestlyLogo.tsx`)
+- Original vector SVG emblem featuring a stylized "Q" merged with an electric lightning bolt.
+- Supports `lime`, `cyan`, `purple`, and `orange` glow filter variants.
+
+---
+
+## Progression Layer: Idempotent XP Ledger
+
+### Anti-Gaming & Idempotency Rules
+To prevent cheating by checking and unchecking tasks:
+1. Every XP award writes an immutable record to `xpTransactions`:
+   ```ts
+   export interface XpTransaction {
+     id: string;
+     timestamp: number;
+     sourceEvent: XpSourceEvent;
+     activityId: string;
+     activityTitle: string;
+     xpAmount: number;
+     levelAtTime: number;
+   }
+   ```
+2. When toggling a task, `awardXp` checks if `(sourceEvent, activityId)` already exists. Duplicate claims are rejected.
+3. Uncompleting/reopening a task does not deduct XP from the ledger, but re-checking it does not grant duplicate XP.
+
+### 7-Level Scholar Progression Roadmap
+
+```
+Level 1: Initiate (0 XP)        → Default obsidian canvas & neon lime theme
+Level 2: Explorer (200 XP)      → Electric Purple accent & coordinate crosshair cursor
+Level 3: Builder (500 XP)       → Electric Cyan accent & synthesizer audio pack
+Level 4: Strategist (900 XP)    → High-density isometric graph paper
+Level 5: Specialist (1400 XP)   → Neon Orange accent & particle trails
+Level 6: Architect (2000 XP)    → Cyberpunk Pink accent & tactical soundboard
+Level 7: Master (2800+ XP)      → Golden Scholar badge & gradient cursor halo
+```
+
+---
+
+## Productivity Layer
+
+### 1. Timetable Tracker (`TimetableTrackerView.tsx` & `TimetableModal.tsx`)
+- **Views**: Day View (chronological timeline), Week View (7-column grid), and Agenda View (card list).
+- **Live Indicator**: Detects current day of the week and active class slot based on system clock (`startTime` to `endTime`).
+- **Slot Attributes**: Course code, subject name, room/hall location, session type (`lecture`, `lab`, `tutorial`), and notes.
+
+### 2. Academic Workspaces (`WorkspaceTrackerView.tsx` & `WorkspaceModal.tsx`)
+- Isolate study environments by course, research lab, or exam sprint.
+- Workspaces link specific subjects and filter dashboard tasks, syllabi, and deadlines to the active workspace.
+- Primary workspace switcher with quick "Set Active" controls.
+
+### 3. Atomic Task Engine (`TasksView.tsx`)
+- Filtering by `All`, `Today`, `Urgent`, `Completed`, and by `Subject`.
+- Subtask checklists with instant completion toggles.
+- Integrated "Start Focus Sprint" button launching the Pomodoro chamber.
+
+---
+
+## Play Layer: Questly Arcade (`ArcadeHub.tsx`)
+
+A dedicated cognitive warmup hub providing micro-games designed to stimulate mental agility between study sprints.
+
+### Strict 20 XP Daily Cap
+- To ensure mini-games **never overshadow coursework**, all arcade games draw from a strict **20 XP daily maximum**.
+- Live meter displays `todayArcadeXp / 20 XP`. Games continue to track high scores once the cap is reached, but no further XP is issued.
+
+### 4 Original Mini-Games
+1. **Logic Sudoku (`SudokuGame.tsx`)**: 9x9 numerical grid with validation, mistake tracking (3 strikes), notes mode, and timer.
+2. **Neon Space Defender (`SpaceDefenderGame.tsx`)**: 2D HTML5 canvas retro shooter with alien invaders, neon lasers, keyboard (`A/D`, arrows, Space) and touch controls.
+3. **Neon Match Grid (`MatchGridGame.tsx`)**: 6x6 gem match-3 puzzle with cascading combos and move limit.
+4. **Mind Snap Memory (`PatternMemoryGame.tsx`)**: 4-pad sequence recall (Simon-says) with audio tones and neon glow.
+
+---
+
+## Mobile Home-Screen Widgets (Flutter & Native)
+
+### 1. Multi-Size Widget Family
+- **Small (2x2)**: Streak flame, total XP, scholar level, and daily task completion bar.
+- **Medium (4x2)**: Left column shows XP and flow minutes; right column displays next active task with subject tag.
+- **Large (4x4)**: Complete overview with XP, verified flow time, task fraction, and active timetable class session.
+
+### 2. Implementation Matrix
+- **Shared Data Service**: `mobile/lib/core/widgets/home_widget_service.dart` serializes widget snapshots into `SharedPreferences`.
+- **Android Native**:
+  - `widget_small.xml`, `widget_medium.xml`, `widget_large.xml` in `res/layout/`.
+  - `questly_widget_info.xml` provider meta in `res/xml/`.
+  - `QuestlyWidgetProvider.kt` in `com.questly.mobile`.
+- **iOS Native**:
+  - `QuestlyWidget.swift` in `Runner/QuestlyWidget` utilizing WidgetKit and SwiftUI.
+- **In-App Interactive Preview**:
+  - `mobile/lib/features/dashboard/presentation/widgets/home_widget_preview.dart` with interactive `2x2`, `4x2`, `4x4` size toggles.
+
+---
+
+## Verification & Build Results
+
+### 1. Web Layer (Next.js 16 + React 19 + TypeScript)
+- **TypeScript (`npx tsc --noEmit`)**: 0 errors.
+- **Unit Tests (`npm test`)**: 9/9 passed.
+- **Production Build (`npm run build`)**: Compiled successfully in 2.5s with Turbopack.
+
+### 2. Mobile Layer (Flutter 3.x + Dart)
+- **Static Analysis (`flutter analyze`)**: 0 issues found.
+- **Unit & Widget Tests (`flutter test`)**: 32/32 tests passed.
