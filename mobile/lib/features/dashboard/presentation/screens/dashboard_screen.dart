@@ -86,7 +86,10 @@ class DashboardScreen extends ConsumerWidget {
                 );
               }
 
-              final activeWidgets = widgetsConfigState.value?.where((w) => w.isVisible).toList() ??
+              final activeWidgets =
+                  widgetsConfigState.value
+                      ?.where((w) => w.isVisible)
+                      .toList() ??
                   DashboardWidgetConfig.defaultWidgets;
 
               return RefreshIndicator(
@@ -116,7 +119,10 @@ class DashboardScreen extends ConsumerWidget {
                           onTap: () => WidgetCustomizerSheet.show(context),
                           borderRadius: BorderRadius.circular(12),
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
                             child: Row(
                               children: [
                                 const Icon(
@@ -174,10 +180,7 @@ class DashboardScreen extends ConsumerWidget {
       case DashboardWidgetType.todaysChallenge:
         return const TodaysChallengeBanner();
       case DashboardWidgetType.progression:
-        return ProgressionCard(
-          levelInfo: data.levelInfo,
-          streak: data.streak,
-        );
+        return ProgressionCard(levelInfo: data.levelInfo, streak: data.streak);
       case DashboardWidgetType.quickActions:
         return const QuickActionsBar();
       case DashboardWidgetType.dailyProductivity:

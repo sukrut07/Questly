@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:questly/app/providers/storage_providers.dart';
+import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/features/dashboard/data/repositories/widget_repository.dart';
 import 'package:questly/features/dashboard/domain/models/dashboard_widget_config.dart';
 
@@ -8,27 +10,12 @@ final widgetRepositoryProvider = Provider<WidgetRepository>((ref) {
   return WidgetRepositoryImpl(storage);
 });
 
-final dashboardWidgetsProvider =
-    StateNotifierProvider<DashboardWidgetsNotifier, AsyncValue<List<DashboardWidgetConfig>>>(
-  (ref) => DashboardWidgetsNotifier(ref.watch(widgetRepositoryProvider)),
-);
-
 class DashboardWidgetsNotifier
-    extends StateNotifier<AsyncValue<List<DashboardWidgetConfig>>> {
-  final WidgetRepository _repository;
-
-  DashboardWidgetsNotifier(this._repository) : super(const AsyncValue.loading()) {
-    load();
-  }
-
-  Future<void> load() async {
-    state = const AsyncValue.loading();
-    try {
-      final widgets = await _repository.getWidgets();
-      state = AsyncValue.data(widgets);
-    } catch (e, st) {
-      state = AsyncValue.error(e, st);
-    }
+    extends AsyncNotifier<List<DashboardWidgetConfig>> {
+  @override
+  FutureOr<List<DashboardWidgetConfig>> build() async {
+    final repository = ref.watch(widgetRepositoryProvider);
+    return repository.getWidgets();
   }
 
   Future<void> toggleVisibility(String widgetId, bool isVisible) async {
@@ -40,7 +27,8 @@ class DashboardWidgetsNotifier
     }).toList();
 
     state = AsyncValue.data(updated);
-    await _repository.toggleVisibility(widgetId, isVisible);
+    final repository = ref.read(widgetRepositoryProvider);
+    await repository.toggleVisibility(widgetId, isVisible);
   }
 
   Future<void> reorder(int oldIndex, int newIndex) async {
@@ -59,11 +47,19 @@ class DashboardWidgetsNotifier
     }
 
     state = AsyncValue.data(list);
-    await _repository.reorderWidgets(oldIndex, newIndex);
+    final repository = ref.read(widgetRepositoryProvider);
+    await repository.reorderWidgets(oldIndex, newIndex);
   }
 
   Future<void> restoreDefaults() async {
-    await _repository.restoreDefaults();
-    await load();
+    final repository = ref.read(widgetRepositoryProvider);
+    await repository.restoreDefaults();
+    state = AsyncValue.data(await repository.getWidgets());
   }
 }
+
+final dashboardWidgetsProvider =
+    AsyncNotifierProvider<
+      DashboardWidgetsNotifier,
+      List<DashboardWidgetConfig>
+    >(DashboardWidgetsNotifier.new);

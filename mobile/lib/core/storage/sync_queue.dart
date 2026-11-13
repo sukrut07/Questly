@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:questly/core/storage/local_storage.dart';
 
 enum SyncQueueStatus { pending, syncing, synced, failed }
@@ -8,7 +9,8 @@ enum AppSyncStatus { synced, syncing, offline, pendingChanges, error }
 class SyncQueueItem {
   final String id;
   final String action; // 'create', 'update', 'delete', 'complete'
-  final String entityType; // 'quest', 'habit', 'goal', 'focus', 'note', 'activity'
+  final String
+  entityType; // 'quest', 'habit', 'goal', 'focus', 'note', 'activity'
   final String endpoint;
   final Map<String, dynamic> payload;
   final String idempotencyKey;
@@ -114,14 +116,22 @@ class SyncQueue {
 
   Future<void> enqueue(SyncQueueItem item) async {
     final items = getItems();
-    items.removeWhere((existing) => existing.id == item.id || existing.idempotencyKey == item.idempotencyKey);
+    items.removeWhere(
+      (existing) =>
+          existing.id == item.id ||
+          existing.idempotencyKey == item.idempotencyKey,
+    );
     items.add(item);
     await _saveItems(items);
   }
 
   List<SyncQueueItem> getPendingItems() {
     return getItems()
-        .where((e) => e.status == SyncQueueStatus.pending || e.status == SyncQueueStatus.failed)
+        .where(
+          (e) =>
+              e.status == SyncQueueStatus.pending ||
+              e.status == SyncQueueStatus.failed,
+        )
         .toList();
   }
 
@@ -159,7 +169,11 @@ class SyncQueue {
 
   int getPendingCount() {
     return getItems()
-        .where((e) => e.status == SyncQueueStatus.pending || e.status == SyncQueueStatus.failed)
+        .where(
+          (e) =>
+              e.status == SyncQueueStatus.pending ||
+              e.status == SyncQueueStatus.failed,
+        )
         .length;
   }
 }

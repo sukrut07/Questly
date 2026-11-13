@@ -23,6 +23,7 @@ class AppColors {
 
   static const Color limePrimary = primaryLime;
   static const Color lavenderAccent = lavender;
+  static const Color lavenderSecondary = lavender;
 
   // Backward-compatible aliases
   static const Color darkPrimary = primaryLime;

@@ -59,7 +59,9 @@ class WidgetCustomizerSheet extends ConsumerWidget {
                 ),
                 TextButton(
                   onPressed: () {
-                    ref.read(dashboardWidgetsProvider.notifier).restoreDefaults();
+                    ref
+                        .read(dashboardWidgetsProvider.notifier)
+                        .restoreDefaults();
                   },
                   child: Text(
                     'RESET',
@@ -74,33 +76,46 @@ class WidgetCustomizerSheet extends ConsumerWidget {
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Toggle visibility and drag to reorder personal OS cards.',
-              style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.bodySmall.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             widgetsState.when(
               loading: () => const Center(
                 child: Padding(
                   padding: EdgeInsets.all(AppSpacing.lg),
-                  child: CircularProgressIndicator(color: AppColors.limePrimary),
+                  child: CircularProgressIndicator(
+                    color: AppColors.limePrimary,
+                  ),
                 ),
               ),
               error: (err, _) => Center(
-                child: Text('Failed to load widgets: $err', style: AppTypography.bodySmall),
+                child: Text(
+                  'Failed to load widgets: $err',
+                  style: AppTypography.bodySmall,
+                ),
               ),
               data: (widgets) {
                 return SizedBox(
                   height: 360,
                   child: ReorderableListView.builder(
                     itemCount: widgets.length,
+                    // ignore: deprecated_member_use
                     onReorder: (oldIdx, newIdx) {
-                      ref.read(dashboardWidgetsProvider.notifier).reorder(oldIdx, newIdx);
+                      ref
+                          .read(dashboardWidgetsProvider.notifier)
+                          .reorder(oldIdx, newIdx);
                     },
                     itemBuilder: (context, index) {
                       final widget = widgets[index];
                       return Container(
                         key: ValueKey(widget.id),
                         margin: const EdgeInsets.symmetric(vertical: 4),
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
                         decoration: BoxDecoration(
                           color: AppColors.darkCard,
                           borderRadius: BorderRadius.circular(12),
@@ -132,8 +147,8 @@ class WidgetCustomizerSheet extends ConsumerWidget {
                             ),
                             Switch.adaptive(
                               value: widget.isVisible,
-                              activeColor: AppColors.limePrimary,
-                              activeTrackColor: AppColors.limePrimary.withValues(alpha: 0.4),
+                              activeTrackColor: AppColors.limePrimary
+                                  .withValues(alpha: 0.6),
                               onChanged: (val) {
                                 ref
                                     .read(dashboardWidgetsProvider.notifier)
@@ -151,7 +166,7 @@ class WidgetCustomizerSheet extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             AppButton(
               label: 'DONE',
-              fullWidth: true,
+              isFullWidth: true,
               onPressed: () => Navigator.of(context).pop(),
             ),
           ],

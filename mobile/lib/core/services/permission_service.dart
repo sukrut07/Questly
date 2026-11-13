@@ -12,12 +12,7 @@ enum AppPermissionType {
   healthFitness,
 }
 
-enum AppPermissionStatus {
-  granted,
-  denied,
-  permanentlyDenied,
-  notDetermined,
-}
+enum AppPermissionStatus { granted, denied, permanentlyDenied, notDetermined }
 
 class PermissionRationale {
   final String title;
@@ -45,7 +40,8 @@ class PermissionService {
     ),
     AppPermissionType.exactAlarms: const PermissionRationale(
       title: 'Exact Focus Pomodoro Alarms',
-      whyNeeded: 'Deliver precise alarm chimes when a deep work session finishes.',
+      whyNeeded:
+          'Deliver precise alarm chimes when a deep work session finishes.',
       whatIsAccessed: 'Android exact alarm scheduling service.',
       denialConsequence: 'Timers may chime with a short delay if the device is in low-power sleep.',
     ),
@@ -53,13 +49,15 @@ class PermissionService {
       title: 'Document & Evidence Scanner',
       whyNeeded: 'Capture handwritten study notes, whiteboard diagrams, or workout proof.',
       whatIsAccessed: 'Device camera hardware.',
-      denialConsequence: 'You will need to manually type notes or select pre-existing images.',
+      denialConsequence:
+          'You will need to manually type notes or select pre-existing images.',
     ),
     AppPermissionType.photos: const PermissionRationale(
       title: 'Knowledge Note Attachments',
       whyNeeded: 'Attach diagrams, textbook scans, and screenshots directly inside notebook entries.',
       whatIsAccessed: 'Selected images in your device photo library.',
-      denialConsequence: 'Notes will be limited to Markdown text and code blocks.',
+      denialConsequence:
+          'Notes will be limited to Markdown text and code blocks.',
     ),
     AppPermissionType.healthFitness: const PermissionRationale(
       title: 'Fitness & Movement Tracking (Opt-In)',
@@ -99,7 +97,9 @@ class PermissionService {
           children: [
             Text(
               rationale.whyNeeded,
-              style: AppTypography.bodyMedium.copyWith(color: AppColors.textPrimary),
+              style: AppTypography.bodyMedium.copyWith(
+                color: AppColors.textPrimary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             Container(
@@ -122,7 +122,9 @@ class PermissionService {
                   const SizedBox(height: 2),
                   Text(
                     rationale.whatIsAccessed,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textSecondary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                   const SizedBox(height: AppSpacing.xs),
                   Text(
@@ -135,7 +137,9 @@ class PermissionService {
                   const SizedBox(height: 2),
                   Text(
                     rationale.denialConsequence,
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textTertiary,
+                    ),
                   ),
                 ],
               ),
@@ -147,7 +151,9 @@ class PermissionService {
             onPressed: () => Navigator.of(dialogCtx).pop(false),
             child: Text(
               'NOT NOW',
-              style: AppTypography.labelMedium.copyWith(color: AppColors.textTertiary),
+              style: AppTypography.labelMedium.copyWith(
+                color: AppColors.textTertiary,
+              ),
             ),
           ),
           AppButton(

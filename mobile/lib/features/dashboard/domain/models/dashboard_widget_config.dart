@@ -10,11 +10,7 @@ enum DashboardWidgetType {
   mindSnapArena,
 }
 
-enum DashboardWidgetSize {
-  small,
-  medium,
-  large,
-}
+enum DashboardWidgetSize { small, medium, large }
 
 class DashboardWidgetConfig {
   final String id;
@@ -64,7 +60,9 @@ class DashboardWidgetConfig {
       title: json['title'] as String,
       isVisible: json['isVisible'] as bool? ?? true,
       order: json['order'] as int? ?? 0,
-      size: DashboardWidgetSize.values.byName(json['size'] as String? ?? 'medium'),
+      size: DashboardWidgetSize.values.byName(
+        json['size'] as String? ?? 'medium',
+      ),
     );
   }
 
