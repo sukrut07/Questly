@@ -107,3 +107,4 @@ An inspection of the repository on `main` confirms a strong dual-client foundati
    - Spaced repetition queue is not yet wired to a scheduling table (`revision_sessions`).
 4. **Timetable / Class Schedule**:
    - Need weekly class slots with location/link and automated reminders before lectures.
+

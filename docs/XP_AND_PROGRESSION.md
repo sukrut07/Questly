@@ -168,3 +168,4 @@ A day is marked active when a user completes at least **one** of the following:
 - Tokens are restored:
   - Earned automatically upon reaching 14-day and 30-day streak milestones.
   - Purchased using Questly study coins earned through academic achievements.
+

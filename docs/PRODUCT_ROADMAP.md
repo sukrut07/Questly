@@ -82,3 +82,4 @@ flowchart LR
   * Automated testing: Flutter test suite, Next.js type check, ESLint, and production build.
   * Multi-viewport visual QA across 390px, 430px, 768px, 1024px, 1440px.
   * Final production deployment checklist.
+

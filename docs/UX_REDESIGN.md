@@ -169,3 +169,4 @@ Triggered in $<100\text{ms}$ upon tapping the central `(+)`:
 1. **Color Contrast:** All text tokens meet minimum 4.5:1 contrast against `#09090B` and `#121216`. Neon Lime (`#A3E635`) on dark slate exceeds 11:1.
 2. **Touch Targets:** All interactive elements on mobile have minimum touch targets of $44 \times 44\text{ pt}$.
 3. **Reduced Motion:** Both web (`prefers-reduced-motion: reduce`) and Flutter (`MediaQuery.disableAnimations`) respect user system preferences, replacing spring physics with instant opacity fades.
+

@@ -105,3 +105,4 @@ The following automated test suites will be added in Run 2:
 3. `test/academic_progression.test.mjs`:
    - Validates XP deduplication on academic task re-checking.
    - Verifies daily hard caps (600 XP) and Academic Rank level boundaries.
+

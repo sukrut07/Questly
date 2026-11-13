@@ -326,3 +326,4 @@ All academic tables inherit the zero-trust multi-tenant security architecture:
 
 ### Phase 3: Non-Destructive Data Archival
 - Generic habits (e.g., water drinking, steps) are migrated to an optional `lifestyle_routines` shelf, removing them from the core academic gamification loop while preserving historical streak data.
+

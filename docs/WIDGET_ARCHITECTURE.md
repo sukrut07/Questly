@@ -220,3 +220,4 @@ All widgets consume data serialized into structured JSON keys stored in shared p
 1. **User Signed Out:** Widget displays clean empty state: *"Sign in to Questly to view your academic dashboard"*. No sensitive academic data is retained in shared storage upon sign-out.
 2. **First Run / Fresh Install:** Widget displays *"Tap to set up your semester and courses in Questly"*.
 3. **App in Background During Midnight:** Android `WorkManager` and iOS `BGAppRefreshTask` execute once daily to update timetable offsets and streak indicators without demanding user interaction.
+
