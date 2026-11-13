@@ -29,3 +29,4 @@
 ## [Run 3 Roadmap] — Visual QA, Multi-Viewport Verification & Build Validation
 * Automated verification across all viewports (`flutter test`, `npm test`, `npx tsc --noEmit`, `npm run build`).
 * Cross-platform polish and final acceptance review.
+

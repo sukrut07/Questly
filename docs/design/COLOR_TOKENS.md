@@ -108,3 +108,4 @@ class AppColors {
   static const Color catWellness = Color(0xFFFF8EAB);
 }
 ```
+

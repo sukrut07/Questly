@@ -32,3 +32,4 @@ This document specifies the motion design system, animation tokens, easing curve
 * **OS and User Preference Respect**:
   * Both Flutter and Next.js evaluate system accessibility flags (`prefers-reduced-motion` in CSS, `MediaQuery.of(context).disableAnimations` in Flutter).
   * In `user_preferences.reduced_motion = true`, all scale transforms and slide transitions are replaced with instantaneous opacity swaps (`0ms` to `100ms` fade).
+

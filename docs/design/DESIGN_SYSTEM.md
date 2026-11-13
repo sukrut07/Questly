@@ -26,3 +26,4 @@ Key pillars:
 * **Motion & Interactivity**: See [`MOTION_GUIDELINES.md`](MOTION_GUIDELINES.md) for spring curves, duration tokens, and reduced-motion rules.
 * **Responsive Layouts**: See [`RESPONSIVE_DESIGN.md`](RESPONSIVE_DESIGN.md) for viewport breakpoints and adaptive layouts.
 * **Matiks Visual Audit**: See [`MATIKS_VISUAL_AUDIT.md`](MATIKS_VISUAL_AUDIT.md) for the complete reference analysis and feature mapping.
+

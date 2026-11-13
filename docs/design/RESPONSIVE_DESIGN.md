@@ -38,3 +38,4 @@ This document details the responsive layout engine, column grids, and adaptive b
 
 * **Minimum Hit Box**: All buttons, checklist checkboxes, and navigation icons maintain a minimum interactive bounding box of **$48\text{px} \times 48\text{px}$** on touch screens.
 * **Scroll Optimization**: All horizontal carousels (Focus Squad, Quick Actions, Category Chips) employ iOS-style bouncing physics with gentle edge padding.
+

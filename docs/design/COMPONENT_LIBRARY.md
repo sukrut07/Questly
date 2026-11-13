@@ -68,3 +68,4 @@ This document details the visual and behavioral specifications for Questly's neo
 
 ### 3.2 `QuestlyXPIndicator`
 * Pill-shaped container (`#1A1A1A`) with glowing gold or lime icon and bold tabular numeral XP text.
+

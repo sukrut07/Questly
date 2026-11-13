@@ -43,3 +43,4 @@ This document details the typographic scale, typeface pairings, tabular numerica
    - In Web CSS: `font-variant-numeric: tabular-nums;`.
 3. **Contrast Compliance**:
    - All body copy (`#FFFFFF` or `#A6A6A6`) on `#101010` / `#1E1E1E` meets or exceeds **WCAG AA (4.5:1)** contrast ratios.
+
