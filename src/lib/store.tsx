@@ -41,7 +41,7 @@ import { sound } from '@/common/SoundService';
 import { fireCelebrationConfetti } from '@/common/Confetti';
 
 export type AppMode = 'landing' | 'app';
-export type AppTab = 'home' | 'tasks' | 'subjects' | 'planner' | 'inbox' | 'focus' | 'analytics' | 'settings';
+export type AppTab = 'home' | 'tasks' | 'subjects' | 'planner' | 'inbox' | 'focus' | 'analytics' | 'profile';
 
 export interface ToastData {
   id: string;

@@ -81,10 +81,12 @@ export interface Quest {
   resourceUrls?: string[];
 }
 
+export type DeadlineType = 'assignment' | 'examination' | 'project';
+
 export interface AcademicDeadline {
   id: string;
   title: string;
-  type: 'assignment' | 'examination' | 'project';
+  type: DeadlineType;
   subjectId: string;
   subjectCode: string;
   subjectName: string;

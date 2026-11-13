@@ -23,6 +23,7 @@ import {
 
 export function CommandPalette() {
   const {
+    setMode,
     commandPaletteOpen,
     setCommandPaletteOpen,
     setCurrentTab,
@@ -116,6 +117,38 @@ export function CommandPalette() {
         setSelectedQuest(null);
         setActiveModal('new_task');
       },
+    },
+    {
+      id: 'act_new_subject',
+      title: 'Enroll New Academic Course',
+      subtitle: 'Add a subject, syllabus modules, and credit weight',
+      category: 'Actions',
+      icon: <BookOpen className="w-4 h-4 text-blue-400" />,
+      action: () => setActiveModal('new_subject'),
+    },
+    {
+      id: 'act_new_deadline',
+      title: 'Add Academic Deadline',
+      subtitle: 'Schedule an exam, assignment, or project deadline',
+      category: 'Actions',
+      icon: <Calendar className="w-4 h-4 text-purple-400" />,
+      action: () => setActiveModal('new_deadline'),
+    },
+    {
+      id: 'act_widgets',
+      title: 'Customize Dashboard Widgets',
+      subtitle: 'Reorder and toggle workspace widgets',
+      category: 'Actions',
+      icon: <Command className="w-4 h-4 text-lime-400" />,
+      action: () => setActiveModal('widgets'),
+    },
+    {
+      id: 'act_landing',
+      title: 'Return to Public Landing Page',
+      subtitle: 'View product overview and features',
+      category: 'Actions',
+      icon: <ArrowRight className="w-4 h-4 text-zinc-400" />,
+      action: () => setMode('landing'),
     },
     {
       id: 'act_templates',

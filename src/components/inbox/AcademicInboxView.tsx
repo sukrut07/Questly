@@ -103,6 +103,7 @@ export function AcademicInboxView() {
             onChange={(e) => setSuggestedSubjectId(e.target.value)}
             className="px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
           >
+            <option value="">General / Independent</option>
             {subjects.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.code}: {s.name}
