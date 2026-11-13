@@ -241,3 +241,50 @@ export function getRelativeDateString(daysOffset: number): string {
   const day = String(target.getDate()).padStart(2, '0');
   return `${year}-${month}-${day}`;
 }
+
+export function formatMinutes(mins: number): string {
+  if (mins < 60) return `${mins}m`;
+  const hours = Math.floor(mins / 60);
+  const remaining = mins % 60;
+  return remaining > 0 ? `${hours}h ${remaining}m` : `${hours}h`;
+}
+
+export function calculateProductivityScore(params: {
+  completionRatePercent: number;
+  weeklyFocusMinutes: number;
+  focusTargetMinutes: number;
+  dailyGoalConsistencyPercent: number;
+  streakDays: number;
+}): {
+  totalScore: number;
+  completionScore: number;
+  focusScore: number;
+  goalScore: number;
+  streakScore: number;
+  grade: 'S' | 'A' | 'B' | 'C' | 'D';
+} {
+  const C = Math.min(100, Math.max(0, params.completionRatePercent));
+  const focusTarget = Math.max(60, params.focusTargetMinutes * 5);
+  const F = Math.min(100, Math.max(0, (params.weeklyFocusMinutes / focusTarget) * 100));
+  const G = Math.min(100, Math.max(0, params.dailyGoalConsistencyPercent));
+  const S = Math.min(100, Math.max(0, (params.streakDays / 14) * 100));
+
+  const rawScore = 0.35 * C + 0.3 * F + 0.2 * G + 0.15 * S;
+  const totalScore = Math.round(rawScore);
+
+  let grade: 'S' | 'A' | 'B' | 'C' | 'D' = 'C';
+  if (totalScore >= 90) grade = 'S';
+  else if (totalScore >= 75) grade = 'A';
+  else if (totalScore >= 60) grade = 'B';
+  else if (totalScore >= 40) grade = 'C';
+  else grade = 'D';
+
+  return {
+    totalScore,
+    completionScore: Math.round(0.35 * C),
+    focusScore: Math.round(0.3 * F),
+    goalScore: Math.round(0.2 * G),
+    streakScore: Math.round(0.15 * S),
+    grade,
+  };
+}

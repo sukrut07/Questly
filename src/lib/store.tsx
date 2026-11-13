@@ -214,6 +214,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
   const [activityHistory, setActivityHistory] = useState<DailyActivity[]>(INITIAL_ACTIVITY_HISTORY);
   const [achievements, setAchievements] = useState<Achievement[]>(INITIAL_ACHIEVEMENTS);
   const [settings, setSettings] = useState<AppSettings>(INITIAL_SETTINGS);
+  const [workspaces, setWorkspaces] = useState<AcademicWorkspace[]>([]);
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<string | null>(null);
+  const [xpTransactions, setXpTransactions] = useState<XpTransaction[]>([]);
+  const [arcadeRecords, setArcadeRecords] = useState<ArcadeGameRecord[]>([]);
 
   // Sync sound settings
   useEffect(() => {
@@ -278,6 +282,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
           if (parsed.activityHistory) setActivityHistory(parsed.activityHistory);
           if (parsed.achievements) setAchievements(parsed.achievements);
           if (parsed.settings) setSettings(parsed.settings);
+          if (parsed.workspaces) setWorkspaces(parsed.workspaces);
+          if (parsed.activeWorkspaceId) setActiveWorkspaceId(parsed.activeWorkspaceId);
+          if (parsed.xpTransactions) setXpTransactions(parsed.xpTransactions);
+          if (parsed.arcadeRecords) setArcadeRecords(parsed.arcadeRecords);
           setIsHydrated(true);
         });
         return;
@@ -308,6 +316,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         activityHistory,
         achievements,
         settings,
+        workspaces,
+        activeWorkspaceId,
+        xpTransactions,
+        arcadeRecords,
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
     } catch (e) {
@@ -328,6 +340,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     activityHistory,
     achievements,
     settings,
+    workspaces,
+    activeWorkspaceId,
+    xpTransactions,
+    arcadeRecords,
   ]);
 
   const showToast = useCallback((data: Omit<ToastData, 'id'>) => {
@@ -339,9 +355,69 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     setToast(null);
   }, []);
 
-  // XP Granting & Level Progression
+  // Idempotent XP Granting & Level Progression
   const awardXp = useCallback(
-    (amount: number, reason: string) => {
+    (
+      sourceEventOrAmount: XpSourceEvent | number,
+      idOrReason: string,
+      activityTitleOpt?: string,
+      amountOpt?: number
+    ): boolean => {
+      let sourceEvent: XpSourceEvent = 'task_completed';
+      let activityId = '';
+      let activityTitle = '';
+      let amount = 0;
+
+      if (typeof sourceEventOrAmount === 'number') {
+        amount = sourceEventOrAmount;
+        activityTitle = idOrReason;
+        activityId = `act_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      } else {
+        sourceEvent = sourceEventOrAmount;
+        activityId = idOrReason;
+        activityTitle = activityTitleOpt || '';
+        amount = amountOpt || 0;
+
+        // Idempotency check: verify this activity hasn't been rewarded already
+        const alreadyAwarded = xpTransactions.some(
+          (tx) => tx.sourceEvent === sourceEvent && tx.activityId === activityId
+        );
+        if (alreadyAwarded) {
+          return false;
+        }
+      }
+
+      // Arcade daily cap guard
+      if (sourceEvent === 'arcade_challenge') {
+        const todayStart = new Date().setHours(0, 0, 0, 0);
+        const arcadeXpToday = xpTransactions
+          .filter((tx) => tx.sourceEvent === 'arcade_challenge' && tx.timestamp >= todayStart)
+          .reduce((sum, tx) => sum + tx.xpAmount, 0);
+
+        if (arcadeXpToday >= XP_RULES.DAILY_ARCADE_CAP) {
+          showToast({
+            title: 'Daily Arcade Cap Reached',
+            subtitle: `Max ${XP_RULES.DAILY_ARCADE_CAP} XP per day from games. Study tasks earn more!`,
+            type: 'info',
+          });
+          return false;
+        }
+        amount = Math.min(amount, XP_RULES.DAILY_ARCADE_CAP - arcadeXpToday);
+      }
+
+      if (amount <= 0) return false;
+
+      const tx: XpTransaction = {
+        id: `tx_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        sourceEvent,
+        activityId,
+        activityTitle,
+        xpAmount: amount,
+        timestamp: Date.now(),
+      };
+
+      setXpTransactions((prev) => [tx, ...prev]);
+
       setUser((prevUser) => {
         const newTotalXp = prevUser.totalXp + amount;
         const levelData = calculateLevelFromTotalXp(newTotalXp);
@@ -358,7 +434,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         } else {
           showToast({
             title: `+${amount} XP Earned`,
-            subtitle: reason,
+            subtitle: activityTitle,
             xp: amount,
             type: 'success',
           });
@@ -383,6 +459,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
           updated[existingIdx] = {
             ...updated[existingIdx],
             xpEarned: updated[existingIdx].xpEarned + amount,
+            tasksCompleted:
+              sourceEvent === 'task_completed'
+                ? updated[existingIdx].tasksCompleted + 1
+                : updated[existingIdx].tasksCompleted,
           };
           return updated;
         } else {
@@ -391,15 +471,17 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
             {
               date: todayStr,
               focusMinutes: 0,
-              tasksCompleted: 0,
+              tasksCompleted: sourceEvent === 'task_completed' ? 1 : 0,
               xpEarned: amount,
               goalMet: true,
             },
           ];
         }
       });
+
+      return true;
     },
-    [showToast]
+    [xpTransactions, showToast]
   );
 
   // Workload balance computation
@@ -429,31 +511,7 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         )
       );
 
-      awardXp(target.xpReward, target.title);
-
-      const todayStr = getTodayDateString();
-      setActivityHistory((prev) => {
-        const existingIdx = prev.findIndex((a) => a.date === todayStr);
-        if (existingIdx >= 0) {
-          const updated = [...prev];
-          updated[existingIdx] = {
-            ...updated[existingIdx],
-            tasksCompleted: updated[existingIdx].tasksCompleted + 1,
-          };
-          return updated;
-        } else {
-          return [
-            ...prev,
-            {
-              date: todayStr,
-              focusMinutes: 0,
-              tasksCompleted: 1,
-              xpEarned: target.xpReward,
-              goalMet: true,
-            },
-          ];
-        }
-      });
+      awardXp('task_completed', target.id, target.title, target.xpReward);
     },
     [quests, awardXp]
   );
@@ -795,6 +853,121 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
     setWidgets(newWidgets);
   }, []);
 
+  // Timetable Actions
+  const addTimetableSlot = useCallback(
+    (slotData: Omit<TimetableSlot, 'id'>) => {
+      sound.playButtonClick();
+      const newSlot: TimetableSlot = {
+        ...slotData,
+        id: `slot_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+      };
+      setTimetable((prev) => [...prev, newSlot]);
+      showToast({
+        title: 'Session Added',
+        subtitle: `${newSlot.subjectCode} (${newSlot.startTime} - ${newSlot.endTime})`,
+        type: 'success',
+      });
+    },
+    [showToast]
+  );
+
+  const updateTimetableSlot = useCallback((slot: TimetableSlot) => {
+    sound.playButtonClick();
+    setTimetable((prev) => prev.map((s) => (s.id === slot.id ? slot : s)));
+  }, []);
+
+  const deleteTimetableSlot = useCallback((id: string) => {
+    sound.playButtonClick();
+    setTimetable((prev) => prev.filter((s) => s.id !== id));
+  }, []);
+
+  // Workspace Actions
+  const createWorkspace = useCallback(
+    (wsData: Omit<AcademicWorkspace, 'id' | 'createdAt'>) => {
+      sound.playButtonClick();
+      const newWs: AcademicWorkspace = {
+        ...wsData,
+        id: `ws_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        createdAt: Date.now(),
+      };
+      setWorkspaces((prev) => [...prev, newWs]);
+      showToast({
+        title: 'Workspace Created',
+        subtitle: newWs.name,
+        type: 'success',
+      });
+    },
+    [showToast]
+  );
+
+  const updateWorkspace = useCallback((ws: AcademicWorkspace) => {
+    sound.playButtonClick();
+    setWorkspaces((prev) => prev.map((w) => (w.id === ws.id ? ws : w)));
+  }, []);
+
+  const deleteWorkspace = useCallback(
+    (id: string) => {
+      sound.playButtonClick();
+      setWorkspaces((prev) => prev.filter((w) => w.id !== id));
+      if (activeWorkspaceId === id) setActiveWorkspaceId(null);
+    },
+    [activeWorkspaceId]
+  );
+
+  // Arcade Scoring & Challenges
+  const recordArcadeScore = useCallback(
+    (gameType: ArcadeGameType, score: number) => {
+      sound.playButtonClick();
+      let isHighScore = false;
+      let xpAwarded = 0;
+
+      const challengeId = `arcade_${gameType}_${Date.now()}`;
+      const awarded = awardXp(
+        'arcade_challenge',
+        challengeId,
+        `${gameType.replace('_', ' ').toUpperCase()} challenge`,
+        10
+      );
+      if (awarded) {
+        xpAwarded = 10;
+      }
+
+      setArcadeRecords((prev) => {
+        const existing = prev.find((r) => r.gameType === gameType);
+        if (!existing) {
+          isHighScore = true;
+          return [
+            ...prev,
+            {
+              gameType,
+              highScore: score,
+              gamesPlayed: 1,
+              lastPlayedAt: Date.now(),
+              xpEarnedToday: xpAwarded,
+            },
+          ];
+        }
+
+        if (score > existing.highScore) isHighScore = true;
+
+        return prev.map((r) =>
+          r.gameType === gameType
+            ? {
+                ...r,
+                highScore: Math.max(r.highScore, score),
+                gamesPlayed: r.gamesPlayed + 1,
+                lastPlayedAt: Date.now(),
+                xpEarnedToday: r.xpEarnedToday + xpAwarded,
+              }
+            : r
+        );
+      });
+
+      return { xpAwarded, isHighScore };
+    },
+    [awardXp]
+  );
+
   // Focus Session Recording
   const recordFocusSession = useCallback(
     (session: {
@@ -1004,6 +1177,10 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         activityHistory,
         achievements,
         settings,
+        workspaces,
+        activeWorkspaceId,
+        xpTransactions,
+        arcadeRecords,
         isHydrated,
         workload,
         completeQuest,
@@ -1027,6 +1204,15 @@ export function QuestlyProvider({ children }: { children: React.ReactNode }) {
         toggleDeadline,
         addDeadline,
         deleteDeadline,
+        addTimetableSlot,
+        updateTimetableSlot,
+        deleteTimetableSlot,
+        createWorkspace,
+        updateWorkspace,
+        deleteWorkspace,
+        setActiveWorkspaceId,
+        awardXp,
+        recordArcadeScore,
         toggleWidget,
         reorderWidgets,
         recordFocusSession,

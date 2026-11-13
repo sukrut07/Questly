@@ -4,6 +4,10 @@ import React from 'react';
 import { useQuestly, AppTab } from '@/lib/store';
 import {
   Compass,
+  CheckSquare,
+  Clock,
+  FolderKanban,
+  Gamepad2,
   Calendar,
   BookOpen,
   Inbox,
@@ -19,10 +23,11 @@ import {
   Volume2,
   VolumeX,
   LayoutGrid,
-  ExternalLink,
+  Zap,
   Home,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
+import { QuestlyLogo } from '@/components/common/QuestlyLogo';
 
 export function Sidebar() {
   const {
@@ -43,6 +48,27 @@ export function Sidebar() {
       tab: 'home',
       label: 'Command Center',
       icon: <Compass className="w-4 h-4" />,
+    },
+    {
+      tab: 'tasks',
+      label: 'Tasks',
+      icon: <CheckSquare className="w-4 h-4" />,
+      badge: quests.filter((q) => q.status !== 'COMPLETED').length || undefined,
+    },
+    {
+      tab: 'timetable',
+      label: 'Timetable',
+      icon: <Clock className="w-4 h-4" />,
+    },
+    {
+      tab: 'workspaces',
+      label: 'Workspaces',
+      icon: <FolderKanban className="w-4 h-4" />,
+    },
+    {
+      tab: 'arcade',
+      label: 'Questly Arcade',
+      icon: <Gamepad2 className="w-4 h-4" />,
     },
     {
       tab: 'planner',
@@ -94,9 +120,9 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 shrink-0 bg-[#101010] border-r border-[#383838] z-30 select-none">
+    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 shrink-0 bg-[#090A0D] border-r border-[#303642] z-30 select-none">
       {/* Brand Header */}
-      <div className="p-4 flex items-center justify-between border-b border-[#383838]">
+      <div className="p-4 flex items-center justify-between border-b border-[#303642]">
         <button
           onClick={() => {
             sound.playButtonClick();
@@ -105,15 +131,15 @@ export function Sidebar() {
           className="flex items-center gap-2.5 text-left group"
           title="Return to Public Landing Page"
         >
-          <div className="w-8 h-8 rounded-lg bg-[#B5FF55] text-[#101010] flex items-center justify-center font-black text-sm brutal-shadow transition-transform group-hover:scale-105">
-            Q
+          <div className="w-8 h-8 rounded-xl bg-[#171A21] border border-[#303642] flex items-center justify-center transition-transform group-hover:scale-105">
+            <QuestlyLogo size={22} variant="lime" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <h1 className="text-sm font-black text-[#F5F5F0] tracking-tight group-hover:text-[#B5FF55] transition-colors">
+              <h1 className="text-sm font-black text-[#F5F5F0] tracking-tight group-hover:text-[#B5FF55] transition-colors font-display uppercase">
                 QUESTLY
               </h1>
-              <span className="text-[9px] font-mono font-bold text-[#B5FF55] px-1 py-0.2 rounded bg-[#B5FF55]/10 border border-[#B5FF55]/30">
+              <span className="text-[9px] font-mono font-bold text-[#B5FF55] px-1.5 py-0.2 rounded bg-[#B5FF55]/10 border border-[#B5FF55]/30">
                 v2.0
               </span>
             </div>
@@ -123,7 +149,7 @@ export function Sidebar() {
 
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="p-1.5 rounded-lg bg-[#1E1E1E] border border-[#383838] text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#252525] transition-colors"
+          className="p-1.5 rounded-lg bg-[#171A21] border border-[#303642] text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#20242D] transition-colors"
           title="Search (Cmd+K)"
         >
           <Search className="w-3.5 h-3.5" />
@@ -143,10 +169,10 @@ export function Sidebar() {
             <button
               key={item.tab}
               onClick={() => handleTabClick(item.tab)}
-              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all ${
                 isActive
                   ? 'bg-[#B5FF55]/15 text-[#B5FF55] border border-[#B5FF55]/40 font-black'
-                  : 'text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#1E1E1E] border border-transparent'
+                  : 'text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21] border border-transparent'
               }`}
             >
               <div className="flex items-center gap-2.5">
@@ -155,7 +181,7 @@ export function Sidebar() {
               </div>
 
               {item.badge !== undefined && (
-                <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#FFD76A]/20 text-[#FFD76A] font-bold border border-[#FFD76A]/30">
+                <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-[#B5FF55]/20 text-[#B5FF55] font-bold border border-[#B5FF55]/40">
                   {item.badge}
                 </span>
               )}
@@ -164,38 +190,46 @@ export function Sidebar() {
         })}
 
         {/* Tools & Utilities */}
-        <div className="pt-4">
+        <div className="pt-3">
           <div className="text-[10px] font-mono font-bold text-[#737373] uppercase tracking-wider px-3 py-1.5">
-            Tools & Customization
+            Tools & Systems
           </div>
 
           <button
-            onClick={() => setActiveModal('widgets')}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#1E1E1E] transition-colors"
+            onClick={() => setActiveModal('xp_tracker')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#B5FF55] hover:bg-[#B5FF55]/10 transition-colors"
           >
-            <LayoutGrid className="w-4 h-4 text-[#B5FF55]" />
+            <Zap className="w-4 h-4 text-[#B5FF55]" />
+            <span>XP Tracker & Ledger</span>
+          </button>
+
+          <button
+            onClick={() => setActiveModal('widgets')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
+          >
+            <LayoutGrid className="w-4 h-4 text-[#42DFFF]" />
             <span>Customize Widgets</span>
           </button>
 
           <button
             onClick={() => setActiveModal('templates')}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#1E1E1E] transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
           >
-            <Sparkles className="w-4 h-4 text-[#B9A3FF]" />
+            <Sparkles className="w-4 h-4 text-[#A879FF]" />
             <span>Templates</span>
           </button>
 
           <button
             onClick={() => setActiveModal('weekly_review')}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#1E1E1E] transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
           >
-            <RotateCcw className="w-4 h-4 text-[#62D9FF]" />
+            <RotateCcw className="w-4 h-4 text-[#FF9C45]" />
             <span>Weekly Review</span>
           </button>
 
           <button
             onClick={() => setActiveModal('data_backup')}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#1E1E1E] transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
           >
             <Download className="w-4 h-4 text-[#A1A1A1]" />
             <span>Data Backup</span>
@@ -206,7 +240,7 @@ export function Sidebar() {
               sound.playButtonClick();
               setMode('landing');
             }}
-            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#737373] hover:text-[#B5FF55] hover:bg-[#1E1E1E] transition-colors"
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#737373] hover:text-[#B5FF55] hover:bg-[#171A21] transition-colors"
           >
             <Home className="w-4 h-4" />
             <span>Public Landing Page</span>
@@ -215,29 +249,43 @@ export function Sidebar() {
       </div>
 
       {/* User Footer Profile & Settings */}
-      <div className="p-3 border-t border-[#383838] bg-[#141414] space-y-3">
-        <div className="flex items-center justify-between px-2">
+      <div className="p-3 border-t border-[#303642] bg-[#111319] space-y-2">
+        <div
+          onClick={() => setActiveModal('xp_tracker')}
+          className="p-2 rounded-xl bg-[#171A21] border border-[#303642] hover:border-[#B5FF55]/50 cursor-pointer transition-all flex items-center justify-between"
+          title="Click to view full XP Ledger & Progression Roadmap"
+        >
           <div className="flex items-center gap-2 min-w-0">
-            <div className="w-7 h-7 rounded-lg bg-[#252525] border border-[#383838] flex items-center justify-center text-xs font-bold text-[#F5F5F0]">
+            <div className="w-7 h-7 rounded-lg bg-[#B5FF55] text-[#090A0D] flex items-center justify-center text-xs font-black font-display">
               {user.displayName.substring(0, 1)}
             </div>
             <div className="truncate">
-              <div className="text-xs font-bold text-[#F5F5F0] truncate">{user.displayName}</div>
-              <div className="text-[10px] text-[#A1A1A1] font-mono">Lvl {user.level} {user.academicRank}</div>
+              <div className="text-xs font-bold text-[#F5F5F0] truncate font-display">
+                {user.displayName}
+              </div>
+              <div className="text-[10px] text-[#B5FF55] font-mono">
+                LVL {user.level} {user.academicRank}
+              </div>
             </div>
           </div>
+          <span className="text-[10px] font-mono font-bold text-[#A1A1A1] px-1.5 py-0.5 rounded bg-[#111319]">
+            {user.totalXp} XP
+          </span>
+        </div>
 
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-mono text-[#737373]">Audio & Theme</span>
           <div className="flex items-center gap-1">
             <button
               onClick={toggleSound}
-              className="p-1.5 rounded-lg text-[#737373] hover:text-[#F5F5F0] hover:bg-[#252525] transition-colors"
+              className="p-1.5 rounded-lg text-[#737373] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
               title="Toggle Sound"
             >
               {settings.soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
             </button>
             <button
               onClick={toggleTheme}
-              className="p-1.5 rounded-lg text-[#737373] hover:text-[#F5F5F0] hover:bg-[#252525] transition-colors"
+              className="p-1.5 rounded-lg text-[#737373] hover:text-[#F5F5F0] hover:bg-[#171A21] transition-colors"
               title="Toggle Theme"
             >
               {settings.theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
@@ -248,4 +296,3 @@ export function Sidebar() {
     </aside>
   );
 }
-
