@@ -1,7 +1,15 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, Space_Mono } from 'next/font/google';
+import { Space_Grotesk, Space_Mono, Barlow_Condensed } from 'next/font/google';
 import './globals.css';
 import { QuestlyProvider } from '@/lib/store';
+import { NeonCursor } from '@/components/common/NeonCursor';
+
+const barlowCondensed = Barlow_Condensed({
+  variable: '--font-display',
+  subsets: ['latin'],
+  weight: ['700', '800', '900'],
+  display: 'swap',
+});
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-sans',
@@ -31,8 +39,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${spaceMono.variable} dark h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-theme-main text-theme-main selection:bg-[#B5FF55] selection:text-[#101010] font-sans">
+    <html lang="en" className={`${barlowCondensed.variable} ${spaceGrotesk.variable} ${spaceMono.variable} dark h-full antialiased`}>
+      <body className="min-h-full flex flex-col bg-[#090A0D] text-[#F5F5F5] selection:bg-[#B5FF55] selection:text-[#090A0D] font-sans">
+        <NeonCursor />
         <QuestlyProvider>{children}</QuestlyProvider>
       </body>
     </html>
