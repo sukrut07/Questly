@@ -2,18 +2,19 @@
 
 @layer base {
   :root {
-    --bg-main: #101010;
-    --bg-secondary: #171717;
-    --surface-main: #1E1E1E;
-    --surface-elevated: #252525;
+    --bg-main: #090A0D;
+    --bg-secondary: #111319;
+    --surface-main: #171A21;
+    --surface-elevated: #20242D;
     --primary-lime: #B5FF55;
-    --electric-purple: #B9A3FF;
-    --cyan: #62D9FF;
-    --coral: #FF806B;
-    --yellow: #FFD76A;
-    --text-main: #F5F5F0;
-    --text-muted: #A1A1A1;
-    --border-color: #383838;
+    --electric-purple: #A879FF;
+    --electric-cyan: #42DFFF;
+    --neon-blue: #538CFF;
+    --neon-orange: #FF9C45;
+    --neon-pink: #FF5EBB;
+    --text-main: #F5F5F5;
+    --text-muted: #A0A4AE;
+    --border-color: #303642;
     --border-focus: #B5FF55;
   }
 
@@ -24,9 +25,10 @@
     --surface-elevated: #F2F2ED;
     --primary-lime: #72C000;
     --electric-purple: #7E5EFF;
-    --cyan: #0FA5D8;
-    --coral: #E64930;
-    --yellow: #DDA800;
+    --electric-cyan: #0FA5D8;
+    --neon-blue: #3A6FD8;
+    --neon-orange: #E66B10;
+    --neon-pink: #D8268E;
     --text-main: #141414;
     --text-muted: #595959;
     --border-color: #D1D1CB;
@@ -42,30 +44,36 @@
   }
 }
 
+/* Typography Utility Classes */
+.font-display {
+  font-family: var(--font-display), var(--font-sans), sans-serif;
+  letter-spacing: -0.02em;
+}
+
 /* Reusable Graph-Paper Background Systems */
 .bg-graph-grid {
   background-color: var(--bg-main);
   background-image:
-    linear-gradient(to right, rgba(56, 56, 56, 0.45) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 56, 56, 0.45) 1px, transparent 1px);
+    linear-gradient(to right, rgba(48, 54, 66, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(48, 54, 66, 0.45) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .bg-graph-grid-dense {
   background-color: var(--bg-main);
   background-image:
-    linear-gradient(to right, rgba(56, 56, 56, 0.6) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(56, 56, 56, 0.6) 1px, transparent 1px);
+    linear-gradient(to right, rgba(48, 54, 66, 0.6) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(48, 54, 66, 0.6) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
 .bg-graph-dots {
   background-color: var(--bg-main);
-  background-image: radial-gradient(rgba(181, 255, 85, 0.2) 1.2px, transparent 1.2px);
+  background-image: radial-gradient(rgba(181, 255, 85, 0.25) 1.2px, transparent 1.2px);
   background-size: 24px 24px;
 }
 
-/* Neo-brutalist Card & Button Shadows */
+/* Neo-brutalist & Neon Glow System */
 .brutal-border {
   border: 1.5px solid var(--border-color);
 }
@@ -91,6 +99,27 @@
   box-shadow: 2px 2px 0px 0px #000000;
 }
 
+.neon-glow-lime {
+  box-shadow: 0 0 20px rgba(181, 255, 85, 0.25);
+}
+
+.neon-glow-cyan {
+  box-shadow: 0 0 20px rgba(66, 223, 255, 0.25);
+}
+
+.neon-glow-purple {
+  box-shadow: 0 0 20px rgba(168, 121, 255, 0.25);
+}
+
+.neon-hover {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.neon-hover:hover {
+  border-color: var(--primary-lime);
+  box-shadow: 0 0 16px rgba(181, 255, 85, 0.2);
+}
+
 /* Technical Coordinate Marker Labels */
 .coord-marker {
   font-family: var(--font-mono, monospace);
@@ -111,7 +140,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #383838;
+  background: #303642;
   border-radius: 4px;
 }
 
@@ -128,4 +157,5 @@
 .text-theme-muted { color: var(--text-muted); }
 .text-primary-lime { color: var(--primary-lime); }
 .text-electric-purple { color: var(--electric-purple); }
+.text-electric-cyan { color: var(--electric-cyan); }
 .border-theme { border-color: var(--border-color); }
