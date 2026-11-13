@@ -1,111 +1,38 @@
 import {
-  WorldStageNumber,
-  WorldStageInfo,
-  PresentationMode,
-  ProgressionStage,
   QuestDifficulty,
   DailyActivity,
   UserProfile,
   StreakInfo,
+  AcademicRank,
+  Quest,
 } from './types';
 
-export const WORLD_STAGES: Record<WorldStageNumber, WorldStageInfo> = {
-  1: {
-    stageNumber: 1,
-    title: 'Forgotten Outpost',
-    subtitle: 'A quiet starter camp under twilight skies',
-    minStreakDays: 0,
-    description:
-      'Dim ancient crystals rest among quiet embers. The stones remember greatness, waiting for your first consistent sparks.',
-    nextMilestoneDesc: 'Achieve a 3-day active streak to awaken the realm.',
-  },
-  2: {
-    stageNumber: 2,
-    title: 'First Sparks',
-    subtitle: 'Glowing crystals and rekindled hearths',
-    minStreakDays: 3,
-    description:
-      'The central crystal pulses with gentle violet light. Warm lanterns ignite along the pathways and friendly travelers take notice.',
-    nextMilestoneDesc: 'Reach a 7-day streak to cultivate the Awakening valley.',
-  },
-  3: {
-    stageNumber: 3,
-    title: 'The Awakening',
-    subtitle: 'Verdant flora, waterwheels & rising watchtowers',
-    minStreakDays: 7,
-    description:
-      'Lush vegetation springs from arcane soil. A clear river flows beneath fresh stone arches and an observatory ascends toward the sky.',
-    nextMilestoneDesc: 'Reach a 14-day streak to construct the Growing Realm.',
-  },
-  4: {
-    stageNumber: 4,
-    title: 'Growing Realm',
-    subtitle: 'Majestic castle spires & bustling trade bridges',
-    minStreakDays: 14,
-    description:
-      'Fortified ramparts and grand stone towers rise into the morning mist. Your habits have carved a permanent sanctuary of discipline.',
-    nextMilestoneDesc: 'Reach a 30-day streak to raise the Radiant Citadel.',
-  },
-  5: {
-    stageNumber: 5,
-    title: 'Radiant Citadel',
-    subtitle: 'Gilded obelisks & floating arcane monoliths',
-    minStreakDays: 30,
-    description:
-      'Gilded spires harness deep work focus into beam-lines of pure light. Floating obelisks orbit the grand keep as a testament to mastery.',
-    nextMilestoneDesc: 'Reach a 60-day streak to ascend to the Celestial Kingdom.',
-  },
-  6: {
-    stageNumber: 6,
-    title: 'Celestial Kingdom',
-    subtitle: 'Pinnacle cosmos realm bathed in aurora starlight',
-    minStreakDays: 60,
-    description:
-      'Cosmic auroras illuminate floating crystal islands and golden causeways. You have ascended to pinnacle legendary productivity.',
-    nextMilestoneDesc: 'Maximum pinnacle stage achieved! Your realm shines eternally.',
-  },
+export const ACADEMIC_RANKS: Record<AcademicRank, { minLevel: number; title: string; color: string }> = {
+  Initiate: { minLevel: 1, title: 'Initiate Scholar', color: '#71717A' },
+  Scholar: { minLevel: 6, title: 'Semester Scholar', color: '#C084FC' },
+  Practitioner: { minLevel: 11, title: 'Academic Practitioner', color: '#38BDF8' },
+  Specialist: { minLevel: 21, title: 'Coursework Specialist', color: '#A3E635' },
+  Strategist: { minLevel: 36, title: 'Honors Strategist', color: '#F59E0B' },
+  Expert: { minLevel: 51, title: 'Department Fellow', color: '#FB7185' },
+  'Academic Master': { minLevel: 76, title: 'Academic Master', color: '#E4E4E7' },
 };
 
 /**
- * Calculates world stage strictly from current streak
+ * Calculates Academic Rank based on level
  */
-export function calculateWorldStage(streakDays: number): WorldStageNumber {
-  if (streakDays >= 60) return 6;
-  if (streakDays >= 30) return 5;
-  if (streakDays >= 14) return 4;
-  if (streakDays >= 7) return 3;
-  if (streakDays >= 3) return 2;
-  return 1;
-}
-
-/**
- * Determines emotional presentation mode without punitive degradation
- */
-export function calculatePresentationMode(
-  lastActiveDate: string,
-  todayMetGoal: boolean,
-  currentStreak: number
-): PresentationMode {
-  const todayStr = getTodayDateString();
-
-  if (lastActiveDate === todayStr || todayMetGoal) {
-    return 'flourishing';
-  }
-
-  // Check if last active was yesterday
-  const yesterdayStr = getRelativeDateString(-1);
-  if (lastActiveDate === yesterdayStr) {
-    return 'stable';
-  }
-
-  // If 2+ days inactive, enter calming resting mode
-  return 'resting';
+export function calculateAcademicRank(level: number): AcademicRank {
+  if (level >= 76) return 'Academic Master';
+  if (level >= 51) return 'Expert';
+  if (level >= 36) return 'Strategist';
+  if (level >= 21) return 'Specialist';
+  if (level >= 11) return 'Practitioner';
+  if (level >= 6) return 'Scholar';
+  return 'Initiate';
 }
 
 /**
  * Level progression formula
  * Level 1 starts at 0 XP, requires 250 XP for Level 2
- * Level 2 requires 550 total XP, Level 3 requires 950, etc.
  */
 export function getRequiredXpForLevel(level: number): number {
   return Math.floor(250 * Math.pow(level, 1.2));
@@ -116,7 +43,8 @@ export function calculateLevelFromTotalXp(totalXp: number): {
   currentXp: number;
   nextLevelXp: number;
   progressPercent: number;
-  stage: ProgressionStage;
+  academicRank: AcademicRank;
+  stage: string;
 } {
   let level = 1;
   let remainingXp = totalXp;
@@ -125,7 +53,8 @@ export function calculateLevelFromTotalXp(totalXp: number): {
     const needed = getRequiredXpForLevel(level);
     if (remainingXp < needed) {
       const progressPercent = Math.min(100, Math.round((remainingXp / needed) * 100));
-      let stage: ProgressionStage = 'EXPLORER';
+      const rank = calculateAcademicRank(level);
+      let stage = 'EXPLORER';
       if (level >= 10) stage = 'MASTER';
       else if (level >= 6) stage = 'STRATEGIST';
       else if (level >= 3) stage = 'BUILDER';
@@ -135,6 +64,7 @@ export function calculateLevelFromTotalXp(totalXp: number): {
         currentXp: remainingXp,
         nextLevelXp: needed,
         progressPercent,
+        academicRank: rank,
         stage,
       };
     }
@@ -151,26 +81,83 @@ export function getXpForDifficulty(difficulty: QuestDifficulty): number {
     case 'EASY':
       return 25;
     case 'MEDIUM':
-      return 50;
+      return 35;
     case 'HARD':
-      return 90;
-    case 'EPIC':
-      return 150;
-    default:
       return 50;
+    case 'EPIC':
+      return 75;
+    default:
+      return 35;
   }
 }
 
 /**
- * Strava-inspired Productivity Score formula:
- * Score = 0.35 * C + 0.30 * F + 0.20 * G + 0.15 * S
+ * Workload Balancer Calculation
  */
+export interface WorkloadBalance {
+  totalPlannedMinutes: number;
+  dailyCapacityMinutes: number;
+  remainingMinutes: number;
+  loadPercentage: number;
+  status: 'light' | 'balanced' | 'demanding' | 'overloaded';
+  overloadWarning: boolean;
+  statusMessage: string;
+}
+
+export function calculateWorkloadBalance(
+  tasks: Quest[],
+  dailyCapacityMinutes: number = 180
+): WorkloadBalance {
+  const activeTasks = tasks.filter((t) => t.status !== 'COMPLETED');
+  const totalPlannedMinutes = activeTasks.reduce((acc, t) => acc + (t.estimatedMinutes || 30), 0);
+  const remainingMinutes = Math.max(0, dailyCapacityMinutes - totalPlannedMinutes);
+  const loadPercentage = Math.round((totalPlannedMinutes / Math.max(1, dailyCapacityMinutes)) * 100);
+
+  let status: 'light' | 'balanced' | 'demanding' | 'overloaded' = 'balanced';
+  let overloadWarning = false;
+  let statusMessage = 'Planned workload is within healthy capacity.';
+
+  if (loadPercentage > 115) {
+    status = 'overloaded';
+    overloadWarning = true;
+    statusMessage = `Overloaded by ${totalPlannedMinutes - dailyCapacityMinutes} minutes. Consider deferring lowest priority tasks.`;
+  } else if (loadPercentage > 85) {
+    status = 'demanding';
+    statusMessage = 'Intense study day planned. Ensure scheduled breaks.';
+  } else if (loadPercentage < 40) {
+    status = 'light';
+    statusMessage = 'Light schedule today. Good opportunity for spaced revision.';
+  }
+
+  return {
+    totalPlannedMinutes,
+    dailyCapacityMinutes,
+    remainingMinutes,
+    loadPercentage,
+    status,
+    overloadWarning,
+    statusMessage,
+  };
+}
+
+/**
+ * Retained for backward compatibility with existing tests
+ */
+export function calculateWorldStage(streakDays: number): number {
+  if (streakDays >= 60) return 6;
+  if (streakDays >= 30) return 5;
+  if (streakDays >= 14) return 4;
+  if (streakDays >= 7) return 3;
+  if (streakDays >= 3) return 2;
+  return 1;
+}
+
 export function calculateProductivityScore(params: {
-  completionRatePercent: number; // C (0 - 100)
-  weeklyFocusMinutes: number; // F target: 150 mins
+  completionRatePercent: number;
+  weeklyFocusMinutes: number;
   focusTargetMinutes: number;
-  dailyGoalConsistencyPercent: number; // G (0 - 100)
-  streakDays: number; // S benchmark: 14 days
+  dailyGoalConsistencyPercent: number;
+  streakDays: number;
 }): {
   totalScore: number;
   completionScore: number;
@@ -180,12 +167,9 @@ export function calculateProductivityScore(params: {
   grade: 'S' | 'A' | 'B' | 'C' | 'D';
 } {
   const C = Math.min(100, Math.max(0, params.completionRatePercent));
-
-  const focusTarget = Math.max(60, params.focusTargetMinutes * 5); // 5 days target
+  const focusTarget = Math.max(60, params.focusTargetMinutes * 5);
   const F = Math.min(100, Math.max(0, (params.weeklyFocusMinutes / focusTarget) * 100));
-
   const G = Math.min(100, Math.max(0, params.dailyGoalConsistencyPercent));
-
   const S = Math.min(100, Math.max(0, (params.streakDays / 14) * 100));
 
   const rawScore = 0.35 * C + 0.3 * F + 0.2 * G + 0.15 * S;
@@ -208,9 +192,6 @@ export function calculateProductivityScore(params: {
   };
 }
 
-/**
- * Date helper utilities
- */
 export function getTodayDateString(): string {
   const now = new Date();
   const year = now.getFullYear();

@@ -2,47 +2,32 @@
 
 import React, { useState, useMemo } from 'react';
 import { useQuestly } from '@/lib/store';
-import { Quest, QuestCategory, QuestStatus } from '@/lib/types';
-import { QuestCard, getCategoryIcon } from './QuestCard';
-import { Plus, Search, Filter, ArrowUpDown, Sparkles, CheckCircle2, ListFilter } from 'lucide-react';
+import { Quest } from '@/lib/types';
+import { QuestCard } from './QuestCard';
+import { Plus, Search, Filter, CheckCircle2 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 
 export function QuestList() {
-  const { quests, setActiveModal, setSelectedQuest } = useQuestly();
+  const { quests, subjects, setActiveModal, setSelectedQuest } = useQuestly();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
+  const [selectedSubjectId, setSelectedSubjectId] = useState<string>('ALL');
   const [selectedStatus, setSelectedStatus] = useState<string>('ACTIVE');
-  const [sortBy, setSortBy] = useState<'priority' | 'due' | 'xp' | 'duration'>('priority');
+  const [sortBy, setSortBy] = useState<'priority' | 'due' | 'duration'>('priority');
 
-  const categories: { key: string; label: string }[] = [
-    { key: 'ALL', label: 'All Quests' },
-    { key: 'CODING', label: 'Coding' },
-    { key: 'STUDY', label: 'Study' },
-    { key: 'WORK', label: 'Work' },
-    { key: 'FITNESS', label: 'Fitness' },
-    { key: 'READING', label: 'Reading' },
-    { key: 'CREATIVITY', label: 'Creativity' },
-    { key: 'PERSONAL', label: 'Personal' },
-  ];
-
-  // Filtering & Sorting
   const filteredQuests = useMemo(() => {
     return quests
       .filter((q) => {
-        // Search query
         if (searchQuery.trim()) {
           const matchTitle = q.title.toLowerCase().includes(searchQuery.toLowerCase());
           const matchDesc = q.description.toLowerCase().includes(searchQuery.toLowerCase());
           if (!matchTitle && !matchDesc) return false;
         }
 
-        // Category filter
-        if (selectedCategory !== 'ALL' && q.category !== selectedCategory) {
+        if (selectedSubjectId !== 'ALL' && q.subjectId !== selectedSubjectId) {
           return false;
         }
 
-        // Status filter
         if (selectedStatus === 'ACTIVE' && q.status === 'COMPLETED') return false;
         if (selectedStatus === 'COMPLETED' && q.status !== 'COMPLETED') return false;
 
@@ -56,171 +41,90 @@ export function QuestList() {
         if (sortBy === 'due') {
           return (a.dueDate || '9999').localeCompare(b.dueDate || '9999');
         }
-        if (sortBy === 'xp') {
-          return b.xpReward - a.xpReward;
-        }
         if (sortBy === 'duration') {
           return a.estimatedMinutes - b.estimatedMinutes;
         }
         return 0;
       });
-  }, [quests, searchQuery, selectedCategory, selectedStatus, sortBy]);
+  }, [quests, searchQuery, selectedSubjectId, selectedStatus, sortBy]);
 
-  const activeCount = quests.filter((q) => q.status !== 'COMPLETED').length;
-  const completedCount = quests.filter((q) => q.status === 'COMPLETED').length;
-
-  const handleOpenNewQuest = () => {
+  const handleOpenNewTask = () => {
     sound.playButtonClick();
     setSelectedQuest(null);
-    setActiveModal('new_quest');
-  };
-
-  const handleEditQuest = (q: Quest) => {
-    sound.playButtonClick();
-    setSelectedQuest(q);
-    setActiveModal('edit_quest');
+    setActiveModal('new_task');
   };
 
   return (
     <div className="space-y-6">
       {/* Header bar */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-6 rounded-2xl bg-zinc-950 border border-zinc-800 shadow-sm">
         <div>
-          <h2 className="text-2xl font-black text-theme-main tracking-tight">Quest Log</h2>
-          <p className="text-xs text-theme-muted mt-0.5">
-            Real missions that shape your character level and evolve your world
+          <h2 className="text-xl font-black text-zinc-100 tracking-tight">Academic Tasks</h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Coursework problems, reading assignments, and laboratory reports
           </p>
         </div>
 
         <button
-          onClick={handleOpenNewQuest}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold text-xs shadow-lg shadow-purple-600/30 hover:opacity-95 transition-all active:scale-95 shrink-0"
+          onClick={handleOpenNewTask}
+          className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-lime-400 hover:bg-lime-300 text-zinc-950 text-xs font-extrabold shadow-sm transition-all shrink-0"
         >
           <Plus className="w-4 h-4 stroke-[3]" />
-          <span>Inscribe Quest</span>
+          <span>Add Task</span>
         </button>
       </div>
 
-      {/* Controls Bar: Search, Category Pills, Status & Sort */}
-      <div className="space-y-3 p-4 rounded-3xl bg-surface-main border border-theme shadow-sm">
-        {/* Search & Sort Row */}
-        <div className="flex flex-col sm:flex-row items-center gap-3">
-          <div className="relative flex-1 w-full">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-theme-muted" />
+      {/* Filter and Search Bar */}
+      <div className="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-3">
+        <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+          <div className="sm:col-span-2 relative">
+            <Search className="w-4 h-4 text-zinc-500 absolute left-3 top-3" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search active missions, skills, or objectives..."
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-elevated/70 border border-theme text-theme-main placeholder:text-theme-muted text-xs focus:outline-none focus:border-primary-violet"
+              placeholder="Search tasks..."
+              className="w-full pl-9 pr-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-lime-400"
             />
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-start">
-            {/* Status toggle buttons */}
-            <div className="flex items-center p-1 rounded-xl bg-surface-elevated/80 border border-theme text-xs font-semibold">
-              <button
-                onClick={() => setSelectedStatus('ACTIVE')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  selectedStatus === 'ACTIVE'
-                    ? 'bg-primary-violet text-white shadow-sm'
-                    : 'text-theme-muted hover:text-theme-main'
-                }`}
-              >
-                Active ({activeCount})
-              </button>
-              <button
-                onClick={() => setSelectedStatus('COMPLETED')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  selectedStatus === 'COMPLETED'
-                    ? 'bg-mint-green text-black font-bold shadow-sm'
-                    : 'text-theme-muted hover:text-theme-main'
-                }`}
-              >
-                Done ({completedCount})
-              </button>
-              <button
-                onClick={() => setSelectedStatus('ALL')}
-                className={`px-3 py-1 rounded-lg transition-all ${
-                  selectedStatus === 'ALL'
-                    ? 'bg-surface-main text-theme-main shadow-sm'
-                    : 'text-theme-muted hover:text-theme-main'
-                }`}
-              >
-                All
-              </button>
-            </div>
+          <select
+            value={selectedSubjectId}
+            onChange={(e) => setSelectedSubjectId(e.target.value)}
+            className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
+          >
+            <option value="ALL">All Subjects</option>
+            {subjects.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.code}: {s.name}
+              </option>
+            ))}
+          </select>
 
-            {/* Sort Selector */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface-elevated/80 border border-theme text-xs text-theme-muted">
-              <ArrowUpDown className="w-3.5 h-3.5" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as 'priority' | 'due' | 'xp' | 'duration')}
-                className="bg-transparent text-theme-main text-xs font-semibold focus:outline-none cursor-pointer"
-              >
-                <option value="priority" className="bg-surface-elevated">Sort: Priority</option>
-                <option value="due" className="bg-surface-elevated">Sort: Due Date</option>
-                <option value="xp" className="bg-surface-elevated">Sort: XP Reward</option>
-                <option value="duration" className="bg-surface-elevated">Sort: Duration</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        {/* Category Pills Slider */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-xs">
-          {categories.map((c) => {
-            const isSelected = selectedCategory === c.key;
-            return (
-              <button
-                key={c.key}
-                onClick={() => {
-                  sound.playButtonClick();
-                  setSelectedCategory(c.key);
-                }}
-                className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all border shrink-0 text-xs ${
-                  isSelected
-                    ? 'bg-primary-violet/20 border-primary-violet text-primary-violet shadow-sm'
-                    : 'bg-surface-elevated/40 border-theme text-theme-muted hover:text-theme-main'
-                }`}
-              >
-                {c.label}
-              </button>
-            );
-          })}
+          <select
+            value={selectedStatus}
+            onChange={(e) => setSelectedStatus(e.target.value)}
+            className="px-3 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
+          >
+            <option value="ACTIVE">Active Tasks</option>
+            <option value="COMPLETED">Completed</option>
+            <option value="ALL">All</option>
+          </select>
         </div>
       </div>
 
-      {/* Quests Cards Grid / List */}
-      {filteredQuests.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-          {filteredQuests.map((quest) => (
-            <QuestCard key={quest.id} quest={quest} onEdit={handleEditQuest} />
-          ))}
-        </div>
-      ) : (
-        <div className="p-12 rounded-3xl bg-surface-main border border-theme text-center space-y-3">
-          <div className="w-12 h-12 rounded-2xl bg-surface-elevated flex items-center justify-center mx-auto text-theme-muted">
-            <Sparkles className="w-6 h-6 text-primary-violet/60" />
+      {/* Task Cards List */}
+      <div className="space-y-3">
+        {filteredQuests.length > 0 ? (
+          filteredQuests.map((quest) => <QuestCard key={quest.id} quest={quest} />)
+        ) : (
+          <div className="p-12 text-center bg-zinc-950 rounded-2xl border border-zinc-800 space-y-2">
+            <CheckCircle2 className="w-8 h-8 text-lime-400 mx-auto" />
+            <h4 className="text-sm font-bold text-zinc-200">No tasks match your filters</h4>
+            <p className="text-xs text-zinc-500">Try adjusting your search query or subject filter.</p>
           </div>
-          <h4 className="font-extrabold text-base text-theme-main">No quests found in this scroll</h4>
-          <p className="text-xs text-theme-muted max-w-sm mx-auto">
-            {searchQuery
-              ? 'Try adjusting your search terms or filter criteria.'
-              : selectedStatus === 'ACTIVE'
-              ? 'All active missions completed! Your kingdom flourishes. Inscribe a new quest to continue expanding.'
-              : 'No quests match the current filters.'}
-          </p>
-          <button
-            onClick={handleOpenNewQuest}
-            className="px-4 py-2 rounded-xl bg-primary-violet text-white text-xs font-bold hover:bg-purple-600 transition-colors shadow-md inline-flex items-center gap-1.5"
-          >
-            <Plus className="w-4 h-4" />
-            <span>Inscribe a Quest</span>
-          </button>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
 }

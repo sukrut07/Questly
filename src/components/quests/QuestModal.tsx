@@ -1,18 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useQuestly } from '@/lib/store';
-import { Quest, QuestCategory, QuestDifficulty, QuestPriority, QuestSubtask } from '@/lib/types';
+import { Quest, TaskType, QuestDifficulty, QuestPriority } from '@/lib/types';
 import { getXpForDifficulty, getTodayDateString } from '@/lib/progressionEngine';
-import { X, Plus, Trash2, Sparkles, CheckSquare } from 'lucide-react';
+import { X, Plus, Trash2, Check, BookOpen, Clock, AlertCircle } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 
 export function QuestModal() {
-  const { activeModal, setActiveModal, selectedQuest, setSelectedQuest, createQuest, updateQuest } =
+  const { activeModal, setActiveModal, selectedQuest, setSelectedQuest, createQuest, updateQuest, subjects } =
     useQuestly();
 
   const isEditing = activeModal === 'edit_quest' && selectedQuest !== null;
-  const isOpen = activeModal === 'new_quest' || activeModal === 'edit_quest';
+  const isOpen = activeModal === 'new_task' || activeModal === 'new_quest' || isEditing;
 
   if (!isOpen) return null;
 
@@ -21,6 +21,7 @@ export function QuestModal() {
       key={isEditing && selectedQuest ? selectedQuest.id : 'new'}
       selectedQuest={selectedQuest}
       isEditing={isEditing}
+      subjects={subjects}
       onClose={() => {
         setActiveModal(null);
         setSelectedQuest(null);
@@ -34,25 +35,41 @@ export function QuestModal() {
 function QuestModalForm({
   selectedQuest,
   isEditing,
+  subjects,
   onClose,
   createQuest,
   updateQuest,
 }: {
   selectedQuest: Quest | null;
   isEditing: boolean;
+  subjects: any[];
   onClose: () => void;
   createQuest: (q: Omit<Quest, 'id' | 'createdAt' | 'completedAt' | 'actualMinutes'>) => void;
   updateQuest: (q: Quest) => void;
 }) {
   const [title, setTitle] = useState(isEditing && selectedQuest ? selectedQuest.title : '');
   const [description, setDescription] = useState(isEditing && selectedQuest ? selectedQuest.description : '');
-  const [category, setCategory] = useState<QuestCategory>(isEditing && selectedQuest ? selectedQuest.category : 'CODING');
-  const [difficulty, setDifficulty] = useState<QuestDifficulty>(isEditing && selectedQuest ? selectedQuest.difficulty : 'MEDIUM');
-  const [priority, setPriority] = useState<QuestPriority>(isEditing && selectedQuest ? selectedQuest.priority : 'MEDIUM');
-  const [estimatedMinutes, setEstimatedMinutes] = useState(isEditing && selectedQuest ? selectedQuest.estimatedMinutes : 30);
-  const [dueDate, setDueDate] = useState(isEditing && selectedQuest ? (selectedQuest.dueDate || getTodayDateString()) : getTodayDateString());
-  const [isRecurring, setIsRecurring] = useState(isEditing && selectedQuest ? selectedQuest.isRecurring : false);
-  const [subtasks, setSubtasks] = useState<{ id: string; title: string; isCompleted: boolean }[]>(isEditing && selectedQuest ? selectedQuest.subtasks : []);
+  const [subjectId, setSubjectId] = useState(
+    isEditing && selectedQuest ? selectedQuest.subjectId || subjects[0]?.id : subjects[0]?.id || ''
+  );
+  const [taskType, setTaskType] = useState<TaskType>(
+    isEditing && selectedQuest ? selectedQuest.taskType : 'problem_solving'
+  );
+  const [difficulty, setDifficulty] = useState<QuestDifficulty>(
+    isEditing && selectedQuest ? selectedQuest.difficulty : 'MEDIUM'
+  );
+  const [priority, setPriority] = useState<QuestPriority>(
+    isEditing && selectedQuest ? selectedQuest.priority : 'MEDIUM'
+  );
+  const [estimatedMinutes, setEstimatedMinutes] = useState(
+    isEditing && selectedQuest ? selectedQuest.estimatedMinutes : 45
+  );
+  const [dueDate, setDueDate] = useState(
+    isEditing && selectedQuest ? selectedQuest.dueDate || getTodayDateString() : getTodayDateString()
+  );
+  const [subtasks, setSubtasks] = useState<{ id: string; title: string; isCompleted: boolean }[]>(
+    isEditing && selectedQuest ? selectedQuest.subtasks : []
+  );
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
 
   const handleAddSubtask = () => {
@@ -73,6 +90,7 @@ function QuestModalForm({
     e.preventDefault();
     if (!title.trim()) return;
 
+    const matchedSubject = subjects.find((s) => s.id === subjectId);
     const xpReward = getXpForDifficulty(difficulty);
 
     if (isEditing && selectedQuest) {
@@ -80,12 +98,14 @@ function QuestModalForm({
         ...selectedQuest,
         title: title.trim(),
         description: description.trim(),
-        category,
+        subjectId: matchedSubject?.id,
+        subjectCode: matchedSubject?.code,
+        subjectColorHex: matchedSubject?.colorHex,
+        taskType,
         difficulty,
         priority,
         estimatedMinutes,
         dueDate,
-        isRecurring,
         xpReward,
         subtasks,
       });
@@ -93,14 +113,17 @@ function QuestModalForm({
       createQuest({
         title: title.trim(),
         description: description.trim(),
-        category,
+        subjectId: matchedSubject?.id,
+        subjectCode: matchedSubject?.code,
+        subjectColorHex: matchedSubject?.colorHex || '#A3E635',
+        taskType,
         difficulty,
         priority,
         estimatedMinutes,
         dueDate,
-        status: 'NOT_STARTED',
+        status: 'IN_PROGRESS',
         xpReward,
-        isRecurring,
+        isRecurring: false,
         subtasks,
       });
     }
@@ -108,187 +131,136 @@ function QuestModalForm({
     onClose();
   };
 
-  const categories: QuestCategory[] = [
-    'CODING',
-    'STUDY',
-    'WORK',
-    'FITNESS',
-    'READING',
-    'CREATIVITY',
-    'PERSONAL',
-    'CUSTOM',
-  ];
-
-  const difficulties: { diff: QuestDifficulty; label: string; xp: number }[] = [
-    { diff: 'EASY', label: 'Easy', xp: 25 },
-    { diff: 'MEDIUM', label: 'Medium', xp: 50 },
-    { diff: 'HARD', label: 'Hard', xp: 90 },
-    { diff: 'EPIC', label: 'Epic', xp: 150 },
-  ];
-
-  const priorities: QuestPriority[] = ['LOW', 'MEDIUM', 'HIGH', 'URGENT'];
-
   return (
     <div
-      role="dialog"
-      aria-modal="true"
-      aria-label={isEditing ? 'Modify Inscribed Quest' : 'Inscribe New Quest'}
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-md animate-fade-in"
+      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-150"
+      onClick={onClose}
     >
-      <div className="relative w-full max-w-xl max-h-[92vh] bg-surface-main border border-theme rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+      <div
+        className="w-full max-w-xl bg-zinc-950 border border-zinc-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        onClick={(e) => e.stopPropagation()}
+      >
         {/* Header */}
-        <div className="p-5 border-b border-theme flex items-center justify-between bg-surface-elevated/40">
-          <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-white shadow-md">
-              <CheckSquare className="w-5 h-5" />
-            </div>
-            <div>
-              <h2 className="font-extrabold text-lg text-theme-main tracking-tight">
-                {isEditing ? 'Modify Inscribed Quest' : 'Inscribe New Quest'}
-              </h2>
-              <p className="text-xs text-theme-muted">
-                Each completed quest empowers your character and expands your world
-              </p>
-            </div>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-zinc-800 bg-zinc-900/60">
+          <div>
+            <h3 className="text-base font-extrabold text-zinc-100">
+              {isEditing ? 'Edit Academic Task' : 'Add Academic Task'}
+            </h3>
+            <p className="text-xs text-zinc-400">Problem sets, reading assignments, and lab tasks</p>
           </div>
-
           <button
-            onClick={() => {
-              sound.playButtonClick();
-              onClose();
-            }}
-            className="p-1.5 rounded-xl text-theme-muted hover:text-theme-main hover:bg-surface-elevated transition-colors"
-            aria-label="Close modal"
+            onClick={onClose}
+            className="p-1.5 rounded-lg text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1 text-xs">
+        <form onSubmit={handleSubmit} className="p-6 overflow-y-auto space-y-4 flex-1">
           {/* Title */}
-          <div>
-            <label className="block font-bold text-theme-main mb-1">
-              Quest Title <span className="text-coral">*</span>
-            </label>
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-zinc-300">Task Title</label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Master dynamic programming graph problems"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-surface-elevated border border-theme text-theme-main placeholder:text-theme-muted/50 focus:outline-none focus:border-primary-violet text-sm"
+              placeholder="e.g. Implement Red-Black Tree rotation in C++"
+              className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-lime-400"
             />
           </div>
 
-          {/* Description */}
-          <div>
-            <label className="block font-bold text-theme-main mb-1">Description / Notes</label>
-            <textarea
-              rows={2}
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              placeholder="Add key context, resources, or requirements for this quest..."
-              className="w-full px-3.5 py-2.5 rounded-xl bg-surface-elevated border border-theme text-theme-main placeholder:text-theme-muted/50 focus:outline-none focus:border-primary-violet text-xs leading-relaxed"
-            />
-          </div>
-
-          {/* Category selection */}
-          <div>
-            <label className="block font-bold text-theme-main mb-1.5">Category</label>
-            <div className="grid grid-cols-4 gap-1.5">
-              {categories.map((cat) => (
-                <button
-                  type="button"
-                  key={cat}
-                  onClick={() => setCategory(cat)}
-                  className={`py-2 px-1 rounded-xl text-center font-bold text-[10px] transition-all border ${
-                    category === cat
-                      ? 'bg-primary-violet/20 border-primary-violet text-primary-violet shadow-sm'
-                      : 'bg-surface-elevated/40 border-theme text-theme-muted hover:text-theme-main'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Difficulty & XP reward */}
-          <div>
-            <label className="block font-bold text-theme-main mb-1.5 flex items-center justify-between">
-              <span>Difficulty & Reward</span>
-              <span className="text-amber-400 font-extrabold flex items-center gap-1">
-                <Sparkles className="w-3.5 h-3.5" />+{getXpForDifficulty(difficulty)} XP Reward
-              </span>
-            </label>
-            <div className="grid grid-cols-4 gap-2">
-              {difficulties.map((d) => (
-                <button
-                  type="button"
-                  key={d.diff}
-                  onClick={() => setDifficulty(d.diff)}
-                  className={`py-2.5 rounded-xl text-center font-bold transition-all border ${
-                    difficulty === d.diff
-                      ? 'bg-gradient-to-r from-purple-900/40 to-indigo-900/40 border-primary-violet text-theme-main shadow-md'
-                      : 'bg-surface-elevated/40 border-theme text-theme-muted hover:text-theme-main'
-                  }`}
-                >
-                  <div className="text-xs">{d.label}</div>
-                  <div className="text-[10px] text-amber-400">+{d.xp} XP</div>
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Priority & Duration row */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div>
-              <label className="block font-bold text-theme-main mb-1">Priority</label>
+          {/* Subject & Task Type */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-300">Associated Course</label>
               <select
-                value={priority}
-                onChange={(e) => setPriority(e.target.value as QuestPriority)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-elevated border border-theme text-theme-main focus:outline-none focus:border-primary-violet"
+                value={subjectId}
+                onChange={(e) => setSubjectId(e.target.value)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
               >
-                {priorities.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
+                {subjects.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.code}: {s.name}
                   </option>
                 ))}
               </select>
             </div>
 
-            <div>
-              <label className="block font-bold text-theme-main mb-1">Est. Minutes</label>
-              <input
-                type="number"
-                min="5"
-                max="360"
-                step="5"
-                value={estimatedMinutes}
-                onChange={(e) => setEstimatedMinutes(Math.max(5, parseInt(e.target.value) || 25))}
-                className="w-full px-3 py-2 rounded-xl bg-surface-elevated border border-theme text-theme-main focus:outline-none focus:border-primary-violet"
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-300">Academic Task Type</label>
+              <select
+                value={taskType}
+                onChange={(e) => setTaskType(e.target.value as TaskType)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
               >
-              </input>
+                <option value="problem_solving">Problem Solving</option>
+                <option value="coding">Coding / Implementation</option>
+                <option value="reading">Textbook Reading</option>
+                <option value="revision">Spaced Revision</option>
+                <option value="lab_work">Laboratory Work</option>
+                <option value="writing">Paper / Essay Writing</option>
+              </select>
+            </div>
+          </div>
+
+          {/* Priority & Estimated Minutes & Due Date */}
+          <div className="grid grid-cols-3 gap-3">
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-300">Priority</label>
+              <select
+                value={priority}
+                onChange={(e) => setPriority(e.target.value as QuestPriority)}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
+              >
+                <option value="LOW">Low</option>
+                <option value="MEDIUM">Medium</option>
+                <option value="HIGH">High</option>
+                <option value="URGENT">Urgent</option>
+              </select>
             </div>
 
-            <div>
-              <label className="block font-bold text-theme-main mb-1">Target Date</label>
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-300">Duration (min)</label>
+              <input
+                type="number"
+                min={10}
+                max={300}
+                step={5}
+                value={estimatedMinutes}
+                onChange={(e) => setEstimatedMinutes(Number(e.target.value))}
+                className="w-full px-3.5 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-zinc-300">Due Date</label>
               <input
                 type="date"
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl bg-surface-elevated border border-theme text-theme-main focus:outline-none focus:border-primary-violet"
+                className="w-full px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 focus:outline-none focus:border-lime-400"
               />
             </div>
           </div>
 
-          {/* Subtasks checklist builder */}
-          <div>
-            <label className="block font-bold text-theme-main mb-1">
-              Subtasks ({subtasks.length})
-            </label>
-            <div className="flex gap-2 mb-2">
+          {/* Description */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-zinc-300">Description / Guidelines (Optional)</label>
+            <textarea
+              rows={2}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="Key textbook page numbers, theorem references, or assignment criteria..."
+              className="w-full px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-lime-400"
+            />
+          </div>
+
+          {/* Checklist Subtasks */}
+          <div className="space-y-2 pt-2 border-t border-zinc-850">
+            <label className="text-xs font-bold text-zinc-300">Checklist Subtasks</label>
+            <div className="flex gap-2">
               <input
                 type="text"
                 value={newSubtaskTitle}
@@ -299,32 +271,30 @@ function QuestModalForm({
                     handleAddSubtask();
                   }
                 }}
-                placeholder="Add actionable subtask step..."
-                className="flex-1 px-3 py-2 rounded-xl bg-surface-elevated border border-theme text-theme-main placeholder:text-theme-muted/50 focus:outline-none focus:border-primary-violet text-xs"
+                placeholder="Add subtask step and press Enter..."
+                className="flex-1 px-3.5 py-2 rounded-xl bg-zinc-900 border border-zinc-800 text-xs text-zinc-200 placeholder-zinc-500 focus:outline-none focus:border-lime-400"
               />
               <button
                 type="button"
                 onClick={handleAddSubtask}
-                className="px-3 py-2 rounded-xl bg-surface-elevated hover:bg-primary-violet text-theme-main hover:text-white border border-theme transition-colors font-bold flex items-center gap-1"
+                className="px-3.5 py-2 rounded-xl bg-zinc-850 hover:bg-zinc-800 text-zinc-200 border border-zinc-750 text-xs font-bold"
               >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Add</span>
+                Add
               </button>
             </div>
 
             {subtasks.length > 0 && (
-              <div className="space-y-1.5 p-2 rounded-xl bg-surface-elevated/30 border border-theme max-h-36 overflow-y-auto">
+              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1 pt-1">
                 {subtasks.map((st) => (
                   <div
                     key={st.id}
-                    className="flex items-center justify-between gap-2 p-1.5 rounded-lg bg-surface-elevated/50 text-theme-main text-xs"
+                    className="flex items-center justify-between p-2 rounded-lg bg-zinc-900 border border-zinc-850 text-xs"
                   >
-                    <span className="truncate">{st.title}</span>
+                    <span className="text-zinc-200 truncate">{st.title}</span>
                     <button
                       type="button"
                       onClick={() => handleRemoveSubtask(st.id)}
-                      className="text-theme-muted hover:text-coral transition-colors p-1"
-                      aria-label="Remove subtask"
+                      className="text-zinc-500 hover:text-rose-400 p-1"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                     </button>
@@ -334,20 +304,21 @@ function QuestModalForm({
             )}
           </div>
 
-          {/* Actions */}
-          <div className="pt-3 border-t border-theme flex items-center justify-end gap-2.5">
+          {/* Footer Submit */}
+          <div className="pt-4 flex items-center justify-end gap-3 border-t border-zinc-800/80">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2.5 rounded-xl text-theme-muted hover:text-theme-main hover:bg-surface-elevated transition-colors font-bold"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold hover:opacity-95 shadow-lg shadow-purple-600/30 transition-all active:scale-95"
+              className="px-5 py-2 rounded-xl bg-lime-400 hover:bg-lime-300 text-zinc-950 text-xs font-extrabold shadow-md transition-colors flex items-center gap-1.5"
             >
-              {isEditing ? 'Save Quest' : 'Inscribe Quest'}
+              <Check className="w-4 h-4 stroke-[3]" />
+              <span>{isEditing ? 'Save Changes' : 'Create Task'}</span>
             </button>
           </div>
         </form>

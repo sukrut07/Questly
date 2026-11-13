@@ -1,12 +1,52 @@
-export type QuestCategory =
-  | 'CODING'
-  | 'STUDY'
-  | 'WORK'
-  | 'FITNESS'
-  | 'READING'
-  | 'CREATIVITY'
-  | 'PERSONAL'
-  | 'CUSTOM';
+export type SubjectColor = '#A3E635' | '#C084FC' | '#38BDF8' | '#F59E0B' | '#FB7185' | '#34D399';
+
+export interface TopicChecklistItem {
+  id: string;
+  title: string;
+  isCompleted: boolean;
+  completedAt?: number;
+}
+
+export interface AcademicTopic {
+  id: string;
+  title: string;
+  difficulty: 'beginner' | 'intermediate' | 'advanced';
+  estimatedMinutes: number;
+  isCompleted: boolean;
+  completedAt?: number;
+  revisionCount: number;
+  checklists: TopicChecklistItem[];
+}
+
+export interface AcademicModule {
+  id: string;
+  title: string;
+  orderIndex: number;
+  topics: AcademicTopic[];
+}
+
+export interface AcademicSubject {
+  id: string;
+  name: string;
+  code: string;
+  instructorName?: string;
+  colorHex: SubjectColor;
+  iconName: string;
+  credits: number;
+  targetGrade?: string;
+  syllabusProgress: number; // 0 to 100
+  attendancePercentage?: number;
+  modules: AcademicModule[];
+}
+
+export type TaskType =
+  | 'reading'
+  | 'problem_solving'
+  | 'coding'
+  | 'revision'
+  | 'writing'
+  | 'lecture_prep'
+  | 'lab_work';
 
 export type QuestDifficulty = 'EASY' | 'MEDIUM' | 'HARD' | 'EPIC';
 export type QuestPriority = 'LOW' | 'MEDIUM' | 'HIGH' | 'URGENT';
@@ -22,7 +62,10 @@ export interface Quest {
   id: string;
   title: string;
   description: string;
-  category: QuestCategory;
+  subjectId?: string;
+  subjectCode?: string;
+  subjectColorHex?: string;
+  taskType: TaskType;
   difficulty: QuestDifficulty;
   priority: QuestPriority;
   estimatedMinutes: number;
@@ -35,38 +78,84 @@ export interface Quest {
   createdAt: number;
   completedAt: number | null;
   subtasks: QuestSubtask[];
+  resourceUrls?: string[];
 }
 
-export type WorldStageNumber = 1 | 2 | 3 | 4 | 5 | 6;
-
-export interface WorldStageInfo {
-  stageNumber: WorldStageNumber;
+export interface AcademicDeadline {
+  id: string;
   title: string;
-  subtitle: string;
-  minStreakDays: number;
-  description: string;
-  nextMilestoneDesc: string;
+  type: 'assignment' | 'examination' | 'project';
+  subjectId: string;
+  subjectCode: string;
+  subjectName: string;
+  subjectColorHex: string;
+  deadlineIso: string;
+  weightagePercentage: number;
+  isCompleted: boolean;
+  targetScore?: number;
 }
 
-export type PresentationMode = 'flourishing' | 'stable' | 'resting';
+export interface TimetableSlot {
+  id: string;
+  subjectId: string;
+  subjectCode: string;
+  subjectName: string;
+  subjectColorHex: string;
+  dayOfWeek: number; // 1 = Monday, 5 = Friday
+  startTime: string; // "10:30"
+  endTime: string;   // "12:00"
+  locationRoom: string;
+  slotType: 'lecture' | 'lab' | 'tutorial';
+}
 
-export type ProgressionStage = 'EXPLORER' | 'BUILDER' | 'STRATEGIST' | 'MASTER';
+export interface AcademicInboxItem {
+  id: string;
+  title: string;
+  notes?: string;
+  sourceUrl?: string;
+  type: 'task' | 'note' | 'deadline' | 'reference';
+  suggestedSubjectId?: string;
+  createdAt: number;
+}
+
+export interface AcademicTemplate {
+  id: string;
+  title: string;
+  category: 'dsa' | 'exam_prep' | 'research' | 'math' | 'project';
+  description: string;
+  estimatedWeeks: number;
+  totalTasks: number;
+  subjectCode: string;
+  tasks: Array<{
+    title: string;
+    taskType: TaskType;
+    estimatedMinutes: number;
+    priority: QuestPriority;
+    subtasks: string[];
+  }>;
+}
+
+export type AcademicRank =
+  | 'Initiate'
+  | 'Scholar'
+  | 'Practitioner'
+  | 'Specialist'
+  | 'Strategist'
+  | 'Expert'
+  | 'Academic Master';
 
 export interface UserProfile {
   id: string;
   displayName: string;
+  academicRole: string; // e.g. "Computer Science • Semester 3"
   avatarId: string;
-  title: string;
+  academicRank: AcademicRank;
   level: number;
   currentXp: number;
   nextLevelXp: number;
   totalXp: number;
-  currentStage: ProgressionStage;
-  activeCosmetics: {
-    avatarFrame: string;
-    worldTheme: 'celestial' | 'arcane' | 'verdant' | 'volcanic';
-    ambientAura: 'sparkles' | 'fireflies' | 'aurora' | 'embers' | 'none';
-  };
+  freezeTokens: number;
+  timezone: string;
 }
 
 export interface StreakInfo {
@@ -75,16 +164,17 @@ export interface StreakInfo {
   lastActiveDate: string; // YYYY-MM-DD
   activeDaysCount: number;
   todayGoalMet: boolean;
-  worldStage: WorldStageNumber;
-  presentationMode: PresentationMode;
+  freezeTokens: number;
 }
 
 export interface FocusSession {
   id: string;
   questId: string | null;
   questTitle: string | null;
+  subjectId?: string | null;
+  subjectCode?: string | null;
   plannedSeconds: number;
-  elapsedSeconds: number; // actual qualifying focus time
+  elapsedSeconds: number;
   isCompleted: boolean;
   startedAt: number;
   endedAt: number;
@@ -92,44 +182,12 @@ export interface FocusSession {
   notes?: string;
 }
 
-export type LevelCategory = 'focus' | 'quest' | 'consistency' | 'boss' | 'special';
-
-export interface AdventureLevel {
-  id: number;
-  zone: number;
-  zoneName: string;
-  title: string;
-  description: string;
-  category: LevelCategory;
-  requiredStars: number;
-  starsEarned: number; // 0 to 3
-  status: 'locked' | 'available' | 'in_progress' | 'completed';
-  xpReward: number;
-  condition: {
-    type: 'focus_minutes' | 'complete_quests' | 'streak_days' | 'boss_challenge';
-    target: number;
-    current: number;
-  };
-  unlockMessage?: string;
-}
-
-export type GameType = 'QUEST_DEFENDER' | 'CRYSTAL_MAZE';
-
-export interface GameRecord {
-  id: string;
-  gameType: GameType;
-  score: number;
-  levelReached: number;
-  durationSeconds: number;
-  playedAt: number;
-}
-
 export interface Achievement {
   id: string;
   title: string;
   description: string;
   iconName: string;
-  category: 'quests' | 'focus' | 'streak' | 'world' | 'arcade';
+  category: 'academic' | 'focus' | 'streak' | 'mastery';
   progress: number;
   maxProgress: number;
   isUnlocked: boolean;
@@ -140,17 +198,18 @@ export interface Achievement {
 export interface DailyActivity {
   date: string; // YYYY-MM-DD
   focusMinutes: number;
-  questsCompleted: number;
+  tasksCompleted: number;
   xpEarned: number;
   goalMet: boolean;
 }
 
 export interface AppSettings {
   theme: 'dark' | 'light' | 'system';
-  dailyFocusTargetMinutes: number;
-  dailyQuestTargetCount: number;
+  dailyFocusTargetMinutes: number; // e.g. 180 (3 hrs)
+  dailyTaskTargetCount: number;    // e.g. 5
   soundEnabled: boolean;
   soundVolume: number; // 0 to 1
   reducedMotion: boolean;
-  ambientSound: 'none' | 'rain' | 'ethereal' | 'forest';
+  compactDensity: boolean;
+  weekStartDay: 'monday' | 'sunday';
 }

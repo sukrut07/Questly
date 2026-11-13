@@ -3,21 +3,21 @@
 import React from 'react';
 import { useQuestly, AppTab } from '@/lib/store';
 import {
-  Sparkles,
-  Flame,
   Compass,
-  CheckSquare,
-  Map,
+  Calendar,
+  BookOpen,
+  Inbox,
   Hourglass,
-  Gamepad2,
   BarChart3,
   User,
-  Settings,
-  Volume2,
-  VolumeX,
+  Sparkles,
+  RotateCcw,
+  Download,
+  Search,
   Sun,
   Moon,
-  Shield,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 
@@ -26,57 +26,52 @@ export function Sidebar() {
     currentTab,
     setCurrentTab,
     user,
-    streak,
+    inbox,
     quests,
-    focusSessions,
     settings,
     updateSettings,
+    setCommandPaletteOpen,
     setActiveModal,
   } = useQuestly();
 
-  // Navigation tabs
   const navItems: { tab: AppTab; label: string; icon: React.ReactNode; badge?: number | string }[] = [
     {
       tab: 'home',
-      label: 'Home',
-      icon: <Compass className="w-5 h-5" />,
+      label: 'Command Center',
+      icon: <Compass className="w-4 h-4" />,
     },
     {
-      tab: 'quests',
-      label: 'Quests',
-      icon: <CheckSquare className="w-5 h-5" />,
-      badge: quests.filter((q) => q.status === 'IN_PROGRESS' || q.status === 'NOT_STARTED').length,
+      tab: 'planner',
+      label: 'Planner',
+      icon: <Calendar className="w-4 h-4" />,
     },
     {
-      tab: 'map',
-      label: 'Adventure Map',
-      icon: <Map className="w-5 h-5" />,
+      tab: 'subjects',
+      label: 'Subjects',
+      icon: <BookOpen className="w-4 h-4" />,
+    },
+    {
+      tab: 'inbox',
+      label: 'Academic Inbox',
+      icon: <Inbox className="w-4 h-4" />,
+      badge: inbox.length > 0 ? inbox.length : undefined,
     },
     {
       tab: 'focus',
       label: 'Focus Chamber',
-      icon: <Hourglass className="w-5 h-5" />,
-    },
-    {
-      tab: 'arcade',
-      label: 'Arcade',
-      icon: <Gamepad2 className="w-5 h-5" />,
+      icon: <Hourglass className="w-4 h-4" />,
     },
     {
       tab: 'analytics',
-      label: 'Analytics',
-      icon: <BarChart3 className="w-5 h-5" />,
+      label: 'Insights',
+      icon: <BarChart3 className="w-4 h-4" />,
     },
     {
       tab: 'profile',
-      label: 'Profile & Gear',
-      icon: <User className="w-5 h-5" />,
+      label: 'Profile & Settings',
+      icon: <User className="w-4 h-4" />,
     },
   ];
-
-  // Daily goal calculation for compact ring
-  const completedTodayQuests = quests.filter((q) => q.status === 'COMPLETED').length;
-  const questProgress = Math.min(100, Math.round((completedTodayQuests / Math.max(1, settings.dailyQuestTargetCount)) * 100));
 
   const handleTabClick = (tab: AppTab) => {
     sound.playButtonClick();
@@ -95,178 +90,123 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 shrink-0 bg-surface-main/90 border-r border-theme backdrop-blur-xl z-30 select-none">
+    <aside className="hidden lg:flex flex-col w-64 h-screen sticky top-0 shrink-0 bg-zinc-950 border-r border-zinc-800 z-30 select-none">
       {/* Brand Header */}
-      <div className="p-5 flex items-center justify-between border-b border-theme">
-        <div
-          onClick={() => handleTabClick('home')}
-          className="flex items-center gap-3 cursor-pointer group"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-purple-600 to-indigo-500 flex items-center justify-center text-white shadow-lg shadow-purple-600/30 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5" />
+      <div className="p-5 flex items-center justify-between border-b border-zinc-800/80">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-xl bg-lime-400 flex items-center justify-center text-zinc-950 font-black text-sm">
+            Q
           </div>
           <div>
-            <h1 className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-purple-400 via-indigo-300 to-blue-400 bg-clip-text text-transparent">
-              Questly
-            </h1>
-            <p className="text-[10px] text-theme-muted font-medium tracking-wider uppercase">
-              Living Kingdom
-            </p>
+            <h1 className="text-sm font-black text-zinc-100 tracking-tight">QUESTLY</h1>
+            <p className="text-[10px] text-zinc-500 font-mono">Academic OS v2.0</p>
           </div>
         </div>
 
-        {/* Streak Flame Badge */}
-        <div
-          className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 text-amber-400 font-bold text-xs"
-          title={`Current Streak: ${streak.currentStreak} active days`}
+        <button
+          onClick={() => setCommandPaletteOpen(true)}
+          className="p-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-zinc-100 hover:bg-zinc-850 transition-colors"
+          title="Search (Cmd+K)"
         >
-          <Flame className="w-3.5 h-3.5 fill-amber-500 text-amber-500 animate-pulse" />
-          <span>{streak.currentStreak}d</span>
-        </div>
+          <Search className="w-3.5 h-3.5" />
+        </button>
       </div>
 
-      {/* User Progress Mini Card */}
-      <div className="p-4 mx-3 my-3 rounded-2xl bg-surface-elevated/70 border border-theme">
-        <div className="flex items-center gap-3 mb-2.5">
-          <div className="relative">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm shadow-md">
-              <Shield className="w-5 h-5" />
-            </div>
-            <div className="absolute -bottom-1 -right-1 px-1.5 py-0.2 rounded-full bg-yellow-400 text-black text-[9px] font-black border border-black/40">
-              L{user.level}
-            </div>
-          </div>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-xs font-bold truncate text-theme-main">{user.displayName}</h2>
-            <p className="text-[10px] text-theme-muted truncate">{user.title}</p>
-          </div>
+      {/* Navigation Links */}
+      <div className="flex-1 overflow-y-auto p-3 space-y-1">
+        <div className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider px-3 py-1.5">
+          Workspace
         </div>
 
-        {/* XP Bar */}
-        <div className="space-y-1">
-          <div className="flex justify-between text-[10px] text-theme-muted font-medium">
-            <span>XP Progress</span>
-            <span className="text-primary-violet font-bold">
-              {user.currentXp} / {user.nextLevelXp}
-            </span>
-          </div>
-          <div className="w-full h-1.5 rounded-full bg-black/20 overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all duration-500"
-              style={{
-                width: `${Math.min(100, (user.currentXp / user.nextLevelXp) * 100)}%`,
-              }}
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* Main Navigation Links */}
-      <nav className="flex-1 px-3 space-y-1 overflow-y-auto py-2">
         {navItems.map((item) => {
           const isActive = currentTab === item.tab;
+
           return (
             <button
               key={item.tab}
               onClick={() => handleTabClick(item.tab)}
-              className={`w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all group ${
+              className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${
                 isActive
-                  ? 'bg-primary-violet/15 text-primary-violet border border-primary-violet/30 font-semibold shadow-sm'
-                  : 'text-theme-muted hover:text-theme-main hover:bg-surface-elevated/50'
+                  ? 'bg-lime-400/10 text-lime-400 border border-lime-400/30'
+                  : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-900 border border-transparent'
               }`}
             >
-              <div className="flex items-center gap-3">
-                <span className={isActive ? 'text-primary-violet' : 'text-theme-muted group-hover:text-theme-main'}>
-                  {item.icon}
-                </span>
+              <div className="flex items-center gap-2.5">
+                <span className={isActive ? 'text-lime-400' : 'text-zinc-500'}>{item.icon}</span>
                 <span>{item.label}</span>
               </div>
-              {item.badge !== undefined && (typeof item.badge === 'number' ? item.badge > 0 : Boolean(item.badge)) && (
-                <span
-                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    isActive
-                      ? 'bg-primary-violet text-white'
-                      : 'bg-surface-elevated text-theme-muted group-hover:text-theme-main'
-                  }`}
-                >
+
+              {item.badge !== undefined && (
+                <span className="text-[10px] font-mono px-2 py-0.2 rounded-full bg-amber-400/20 text-amber-400 font-bold border border-amber-400/30">
                   {item.badge}
                 </span>
               )}
             </button>
           );
         })}
-      </nav>
 
-      {/* Daily Goal Compact Indicator */}
-      <div className="p-3 mx-3 mb-2 rounded-xl bg-surface-elevated/40 border border-theme flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <div className="relative w-7 h-7 flex items-center justify-center">
-            <svg className="w-7 h-7 transform -rotate-90">
-              <circle
-                cx="14"
-                cy="14"
-                r="11"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                className="text-white/10"
-                fill="none"
-              />
-              <circle
-                cx="14"
-                cy="14"
-                r="11"
-                stroke="currentColor"
-                strokeWidth="2.5"
-                strokeDasharray={2 * Math.PI * 11}
-                strokeDashoffset={2 * Math.PI * 11 * (1 - questProgress / 100)}
-                strokeLinecap="round"
-                className="text-mint-green transition-all duration-700"
-                fill="none"
-              />
-            </svg>
-            <span className="absolute text-[8px] font-black text-theme-main">{questProgress}%</span>
+        {/* Tools & Utilities */}
+        <div className="pt-4">
+          <div className="text-[10px] font-bold text-zinc-600 uppercase tracking-wider px-3 py-1.5">
+            Tools
           </div>
-          <div>
-            <p className="text-[11px] font-semibold text-theme-main">Daily Quests</p>
-            <p className="text-[9px] text-theme-muted">
-              {completedTodayQuests} of {settings.dailyQuestTargetCount} fulfilled
-            </p>
-          </div>
+
+          <button
+            onClick={() => setActiveModal('templates')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
+          >
+            <Sparkles className="w-4 h-4 text-purple-400" />
+            <span>Templates</span>
+          </button>
+
+          <button
+            onClick={() => setActiveModal('weekly_review')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
+          >
+            <RotateCcw className="w-4 h-4 text-blue-400" />
+            <span>Weekly Review</span>
+          </button>
+
+          <button
+            onClick={() => setActiveModal('data_backup')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-zinc-400 hover:text-zinc-200 hover:bg-zinc-900 transition-colors"
+          >
+            <Download className="w-4 h-4 text-zinc-400" />
+            <span>Data Backup</span>
+          </button>
         </div>
       </div>
 
-      {/* Footer Controls: Audio, Theme & Settings */}
-      <div className="p-3 border-t border-theme flex items-center justify-between text-theme-muted">
-        <div className="flex items-center gap-1">
-          <button
-            onClick={toggleSound}
-            className="p-2 rounded-lg hover:bg-surface-elevated hover:text-theme-main transition-colors"
-            title={settings.soundEnabled ? 'Mute synthesized sound effects' : 'Enable synthesized sound effects'}
-            aria-label="Toggle sound"
-          >
-            {settings.soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-coral" />}
-          </button>
-          <button
-            onClick={toggleTheme}
-            className="p-2 rounded-lg hover:bg-surface-elevated hover:text-theme-main transition-colors"
-            title={`Switch to ${settings.theme === 'dark' ? 'Light' : 'Dark'} theme`}
-            aria-label="Toggle theme"
-          >
-            {settings.theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-          </button>
-        </div>
+      {/* User Footer Profile & Settings */}
+      <div className="p-3 border-t border-zinc-800/80 bg-zinc-950/80 space-y-3">
+        <div className="flex items-center justify-between px-2">
+          <div className="flex items-center gap-2 min-w-0">
+            <div className="w-7 h-7 rounded-lg bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-bold text-zinc-300">
+              {user.displayName.substring(0, 1)}
+            </div>
+            <div className="truncate">
+              <div className="text-xs font-bold text-zinc-200 truncate">{user.displayName}</div>
+              <div className="text-[10px] text-zinc-500 font-mono">Lvl {user.level} {user.academicRank}</div>
+            </div>
+          </div>
 
-        <button
-          onClick={() => {
-            sound.playButtonClick();
-            setActiveModal('settings');
-          }}
-          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs hover:bg-surface-elevated hover:text-theme-main transition-colors"
-          title="Open Settings"
-        >
-          <Settings className="w-4 h-4" />
-          <span>Config</span>
-        </button>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={toggleSound}
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors"
+              title="Toggle Sound"
+            >
+              {settings.soundEnabled ? <Volume2 className="w-3.5 h-3.5" /> : <VolumeX className="w-3.5 h-3.5" />}
+            </button>
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-zinc-300 hover:bg-zinc-900 transition-colors"
+              title="Toggle Theme"
+            >
+              {settings.theme === 'dark' ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+            </button>
+          </div>
+        </div>
       </div>
     </aside>
   );
