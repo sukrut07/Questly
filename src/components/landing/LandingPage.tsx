@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { QuestlyLogo } from '@/components/common/QuestlyLogo';
 import { InteractiveGraphBackground } from '@/components/common/InteractiveGraphBackground';
+import { MobileWidgetView } from '@/components/widgets/MobileWidgetView';
 
 export function LandingPage() {
   const { setMode } = useQuestly();
@@ -480,6 +481,27 @@ export function LandingPage() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4.1 Interactive Mobile Widget Showcase */}
+      <section id="mobile" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642] relative bg-graph-grid">
+        <div className="max-w-5xl mx-auto space-y-12 text-center">
+          <div className="space-y-3">
+            <span className="coord-marker text-[#42DFFF]">// 03 MOBILE WIDGET ARCHITECTURE</span>
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display text-[#F5F5F0]">
+              LIVE INTERACTIVE MOBILE WIDGET
+            </h2>
+            <p className="text-sm text-[#A1A1A1] font-mono max-w-xl mx-auto">
+              Check off tasks, track daily XP, and inspect upcoming timetable sessions right from your phone&apos;s home screen.
+              Embed anywhere via iframe or standalone PWA.
+            </p>
+          </div>
+
+          {/* Render the interactive widget directly */}
+          <div className="max-w-2xl mx-auto">
+            <MobileWidgetView standalone={false} />
           </div>
         </div>
       </section>

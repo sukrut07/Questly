@@ -245,7 +245,14 @@ export interface AcademicWorkspace {
   createdAt: number;
 }
 
-export type ArcadeGameType = 'sudoku' | 'space_defender' | 'match_grid' | 'pattern_memory';
+export type ArcadeGameType =
+  | 'math_sprint'
+  | 'cross_math'
+  | 'mind_snap'
+  | 'sudoku'
+  | 'space_defender'
+  | 'match_grid'
+  | 'pattern_memory';
 
 export interface ArcadeGameRecord {
   gameType: ArcadeGameType;

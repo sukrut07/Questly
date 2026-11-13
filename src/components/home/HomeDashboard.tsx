@@ -24,6 +24,7 @@ import {
   Gamepad2,
   ChevronRight,
   FolderKanban,
+  Smartphone,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 import { InteractiveGraphBackground } from '@/components/common/InteractiveGraphBackground';
@@ -428,6 +429,35 @@ export function HomeDashboard() {
 
         <button className="px-3.5 py-1.5 rounded-xl bg-[#A879FF] text-[#090A0D] text-xs font-black font-display uppercase tracking-wider brutal-shadow shrink-0">
           Play Arcade →
+        </button>
+      </div>
+
+      {/* 6.1 Interactive Mobile Widget Quick Card */}
+      <div
+        onClick={() => setCurrentTab('widget')}
+        className="p-4 rounded-2xl bg-gradient-to-r from-[#171A21] to-[#12242D] border border-[#42DFFF]/40 hover:border-[#42DFFF] transition-all cursor-pointer brutal-shadow flex items-center justify-between gap-4"
+      >
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-[#42DFFF]/20 border border-[#42DFFF]/50 flex items-center justify-center text-[#42DFFF]">
+            <Smartphone className="w-5 h-5" />
+          </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-black text-[#F5F5F0] font-display uppercase tracking-wider">
+                Interactive Mobile Widget
+              </span>
+              <span className="text-[9px] font-mono px-2 py-0.2 rounded bg-[#42DFFF]/20 text-[#42DFFF] border border-[#42DFFF]/40 font-bold">
+                2×2 • 4×2 • 4×4
+              </span>
+            </div>
+            <p className="text-xs font-mono text-[#A1A1A1]">
+              Live home-screen widget with interactive task checkboxes, real-time XP sync, and embed code.
+            </p>
+          </div>
+        </div>
+
+        <button className="px-3.5 py-1.5 rounded-xl bg-[#42DFFF] text-[#090A0D] text-xs font-black font-display uppercase tracking-wider brutal-shadow shrink-0">
+          Open Widget →
         </button>
       </div>
 

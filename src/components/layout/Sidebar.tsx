@@ -25,6 +25,7 @@ import {
   LayoutGrid,
   Zap,
   Home,
+  Smartphone,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 import { QuestlyLogo } from '@/components/common/QuestlyLogo';
@@ -201,6 +202,14 @@ export function Sidebar() {
           >
             <Zap className="w-4 h-4 text-[#B5FF55]" />
             <span>XP Tracker & Ledger</span>
+          </button>
+
+          <button
+            onClick={() => handleTabClick('widget')}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#42DFFF] hover:bg-[#171A21] transition-colors"
+          >
+            <Smartphone className="w-4 h-4 text-[#42DFFF]" />
+            <span>Mobile Widget</span>
           </button>
 
           <button

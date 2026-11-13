@@ -19,6 +19,7 @@ import { TasksView } from '@/components/tasks/TasksView';
 import { TimetableTrackerView } from '@/components/timetable/TimetableTrackerView';
 import { WorkspaceTrackerView } from '@/components/workspaces/WorkspaceTrackerView';
 import { ArcadeHub } from '@/components/arcade/ArcadeHub';
+import { MobileWidgetView } from '@/components/widgets/MobileWidgetView';
 
 // Modals
 import { QuestModal } from '@/components/quests/QuestModal';
@@ -66,12 +67,13 @@ export default function QuestlyApp() {
       <MobileNav />
 
       {/* Main Content Area */}
-      <main className="flex-1 min-w-0 px-4 sm:px-6 lg:px-8 py-6 lg:py-8 pb-24 lg:pb-12 max-w-6xl mx-auto w-full transition-all duration-200">
+      <main className="flex-1 min-w-0 px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pb-28 lg:pb-12 max-w-6xl mx-auto w-full overflow-x-hidden transition-all duration-200">
         {currentTab === 'home' && <HomeDashboard />}
         {currentTab === 'tasks' && <TasksView />}
         {currentTab === 'timetable' && <TimetableTrackerView />}
         {currentTab === 'workspaces' && <WorkspaceTrackerView />}
         {currentTab === 'arcade' && <ArcadeHub />}
+        {currentTab === 'widget' && <MobileWidgetView />}
         {currentTab === 'planner' && <PlannerView />}
         {currentTab === 'subjects' && <SubjectsView />}
         {currentTab === 'inbox' && <AcademicInboxView />}

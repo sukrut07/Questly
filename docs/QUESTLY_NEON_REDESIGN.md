@@ -98,11 +98,34 @@ A dedicated cognitive warmup hub providing micro-games designed to stimulate men
 - To ensure mini-games **never overshadow coursework**, all arcade games draw from a strict **20 XP daily maximum**.
 - Live meter displays `todayArcadeXp / 20 XP`. Games continue to track high scores once the cap is reached, but no further XP is issued.
 
-### 4 Original Mini-Games
-1. **Logic Sudoku (`SudokuGame.tsx`)**: 9x9 numerical grid with validation, mistake tracking (3 strikes), notes mode, and timer.
-2. **Neon Space Defender (`SpaceDefenderGame.tsx`)**: 2D HTML5 canvas retro shooter with alien invaders, neon lasers, keyboard (`A/D`, arrows, Space) and touch controls.
-3. **Neon Match Grid (`MatchGridGame.tsx`)**: 6x6 gem match-3 puzzle with cascading combos and move limit.
-4. **Mind Snap Memory (`PatternMemoryGame.tsx`)**: 4-pad sequence recall (Simon-says) with audio tones and neon glow.
+### 4 Matiks-Grade Cognitive Micro-Games
+1. **Fast Math Duel (`MathSprintGame.tsx`)**: 30-second rapid arithmetic speed duel. Chain correct calculations to trigger x2, x3, and x5 combo multipliers with countdown bars and tactile feedback.
+2. **Number Crossword (`CrossMathGame.tsx`)**: Cross-math grid puzzle directly matching the Matiks reference. Balance intersecting horizontal and vertical equations by placing lavender number tiles from the dock. Includes Undo, Clear, and Level progression.
+3. **Mind Snap Reaction Duel (`MindSnapGame.tsx`)**: High-speed visual cognitive duel. Dual flash cards test matching conditions by shape, color, or numerical value under intense 30-second time pressure with millisecond response telemetry.
+4. **Blitz Sudoku (`SudokuGame.tsx`)**: Mobile-first 6×6 touch board with pencil notes, row/column/number highlighting, remaining digit counts, and mistake tracking.
+
+---
+
+## Interactive Mobile Widget & Webflow Embed OS
+
+### 1. Standalone Route (`/widget`)
+- Served directly at `/widget` without navigation or sidebars.
+- Perfect for iframes, Notion pages, Webflow sites, or bookmarking to mobile home-screens.
+- Zero client prerender issues (`Next.js 16 Partial Prefetching` compliant).
+
+### 2. Live Interactive Widget (`MobileWidgetView.tsx`)
+- **Small (2x2)**: Streak flame, total XP, scholar level, and daily task completion bar.
+- **Medium (4x2)**: Left column shows XP and flow minutes; right column displays next active task with an interactive checkbox that immediately marks the quest complete, updates XP, and triggers sound.
+- **Large (4x4)**: Comprehensive widget with XP, flow time, upcoming timetable class session, and interactive priority task checklist.
+- One-click "Copy Embed Code" button for instantaneous integration into Webflow or personal sites.
+
+---
+
+## Mobile Touch & Performance Optimization
+- **Touch-Action Manipulation**: All interactive elements use `touch-action: manipulation` and `-webkit-tap-highlight-color: transparent` to eliminate mobile tap latency.
+- **Safe-Area Insets**: Bottom mobile bar dynamically expands with `pb-[max(0.5rem,env(safe-area-inset-bottom))]` for bezel-less iOS and Android navigation bars.
+- **Active Glow Indicators**: Mobile navigation icons feature subtle active glowing dots inspired by modern gaming navbars.
+- **Zero Horizontal Overflow**: All containers enforce `overflow-x-hidden` and `w-full max-w-full`.
 
 ---
 
@@ -136,3 +159,4 @@ A dedicated cognitive warmup hub providing micro-games designed to stimulate men
 ### 2. Mobile Layer (Flutter 3.x + Dart)
 - **Static Analysis (`flutter analyze`)**: 0 issues found.
 - **Unit & Widget Tests (`flutter test`)**: 32/32 tests passed.
+

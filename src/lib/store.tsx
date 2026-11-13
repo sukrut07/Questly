@@ -58,7 +58,8 @@ export type AppTab =
   | 'inbox'
   | 'focus'
   | 'analytics'
-  | 'profile';
+  | 'profile'
+  | 'widget';
 
 export interface ToastData {
   id: string;

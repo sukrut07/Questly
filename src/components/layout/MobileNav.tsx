@@ -28,6 +28,7 @@ import {
   Volume2,
   VolumeX,
   Zap,
+  Smartphone,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 import { QuestlyLogo } from '@/components/common/QuestlyLogo';
@@ -227,6 +228,17 @@ export function MobileNav() {
                 <button
                   onClick={() => {
                     setDrawerOpen(false);
+                    handleTab('widget');
+                  }}
+                  className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#42DFFF] hover:bg-[#42DFFF]/10"
+                >
+                  <Smartphone className="w-4 h-4" />
+                  <span>Interactive Mobile Widget</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setDrawerOpen(false);
                     setActiveModal('widgets');
                   }}
                   className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#F5F5F0] hover:bg-[#171A21]"
@@ -264,35 +276,41 @@ export function MobileNav() {
         </div>
       )}
 
-      {/* Fixed Bottom Mobile Bar */}
+      {/* Fixed Bottom Mobile Bar with iOS / Android Safe-Area Insets */}
       <nav
         aria-label="Mobile Navigation"
-        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#090A0D]/95 border-t border-[#303642] backdrop-blur-xl px-2 py-1.5 flex items-center justify-around shadow-2xl"
+        className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#090A0D]/95 border-t border-[#303642] backdrop-blur-xl px-2 pt-1.5 pb-[max(0.5rem,env(safe-area-inset-bottom))] flex items-center justify-around shadow-2xl select-none"
       >
         <button
           onClick={() => handleTab('home')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] transition-colors relative ${
             currentTab === 'home' ? 'text-[#B5FF55] font-black' : 'text-[#737373]'
           }`}
         >
           <Compass className="w-5 h-5" />
           <span>Home</span>
+          {currentTab === 'home' && (
+            <span className="w-1 h-1 rounded-full bg-[#B5FF55] absolute -bottom-0.5" />
+          )}
         </button>
 
         <button
           onClick={() => handleTab('tasks')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] transition-colors relative ${
             currentTab === 'tasks' ? 'text-[#B5FF55] font-black' : 'text-[#737373]'
           }`}
         >
           <CheckSquare className="w-5 h-5" />
           <span>Tasks</span>
+          {currentTab === 'tasks' && (
+            <span className="w-1 h-1 rounded-full bg-[#B5FF55] absolute -bottom-0.5" />
+          )}
         </button>
 
         {/* Center Floating Action Button */}
         <button
           onClick={handleQuickAdd}
-          className="flex items-center justify-center w-11 h-11 -mt-5 rounded-full bg-[#B5FF55] text-[#090A0D] shadow-lg border-2 border-[#090A0D] transition-transform active:scale-95 brutal-shadow"
+          className="flex items-center justify-center w-11 h-11 -mt-4 rounded-full bg-[#B5FF55] hover:bg-[#A3F040] text-[#090A0D] shadow-lg border-2 border-[#090A0D] transition-transform active:scale-95 brutal-shadow"
           aria-label="Add Task"
         >
           <Plus className="w-5 h-5 stroke-[3]" />
@@ -300,22 +318,28 @@ export function MobileNav() {
 
         <button
           onClick={() => handleTab('timetable')}
-          className={`flex flex-col items-center gap-1 py-1 px-2 rounded-xl text-[10px] font-medium transition-colors ${
+          className={`flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] transition-colors relative ${
             currentTab === 'timetable' ? 'text-[#B5FF55] font-black' : 'text-[#737373]'
           }`}
         >
           <Clock className="w-5 h-5" />
           <span>Classes</span>
+          {currentTab === 'timetable' && (
+            <span className="w-1 h-1 rounded-full bg-[#B5FF55] absolute -bottom-0.5" />
+          )}
         </button>
 
         <button
           onClick={() => handleTab('arcade')}
-          className={`relative flex flex-col items-center gap-1 py-1 px-2 rounded-xl text-[10px] font-medium transition-colors ${
+          className={`relative flex flex-col items-center gap-0.5 py-1 px-2.5 rounded-xl text-[10px] transition-colors ${
             currentTab === 'arcade' ? 'text-[#B5FF55] font-black' : 'text-[#737373]'
           }`}
         >
           <Gamepad2 className="w-5 h-5" />
           <span>Arcade</span>
+          {currentTab === 'arcade' && (
+            <span className="w-1 h-1 rounded-full bg-[#B5FF55] absolute -bottom-0.5" />
+          )}
         </button>
       </nav>
     </>
