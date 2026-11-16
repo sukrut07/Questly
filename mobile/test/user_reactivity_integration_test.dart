@@ -142,7 +142,8 @@ void main() {
         // 36 (subtasks) + 120 (parent quest) = 156 XP
         expect(dashboardAfterSubtask2.profile.totalXp, 156);
         expect(dashboardAfterSubtask2.activeQuests, isEmpty);
-        expect(dashboardAfterSubtask2.todayCompletedCount, 1);
+        // 1 completed quest + 2 checked subtasks = 3 completed items
+        expect(dashboardAfterSubtask2.todayCompletedCount, 3);
         expect(finalAnalytics.totalQuestsCompleted, 1);
         expect(finalAnalytics.weeklyCompletionRate, 100.0);
       },
