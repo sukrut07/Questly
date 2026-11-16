@@ -124,8 +124,14 @@ export function InteractiveMobileAppShowcase() {
     createQuest({
       title: newTaskTitle.trim(),
       description: 'Created via mobile app dashboard',
+      taskType: 'problem_solving',
       difficulty: 'MEDIUM',
-      category: 'COURSEWORK',
+      priority: 'MEDIUM',
+      estimatedMinutes: 25,
+      dueDate: null,
+      status: 'NOT_STARTED',
+      isRecurring: false,
+      subtasks: [],
       xpReward: 20,
     });
     setNewTaskTitle('');
@@ -209,7 +215,7 @@ export function InteractiveMobileAppShowcase() {
                 <div className="flex items-center justify-between">
                   <div>
                     <h3 className="font-display font-black text-base uppercase tracking-tight text-[#F5F5F0]">
-                      Hello, {user.name || 'Student'}! 👋
+                      Hello, {user.displayName || 'Student'}! 👋
                     </h3>
                     <p className="text-[11px] font-mono text-[#A1A1A1]">
                       Small steps, Big Progress.
@@ -562,7 +568,7 @@ export function InteractiveMobileAppShowcase() {
                 <div className="p-3 rounded-2xl bg-[#171A21] border border-[#303642] space-y-2 text-xs font-mono">
                   <div className="flex items-center justify-between py-1.5 border-b border-[#303642]/60">
                     <span className="text-zinc-400">Profile Name</span>
-                    <span className="text-zinc-100 font-bold">{user.name}</span>
+                    <span className="text-zinc-100 font-bold">{user.displayName}</span>
                   </div>
                   <div className="flex items-center justify-between py-1.5 border-b border-[#303642]/60">
                     <span className="text-zinc-400">Theme</span>

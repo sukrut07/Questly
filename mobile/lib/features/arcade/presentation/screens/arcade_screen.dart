@@ -29,6 +29,90 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
   int _correctAnswer = 56;
   List<int> _options = [48, 54, 56, 63];
 
+  // XOXO vs Computer Bot Game State
+  List<String?> _xoxoBoard = List.filled(9, null);
+  bool _isXoxoActive = false;
+  String? _xoxoWinner;
+  bool _isPlayerTurn = true;
+  int _xoxoWins = 0;
+
+  void _startXoxoGame() {
+    setState(() {
+      _isXoxoActive = true;
+      _isPlaying = false;
+      _timer?.cancel();
+      _xoxoBoard = List.filled(9, null);
+      _xoxoWinner = null;
+      _isPlayerTurn = true;
+    });
+  }
+
+  void _handleXoxoTap(int index) {
+    if (_xoxoBoard[index] != null || _xoxoWinner != null || !_isPlayerTurn) {
+      return;
+    }
+
+    setState(() {
+      _xoxoBoard[index] = 'X';
+      _checkXoxoWinner();
+    });
+
+    if (_xoxoWinner == null) {
+      _isPlayerTurn = false;
+      Future.delayed(const Duration(milliseconds: 350), () {
+        if (!mounted) return;
+        _makeBotMove();
+      });
+    }
+  }
+
+  void _makeBotMove() {
+    final available = <int>[];
+    for (int i = 0; i < 9; i++) {
+      if (_xoxoBoard[i] == null) available.add(i);
+    }
+
+    if (available.isNotEmpty) {
+      int move = available.first;
+      if (_xoxoBoard[4] == null) {
+        move = 4;
+      } else {
+        move = available[DateTime.now().millisecondsSinceEpoch % available.length];
+      }
+
+      setState(() {
+        _xoxoBoard[move] = 'O';
+        _isPlayerTurn = true;
+        _checkXoxoWinner();
+      });
+    }
+  }
+
+  void _checkXoxoWinner() {
+    const lines = [
+      [0, 1, 2], [3, 4, 5], [6, 7, 8],
+      [0, 3, 6], [1, 4, 7], [2, 5, 8],
+      [0, 4, 8], [2, 4, 6],
+    ];
+
+    for (final line in lines) {
+      final a = _xoxoBoard[line[0]];
+      final b = _xoxoBoard[line[1]];
+      final c = _xoxoBoard[line[2]];
+      if (a != null && a == b && a == c) {
+        _xoxoWinner = a;
+        if (a == 'X') {
+          _xoxoWins++;
+        }
+        return;
+      }
+    }
+
+    if (_xoxoBoard.every((cell) => cell != null)) {
+      _xoxoWinner = 'draw';
+    }
+  }
+
   @override
   void dispose() {
     _timer?.cancel();
@@ -188,56 +272,235 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
               ),
               const SizedBox(height: AppSpacing.lg),
 
-              if (!_isPlaying) ...[
-                // Banner Hero Card
+              if (_isXoxoActive) ...[
+                // XOXO vs Computer Bot Grid
                 QuestlyCard(
-                  borderColor: AppColors.limePrimary.withValues(alpha: 0.5),
+                  borderColor: AppColors.lavenderAccent,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8,
-                          vertical: 3,
-                        ),
-                        decoration: BoxDecoration(
-                          color: AppColors.lavenderAccent.withValues(
-                            alpha: 0.15,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            _isPlayerTurn ? 'YOUR TURN (X)' : 'BOT THINKING (O)...',
+                            style: AppTypography.titleMedium.copyWith(
+                              color: _isPlayerTurn
+                                  ? AppColors.limePrimary
+                                  : AppColors.lavenderAccent,
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: Text(
-                          'FEATURED DUEL',
-                          style: AppTypography.captionBold.copyWith(
-                            color: AppColors.lavenderAccent,
+                          Text(
+                            'WINS: $_xoxoWins',
+                            style: AppTypography.captionBold.copyWith(
+                              color: AppColors.textPrimary,
+                            ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: AppSpacing.sm),
-                      Text(
-                        'MIND SNAP DUELS',
-                        style: AppTypography.displayMedium.copyWith(
-                          fontSize: 26,
-                          letterSpacing: 0.8,
-                        ),
-                      ),
-                      Text(
-                        'Who can solve fast multiplication & logic sequences fastest?',
-                        style: AppTypography.bodySmall.copyWith(
-                          color: AppColors.textSecondary,
-                        ),
+                        ],
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      QuestlyButton(
-                        text: 'START SPEED DUEL (15s)',
-                        icon: Icons.play_arrow,
-                        variant: QuestlyButtonVariant.primaryLime,
-                        size: QuestlyButtonSize.large,
-                        onPressed: _startMiniGame,
+                      GridView.builder(
+                        itemCount: 9,
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          mainAxisSpacing: 8,
+                          crossAxisSpacing: 8,
+                        ),
+                        itemBuilder: (context, index) {
+                          final cell = _xoxoBoard[index];
+                          return GestureDetector(
+                            onTap: () => _handleXoxoTap(index),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: AppColors.darkBase,
+                                borderRadius: BorderRadius.circular(12),
+                                border: Border.all(
+                                  color: cell != null
+                                      ? (cell == 'X'
+                                          ? AppColors.limePrimary
+                                          : AppColors.error)
+                                      : AppColors.darkBorder,
+                                  width: cell != null ? 2 : 1,
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  cell ?? '',
+                                  style: TextStyle(
+                                    fontSize: 36,
+                                    fontWeight: FontWeight.bold,
+                                    color: cell == 'X'
+                                        ? AppColors.limePrimary
+                                        : AppColors.error,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      if (_xoxoWinner != null) ...[
+                        const SizedBox(height: AppSpacing.md),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 10,
+                          ),
+                          decoration: BoxDecoration(
+                            color: _xoxoWinner == 'X'
+                                ? AppColors.limePrimary.withValues(alpha: 0.15)
+                                : AppColors.darkBase,
+                            borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: _xoxoWinner == 'X'
+                                  ? AppColors.limePrimary
+                                  : AppColors.darkBorder,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _xoxoWinner == 'X'
+                                    ? 'VICTORY! +8 XP'
+                                    : _xoxoWinner == 'O'
+                                        ? 'BOT WON!'
+                                        : 'TACTICAL DRAW (+3 XP)',
+                                style: AppTypography.titleMedium.copyWith(
+                                  color: _xoxoWinner == 'X'
+                                      ? AppColors.limePrimary
+                                      : AppColors.textPrimary,
+                                ),
+                              ),
+                              TextButton(
+                                onPressed: _startXoxoGame,
+                                child: const Text(
+                                  'PLAY AGAIN',
+                                  style: TextStyle(
+                                    color: AppColors.limePrimary,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: AppSpacing.sm),
+                      Align(
+                        alignment: Alignment.centerRight,
+                        child: TextButton(
+                          onPressed: () => setState(() => _isXoxoActive = false),
+                          child: const Text('Back to Arena'),
+                        ),
                       ),
                     ],
                   ),
                 ),
+              ] else if (!_isPlaying) ...[
+                if (_selectedCategoryIndex == 2) ...[
+                  // XOXO & KenKen Feature Card
+                  QuestlyCard(
+                    borderColor: AppColors.lavenderAccent.withValues(alpha: 0.5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.lavenderAccent.withValues(
+                              alpha: 0.15,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'TACTICAL BOT DUEL',
+                            style: AppTypography.captionBold.copyWith(
+                              color: AppColors.lavenderAccent,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'XOXO vs COMPUTER BOT',
+                          style: AppTypography.displayMedium.copyWith(
+                            fontSize: 26,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        Text(
+                          'Play 3×3 grid tactics against our minimax algorithm. Win to earn +8 XP!',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        QuestlyButton(
+                          text: 'PLAY VS BOT (+8 XP)',
+                          icon: Icons.smart_toy,
+                          variant: QuestlyButtonVariant.primaryLime,
+                          size: QuestlyButtonSize.large,
+                          onPressed: _startXoxoGame,
+                        ),
+                      ],
+                    ),
+                  ),
+                ] else ...[
+                  // Banner Hero Card (Math / Speed)
+                  QuestlyCard(
+                    borderColor: AppColors.limePrimary.withValues(alpha: 0.5),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 3,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.lavenderAccent.withValues(
+                              alpha: 0.15,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            'FEATURED DUEL',
+                            style: AppTypography.captionBold.copyWith(
+                              color: AppColors.lavenderAccent,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          'MIND SNAP DUELS',
+                          style: AppTypography.displayMedium.copyWith(
+                            fontSize: 26,
+                            letterSpacing: 0.8,
+                          ),
+                        ),
+                        Text(
+                          'Who can solve fast multiplication & logic sequences fastest?',
+                          style: AppTypography.bodySmall.copyWith(
+                            color: AppColors.textSecondary,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.md),
+                        QuestlyButton(
+                          text: 'START SPEED DUEL (15s)',
+                          icon: Icons.play_arrow,
+                          variant: QuestlyButtonVariant.primaryLime,
+                          size: QuestlyButtonSize.large,
+                          onPressed: _startMiniGame,
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ] else ...[
                 // Live Interactive Game View
                 QuestlyCard(
