@@ -2,12 +2,15 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/features/arcade/presentation/widgets/kenken_game_widget.dart';
 import 'package:questly/features/arcade/presentation/widgets/sudoku_game_widget.dart';
+import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
 import 'package:questly/shared/widgets/questly_button.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
@@ -16,14 +19,14 @@ enum BotDifficulty { rookie, scholar, grandmaster }
 
 enum ActiveArcadeGame { none, mathSprint, kenken, sudoku, xoxoBot }
 
-class ArcadeScreen extends StatefulWidget {
+class ArcadeScreen extends ConsumerStatefulWidget {
   const ArcadeScreen({super.key});
 
   @override
-  State<ArcadeScreen> createState() => _ArcadeScreenState();
+  ConsumerState<ArcadeScreen> createState() => _ArcadeScreenState();
 }
 
-class _ArcadeScreenState extends State<ArcadeScreen> {
+class _ArcadeScreenState extends ConsumerState<ArcadeScreen> {
   ActiveArcadeGame _activeGame = ActiveArcadeGame.none;
   int _selectedCategoryIndex = 0; // 0: All, 1: Math, 2: Puzzle, 3: Duels
 
@@ -60,6 +63,8 @@ class _ArcadeScreenState extends State<ArcadeScreen> {
       setState(() {
         _todayArcadeXp += granted;
       });
+      ref.read(dashboardRepositoryProvider).addXp(granted);
+      ref.read(dashboardStateProvider.notifier).refresh();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('$title: +$granted XP awarded!'),

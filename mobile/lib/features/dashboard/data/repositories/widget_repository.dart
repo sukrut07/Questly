@@ -12,7 +12,7 @@ abstract class WidgetRepository {
 }
 
 class WidgetRepositoryImpl implements WidgetRepository {
-  static const String _storageKey = 'questly_dashboard_widgets_v1';
+  static const String _storageKey = 'questly_dashboard_widgets_v2';
   final LocalStorage _storage;
 
   WidgetRepositoryImpl(this._storage);
@@ -30,6 +30,7 @@ class WidgetRepositoryImpl implements WidgetRepository {
       final List<dynamic> list = jsonDecode(raw) as List<dynamic>;
       final widgets = list
           .map((e) => DashboardWidgetConfig.fromJson(e as Map<String, dynamic>))
+          .where((w) => w.type != DashboardWidgetType.focusSquad)
           .toList();
       widgets.sort((a, b) => a.order.compareTo(b.order));
       return widgets;

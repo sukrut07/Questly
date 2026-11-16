@@ -12,7 +12,6 @@ import 'package:questly/features/dashboard/presentation/providers/widget_provide
 import 'package:questly/features/dashboard/presentation/widgets/active_quests_section.dart';
 import 'package:questly/features/dashboard/presentation/widgets/daily_productivity_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/dashboard_header.dart';
-import 'package:questly/features/dashboard/presentation/widgets/focus_squad_bar.dart';
 import 'package:questly/features/dashboard/presentation/widgets/progression_card.dart';
 import 'package:questly/features/dashboard/presentation/widgets/quick_actions_bar.dart';
 import 'package:questly/features/dashboard/presentation/widgets/todays_challenge_banner.dart';
@@ -255,7 +254,7 @@ class DashboardScreen extends ConsumerWidget {
   ) {
     switch (type) {
       case DashboardWidgetType.focusSquad:
-        return const FocusSquadBar();
+        return const SizedBox.shrink();
       case DashboardWidgetType.todaysChallenge:
         return const TodaysChallengeBanner();
       case DashboardWidgetType.progression:

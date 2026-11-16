@@ -68,46 +68,40 @@ class DashboardWidgetConfig {
 
   static List<DashboardWidgetConfig> get defaultWidgets => [
     const DashboardWidgetConfig(
-      id: 'w_focus_squad',
-      type: DashboardWidgetType.focusSquad,
-      title: 'Focus Squad & Showdown',
-      order: 0,
-    ),
-    const DashboardWidgetConfig(
       id: 'w_todays_challenge',
       type: DashboardWidgetType.todaysChallenge,
       title: "Today's Challenge",
-      order: 1,
+      order: 0,
     ),
     const DashboardWidgetConfig(
       id: 'w_progression',
       type: DashboardWidgetType.progression,
       title: 'Level & Streak Progression',
-      order: 2,
+      order: 1,
     ),
     const DashboardWidgetConfig(
       id: 'w_quick_actions',
       type: DashboardWidgetType.quickActions,
       title: 'Quick Actions Bar',
-      order: 3,
+      order: 2,
     ),
     const DashboardWidgetConfig(
       id: 'w_productivity',
       type: DashboardWidgetType.dailyProductivity,
       title: 'Daily Productivity Score',
-      order: 4,
+      order: 3,
     ),
     const DashboardWidgetConfig(
       id: 'w_heatmap',
       type: DashboardWidgetType.activityHeatmap,
       title: 'Consistency Heatmap Preview',
-      order: 5,
+      order: 4,
     ),
     const DashboardWidgetConfig(
       id: 'w_active_quests',
       type: DashboardWidgetType.activeQuests,
       title: 'Active Quests & Habits',
-      order: 6,
+      order: 5,
     ),
   ];
 }

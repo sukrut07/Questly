@@ -83,7 +83,8 @@ final taskRepositoryProvider = Provider<TaskRepository>((ref) {
 
 /// Dashboard Repository Provider
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
-  return MockDashboardRepository();
+  final questRepo = ref.watch(questRepositoryProvider);
+  return MockDashboardRepository(questRepository: questRepo);
 });
 
 /// Notebook Repository Provider

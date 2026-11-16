@@ -30,4 +30,5 @@ class DashboardData {
 abstract class DashboardRepository {
   Future<DashboardData> getDashboardData();
   Future<void> refresh();
+  void addXp(int amount);
 }

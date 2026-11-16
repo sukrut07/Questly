@@ -18,7 +18,7 @@ void main() {
       final widgets = await repo.getWidgets();
       expect(widgets.isNotEmpty, true);
       expect(widgets.length, DashboardWidgetConfig.defaultWidgets.length);
-      expect(widgets.first.type, DashboardWidgetType.focusSquad);
+      expect(widgets.first.type, DashboardWidgetType.todaysChallenge);
     });
 
     test('toggleVisibility persists widget hidden state', () async {
@@ -45,12 +45,13 @@ void main() {
     });
 
     test('restoreDefaults restores original layout', () async {
-      await repo.toggleVisibility('w_focus_squad', false);
+      await repo.toggleVisibility('w_todays_challenge', false);
       await repo.restoreDefaults();
 
       final restored = await repo.getWidgets();
-      final focusSquad = restored.firstWhere((w) => w.id == 'w_focus_squad');
-      expect(focusSquad.isVisible, true);
+      final todaysChallenge =
+          restored.firstWhere((w) => w.id == 'w_todays_challenge');
+      expect(todaysChallenge.isVisible, true);
     });
   });
 }

@@ -124,6 +124,58 @@ void main() {
     });
   });
 
+  group('Sudoku 6x6 Blitz Mathematical Consistency Tests', () {
+    const solution = [
+      [1, 2, 3, 4, 5, 6],
+      [4, 5, 6, 1, 2, 3],
+      [2, 3, 1, 5, 6, 4],
+      [5, 6, 4, 2, 3, 1],
+      [3, 1, 2, 6, 4, 5],
+      [6, 4, 5, 3, 1, 2],
+    ];
+
+    test('Each row contains unique numbers from 1 to 6', () {
+      for (int r = 0; r < 6; r++) {
+        expect(
+          solution[r].toSet().length,
+          6,
+          reason: 'Row $r must have 6 unique digits',
+        );
+        expect(solution[r].every((v) => v >= 1 && v <= 6), isTrue);
+      }
+    });
+
+    test('Each column contains unique numbers from 1 to 6', () {
+      for (int c = 0; c < 6; c++) {
+        final col = List.generate(6, (r) => solution[r][c]);
+        expect(
+          col.toSet().length,
+          6,
+          reason: 'Column $c must have 6 unique digits',
+        );
+        expect(col.every((v) => v >= 1 && v <= 6), isTrue);
+      }
+    });
+
+    test('Each 2x3 block contains unique numbers from 1 to 6', () {
+      for (int br = 0; br < 3; br++) {
+        for (int bc = 0; bc < 2; bc++) {
+          final block = <int>[];
+          for (int r = 0; r < 2; r++) {
+            for (int c = 0; c < 3; c++) {
+              block.add(solution[br * 2 + r][bc * 3 + c]);
+            }
+          }
+          expect(
+            block.toSet().length,
+            6,
+            reason: 'Block ($br, $bc) must have 6 unique digits',
+          );
+        }
+      }
+    });
+  });
+
   group('Workload Balancer & Arcade Cap Logic Tests', () {
     test(
       'Workload ratio correctly maps to LIGHT, OPTIMAL, and HEAVY categories',

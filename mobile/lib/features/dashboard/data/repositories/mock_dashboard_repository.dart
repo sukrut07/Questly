@@ -1,5 +1,6 @@
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
+import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/models/streak_info.dart';
@@ -7,6 +8,10 @@ import 'package:questly/shared/models/user_profile.dart';
 
 /// Preview/seed repository used in development mode to showcase the Questly 2.0 UI shell.
 class MockDashboardRepository implements DashboardRepository {
+  final QuestRepository? questRepository;
+
+  MockDashboardRepository({this.questRepository});
+
   UserProfile _profile = UserProfile(
     id: 'user_dev_01',
     displayName: 'Quest Explorer',
@@ -104,32 +109,59 @@ class MockDashboardRepository implements DashboardRepository {
 
   @override
   Future<DashboardData> getDashboardData() async {
-    // Simulate brief asynchronous load
-    await Future.delayed(const Duration(milliseconds: 150));
-    final levelInfo = XpProgressionEngine.calculateLevelInfo(_profile.totalXp);
+    final quests = questRepository != null
+        ? await questRepository!.getQuests()
+        : _quests;
 
-    final completedTasks = _quests
+    final completedQuests = quests
+        .where((q) => q.status == QuestStatus.completed)
+        .toList();
+    final activeQuests = quests
+        .where((q) => q.status != QuestStatus.completed)
+        .toList();
+
+    final earnedQuestXp = completedQuests.fold<int>(
+      0,
+      (sum, q) => sum + q.xpReward,
+    );
+    final totalXp = _profile.totalXp + earnedQuestXp;
+    final levelInfo = XpProgressionEngine.calculateLevelInfo(totalXp);
+
+    final updatedProfile = _profile.copyWith(
+      totalXp: totalXp,
+      level: levelInfo.currentLevel,
+      currentStage: levelInfo.stage,
+    );
+
+    final completedSubtasks = quests
         .expand((q) => q.subtasks)
         .where((s) => s.isCompleted)
         .length;
-    final totalTasks = _quests.expand((q) => q.subtasks).length;
+    final totalSubtasks = quests.expand((q) => q.subtasks).length;
+
+    final totalCompleted = completedQuests.length + completedSubtasks;
+    final totalPlanned = quests.length + totalSubtasks;
+    final score = totalPlanned == 0
+        ? 0
+        : ((totalCompleted / totalPlanned) * 100).round();
 
     return DashboardData(
-      profile: _profile,
+      profile: updatedProfile,
       levelInfo: levelInfo,
       streak: _streak,
-      activeQuests: List.unmodifiable(_quests),
-      todayCompletedCount: completedTasks,
-      todayTotalCount: totalTasks,
-      productivityScore: 84,
+      activeQuests: List.unmodifiable(activeQuests),
+      todayCompletedCount: totalCompleted,
+      todayTotalCount: totalPlanned,
+      productivityScore: score,
     );
   }
 
   @override
   Future<void> refresh() async {
-    // In-memory refresh simulation
+    // Allows immediate re-computation of reactive state
   }
 
+  @override
   void addXp(int amount) {
     _profile = _profile.copyWith(totalXp: _profile.totalXp + amount);
   }
