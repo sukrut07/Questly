@@ -33,7 +33,7 @@ class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
   final _titleController = TextEditingController();
   QuestCategory _selectedCategory = QuestCategory.study;
   QuestPriority _selectedPriority = QuestPriority.high;
-  QuestDifficulty _selectedDifficulty = QuestDifficulty.medium;
+  final QuestDifficulty _selectedDifficulty = QuestDifficulty.medium;
   int _estimatedMinutes = 30;
   bool _isSaving = false;
 

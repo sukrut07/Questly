@@ -1,7 +1,6 @@
 import 'package:intl/intl.dart';
 import 'package:questly/features/analytics/domain/repositories/analytics_repository.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
-import 'package:questly/features/focus/domain/models/focus_session.dart';
 import 'package:questly/features/focus/domain/repositories/focus_repository.dart';
 import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
