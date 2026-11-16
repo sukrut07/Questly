@@ -3,8 +3,8 @@
 import React from 'react';
 import { useQuestly } from '@/lib/store';
 import { LandingPage } from '@/components/landing/LandingPage';
+import { MobileAppView } from '@/components/mobile/MobileAppView';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { MobileNav } from '@/components/layout/MobileNav';
 import { Toast } from '@/components/layout/Toast';
 import { HomeDashboard } from '@/components/home/HomeDashboard';
 import { PlannerView } from '@/components/planner/PlannerView';
@@ -14,7 +14,7 @@ import { FocusChamber } from '@/components/focus/FocusChamber';
 import { AnalyticsDashboard } from '@/components/analytics/AnalyticsDashboard';
 import { ProfileView } from '@/components/profile/ProfileView';
 
-// New Productivity & Play Layer Views
+// Productivity & Play Layer Views
 import { TasksView } from '@/components/tasks/TasksView';
 import { TimetableTrackerView } from '@/components/timetable/TimetableTrackerView';
 import { WorkspaceTrackerView } from '@/components/workspaces/WorkspaceTrackerView';
@@ -53,34 +53,39 @@ export default function QuestlyApp() {
     );
   }
 
-  // If mode is landing, show public-facing landing page
+  // If mode is landing, show public-facing marketing landing page
   if (mode === 'landing') {
     return <LandingPage />;
   }
 
   return (
-    <div className="min-h-screen flex flex-col lg:flex-row bg-[#090A0D] text-[#F5F5F0] selection:bg-[#B5FF55] selection:text-[#090A0D]">
-      {/* Desktop Sidebar */}
-      <Sidebar />
+    <>
+      {/* Mobile-Only Native APK App Shell (viewport-locked, non-scrollable, clickable sections) */}
+      <div className="lg:hidden h-[100dvh] w-full overflow-hidden bg-[#090A0D]">
+        <MobileAppView />
+      </div>
 
-      {/* Mobile Top Header and Bottom Navigation */}
-      <MobileNav />
+      {/* Desktop Dashboard View */}
+      <div className="hidden lg:flex min-h-screen bg-[#090A0D] text-[#F5F5F0] selection:bg-[#B5FF55] selection:text-[#090A0D]">
+        {/* Desktop Sidebar */}
+        <Sidebar />
 
-      {/* Main Content Area */}
-      <main className="flex-1 min-w-0 px-3 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 pb-28 lg:pb-12 max-w-6xl mx-auto w-full overflow-x-hidden transition-all duration-200">
-        {currentTab === 'home' && <HomeDashboard />}
-        {currentTab === 'tasks' && <TasksView />}
-        {currentTab === 'timetable' && <TimetableTrackerView />}
-        {currentTab === 'workspaces' && <WorkspaceTrackerView />}
-        {currentTab === 'arcade' && <ArcadeHub />}
-        {currentTab === 'widget' && <MobileWidgetView />}
-        {currentTab === 'planner' && <PlannerView />}
-        {currentTab === 'subjects' && <SubjectsView />}
-        {currentTab === 'inbox' && <AcademicInboxView />}
-        {currentTab === 'focus' && <FocusChamber />}
-        {currentTab === 'analytics' && <AnalyticsDashboard />}
-        {currentTab === 'profile' && <ProfileView />}
-      </main>
+        {/* Main Content Area */}
+        <main className="flex-1 min-w-0 px-8 py-8 pb-12 max-w-6xl mx-auto w-full overflow-x-hidden transition-all duration-200">
+          {currentTab === 'home' && <HomeDashboard />}
+          {currentTab === 'tasks' && <TasksView />}
+          {currentTab === 'timetable' && <TimetableTrackerView />}
+          {currentTab === 'workspaces' && <WorkspaceTrackerView />}
+          {currentTab === 'arcade' && <ArcadeHub />}
+          {currentTab === 'widget' && <MobileWidgetView />}
+          {currentTab === 'planner' && <PlannerView />}
+          {currentTab === 'subjects' && <SubjectsView />}
+          {currentTab === 'inbox' && <AcademicInboxView />}
+          {currentTab === 'focus' && <FocusChamber />}
+          {currentTab === 'analytics' && <AnalyticsDashboard />}
+          {currentTab === 'profile' && <ProfileView />}
+        </main>
+      </div>
 
       {/* Global Overlays & Modals */}
       <Toast />
@@ -96,6 +101,6 @@ export default function QuestlyApp() {
       <XpTrackerModal />
       <TimetableModal />
       <WorkspaceModal />
-    </div>
+    </>
   );
 }

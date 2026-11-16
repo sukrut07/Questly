@@ -1,12 +1,39 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuestly } from '@/lib/store';
 import { LEVEL_CONFIG } from '@/lib/progressionEngine';
-import { Check, Lock, Sparkles, Trophy, Star } from 'lucide-react';
+import { Check, Lock, Sparkles, Trophy, Star, Target, Edit3, X } from 'lucide-react';
+import { sound } from '@/common/SoundService';
 
 export function AcademicRoadmap() {
   const { user } = useQuestly();
+  const [customGoals, setCustomGoals] = useState<Record<number, string>>({});
+  const [editingLevel, setEditingLevel] = useState<number | null>(null);
+  const [goalText, setGoalText] = useState<string>('');
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('questly_custom_roadmap_goals');
+      if (saved) {
+        setCustomGoals(JSON.parse(saved));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  const handleSaveGoal = (lvl: number) => {
+    const updated = { ...customGoals, [lvl]: goalText.trim() };
+    setCustomGoals(updated);
+    try {
+      localStorage.setItem('questly_custom_roadmap_goals', JSON.stringify(updated));
+    } catch (e) {
+      console.error(e);
+    }
+    setEditingLevel(null);
+    sound.playButtonClick();
+  };
 
   const currentLevel = user.level;
   const currentXp = user.totalXp;
@@ -22,25 +49,26 @@ export function AcademicRoadmap() {
             </h3>
           </div>
           <p className="text-xs text-[#A1A1A1] font-mono">
-            Earn XP through verified task completion and deep study sessions to unlock interface customisations.
+            Earn verified XP through study sprints and completed tasks to unlock ranks and personalize targets.
           </p>
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
           <div className="px-3 py-1.5 rounded-xl bg-[#111319] border border-[#303642] text-xs font-mono">
-            <span className="text-[#A1A1A1]">Total XP: </span>
+            <span className="text-[#A1A1A1]">Total Progress: </span>
             <strong className="text-[#B5FF55]">{currentXp} XP</strong>
           </div>
         </div>
       </div>
 
-      {/* Serpentine / Stepped Milestones */}
+      {/* Stepped Milestones */}
       <div className="relative pt-2">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 relative z-10">
           {LEVEL_CONFIG.map((lvl) => {
             const isUnlocked = currentLevel >= lvl.level;
             const isCurrent = currentLevel === lvl.level;
             const xpNeeded = lvl.minXp;
+            const hasGoal = !!customGoals[lvl.level];
 
             return (
               <div
@@ -75,13 +103,60 @@ export function AcademicRoadmap() {
                 </div>
 
                 {/* Rank title */}
-                <div className="space-y-1 mb-3">
+                <div className="space-y-1 mb-2">
                   <h4 className="text-sm font-black text-[#F5F5F0] font-display uppercase tracking-tight">
                     {lvl.title}
                   </h4>
                   <span className="text-[10px] font-mono text-[#A1A1A1] block">
                     {xpNeeded} XP Req
                   </span>
+                </div>
+
+                {/* Custom Goal target */}
+                <div className="mb-2">
+                  {editingLevel === lvl.level ? (
+                    <div className="space-y-1.5">
+                      <input
+                        type="text"
+                        placeholder="Set goal..."
+                        value={goalText}
+                        onChange={(e) => setGoalText(e.target.value)}
+                        className="w-full px-2 py-1 rounded bg-black/50 border border-white/20 text-[10px] text-white focus:outline-none focus:border-[#B5FF55]"
+                        autoFocus
+                      />
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={() => handleSaveGoal(lvl.level)}
+                          className="px-2 py-0.5 rounded bg-[#B5FF55] text-[#090A0D] text-[9px] font-bold"
+                        >
+                          Save
+                        </button>
+                        <button
+                          onClick={() => setEditingLevel(null)}
+                          className="px-2 py-0.5 rounded bg-white/10 text-zinc-300 text-[9px]"
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      onClick={() => {
+                        setGoalText(customGoals[lvl.level] || '');
+                        setEditingLevel(lvl.level);
+                      }}
+                      className="cursor-pointer group flex items-start justify-between gap-1 p-1.5 rounded bg-[#111319] border border-white/[0.04] hover:border-white/[0.12] transition-colors"
+                      title="Click to edit custom milestone goal"
+                    >
+                      <div className="flex items-start gap-1 min-w-0">
+                        <Target className="w-3 h-3 text-[#B5FF55] shrink-0 mt-0.5" />
+                        <span className="text-[9px] font-mono line-clamp-2 text-zinc-300">
+                          {hasGoal ? customGoals[lvl.level] : '+ Set target goal'}
+                        </span>
+                      </div>
+                      <Edit3 className="w-2.5 h-2.5 text-zinc-500 opacity-0 group-hover:opacity-100 transition-opacity shrink-0" />
+                    </div>
+                  )}
                 </div>
 
                 {/* Unlock description */}
