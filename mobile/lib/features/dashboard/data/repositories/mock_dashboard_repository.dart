@@ -97,18 +97,21 @@ class MockDashboardRepository implements DashboardRepository {
         .where((q) => q.status != QuestStatus.completed)
         .toList();
 
-    // 1. Earned Quest XP
+    // 1. Earned Quest XP from completed priority tasks
     final earnedQuestXp = completedQuests.fold<int>(
       0,
       (sum, q) => sum + q.xpReward,
     );
 
-    // 2. Earned Subtask XP (10 XP per subtask completed)
-    final completedSubtasksCount = quests
-        .expand((q) => q.subtasks)
-        .where((s) => s.isCompleted)
-        .length;
-    final earnedSubtaskXp = completedSubtasksCount * 10;
+    // 2. Earned Subtask XP from checked checklist items (scaled by priority)
+    var earnedSubtaskXp = 0;
+    for (final q in quests) {
+      final done = q.subtasks.where((s) => s.isCompleted).length;
+      if (done > 0) {
+        earnedSubtaskXp +=
+            done * XpProgressionEngine.calculateSubtaskXp(q.priority);
+      }
+    }
 
     // 3. Earned Focus XP
     final focusSessions = focusRepository != null

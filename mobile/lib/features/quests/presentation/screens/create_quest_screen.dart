@@ -6,6 +6,7 @@ import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/core/extensions/context_extensions.dart';
 import 'package:questly/core/utils/validators.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/app_button.dart';
@@ -26,7 +27,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
   QuestCategory _category = QuestCategory.coding;
   QuestDifficulty _difficulty = QuestDifficulty.medium;
-  final QuestPriority _priority = QuestPriority.medium;
+  QuestPriority _priority = QuestPriority.high;
   bool _isLoading = false;
 
   @override
@@ -44,6 +45,12 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
 
     try {
       final minutes = int.tryParse(_minutesController.text.trim()) ?? 30;
+      final xp = XpProgressionEngine.calculateTaskChecklistXp(
+        priority: _priority,
+        difficulty: _difficulty,
+        estimatedMinutes: minutes,
+      );
+
       final newQuest = Quest(
         id: 'quest_${DateTime.now().millisecondsSinceEpoch}',
         title: _titleController.text.trim(),
@@ -52,7 +59,7 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
         difficulty: _difficulty,
         priority: _priority,
         estimatedMinutes: minutes,
-        xpReward: _difficulty.xpReward,
+        xpReward: xp,
         createdAt: DateTime.now(),
       );
 
@@ -165,6 +172,48 @@ class _CreateQuestScreenState extends ConsumerState<CreateQuestScreen> {
                 }).toList(),
                 onChanged: (diff) =>
                     setState(() => _difficulty = diff ?? _difficulty),
+              ),
+              const SizedBox(height: AppSpacing.md),
+
+              // Priority Selector (Checklist XP Multiplier)
+              Text(
+                'Priority & Checklist Multiplier',
+                style: theme.textTheme.titleSmall?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+              DropdownButtonFormField<QuestPriority>(
+                initialValue: _priority,
+                decoration: const InputDecoration(
+                  prefixIcon: Icon(Icons.flag_rounded),
+                ),
+                items: QuestPriority.values.map((p) {
+                  return DropdownMenuItem(
+                    value: p,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(p.displayName),
+                        Text(
+                          p == QuestPriority.urgent
+                              ? 'Urgent (+20 Bonus XP)'
+                              : p == QuestPriority.high
+                              ? 'High (+10 Bonus XP)'
+                              : p == QuestPriority.medium
+                              ? 'Normal (1.0x)'
+                              : 'Low (0.8x)',
+                          style: TextStyle(
+                            color: p.color,
+                            fontWeight: FontWeight.w700,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+                onChanged: (p) => setState(() => _priority = p ?? _priority),
               ),
               const SizedBox(height: AppSpacing.md),
 
