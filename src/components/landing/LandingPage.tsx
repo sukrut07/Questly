@@ -32,6 +32,8 @@ import {
 import { QuestlyLogo } from '@/components/common/QuestlyLogo';
 import { InteractiveGraphBackground } from '@/components/common/InteractiveGraphBackground';
 import { MobileWidgetView } from '@/components/widgets/MobileWidgetView';
+import { InteractiveMobileAppShowcase } from './InteractiveMobileAppShowcase';
+import { LevelSelectionMap } from '@/components/roadmap/LevelSelectionMap';
 
 export function LandingPage() {
   const { setMode } = useQuestly();
@@ -205,7 +207,9 @@ export function LandingPage() {
           {/* Top Pill Status */}
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#171A21] border border-[#303642] coord-marker shadow-lg">
             <span className="w-2 h-2 rounded-full bg-[#B5FF55] animate-ping" />
-            <span className="text-[#F5F5F0] font-bold text-xs">YOUR WORK. YOUR PROGRESS. YOUR SYSTEM.</span>
+            <span className="text-[#F5F5F0] font-bold text-xs uppercase tracking-wider">
+              Level Up Your Life! Plan • Focus • Achieve
+            </span>
           </div>
 
           {/* Condensed Punchy Heading */}
@@ -217,8 +221,8 @@ export function LandingPage() {
 
           {/* Supporting Subheading */}
           <p className="max-w-2xl mx-auto text-base sm:text-lg text-[#A1A1A1] font-mono leading-relaxed">
-            Questly combines academic timetables, atomic tasks, deep focus timers, and verified XP progression
-            into one razor-sharp personal operating system.
+            Small steps, Big Progress. Questly LevelUp combines atomic tasks, gamified 3D roadmaps,
+            brain-training math games, and verified XP into one razor-sharp personal operating system.
           </p>
 
           {/* Action CTAs */}
@@ -436,18 +440,28 @@ export function LandingPage() {
 
       {/* 4. Progression Roadmap (Inspired by 10 Steps Roadmap & Matiks Level Road) */}
       <section id="roadmap" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642] bg-[#111319]/40">
-        <div className="max-w-6xl mx-auto space-y-16">
+        <div className="max-w-6xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <span className="coord-marker text-[#A879FF]">// 02 PROGRESSION ARCHITECTURE</span>
             <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display">
-              7-LEVEL ACADEMIC ROADMAP
+              3D LEVEL SELECTION ROADMAP
             </h2>
             <p className="text-sm text-[#A1A1A1] font-mono max-w-lg mx-auto">
-              Level up your scholar rank by finishing verified coursework and unlock custom cosmetic enhancements.
+              Level up your scholar rank by finishing verified tasks. Earn XP to unlock stepping stone checkpoints,
+              perks, custom sound packs, and prestige emblems.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+          {/* Real 3D Level Selection Map */}
+          <div className="max-w-xl mx-auto">
+            <LevelSelectionMap
+              onOpenTasks={handleLaunch}
+              onOpenArcade={handleLaunch}
+              onOpenFocus={handleLaunch}
+            />
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3 pt-6">
             {[
               { lvl: 1, rank: 'Initiate', xp: 0, unlock: 'Standard graph grid & lime theme' },
               { lvl: 2, rank: 'Explorer', xp: 200, unlock: 'Electric purple theme & coordinate crosshair' },
@@ -485,23 +499,38 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* 4.1 Interactive Mobile Widget Showcase */}
+      {/* 4.1 Interactive Mobile Application Showcase & Widgets */}
       <section id="mobile" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642] relative bg-graph-grid">
-        <div className="max-w-5xl mx-auto space-y-12 text-center">
+        <div className="max-w-6xl mx-auto space-y-16 text-center">
           <div className="space-y-3">
-            <span className="coord-marker text-[#42DFFF]">// 03 MOBILE WIDGET ARCHITECTURE</span>
+            <span className="coord-marker text-[#42DFFF]">// 03 MOBILE APP & WIDGET ARCHITECTURE</span>
             <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display text-[#F5F5F0]">
-              LIVE INTERACTIVE MOBILE WIDGET
+              INTERACTIVE MOBILE APPLICATION
             </h2>
             <p className="text-sm text-[#A1A1A1] font-mono max-w-xl mx-auto">
-              Check off tasks, track daily XP, and inspect upcoming timetable sessions right from your phone&apos;s home screen.
-              Embed anywhere via iframe or standalone PWA.
+              Try the live interactive prototype right inside the device frame below. Mark tasks to earn real +20 XP,
+              unlock level rewards, check habits, and play brain games. One value change immediately updates the whole system!
             </p>
           </div>
 
-          {/* Render the interactive widget directly */}
-          <div className="max-w-2xl mx-auto">
-            <MobileWidgetView standalone={false} />
+          {/* Interactive Mobile Device Simulator */}
+          <div className="flex justify-center">
+            <InteractiveMobileAppShowcase />
+          </div>
+
+          {/* Secondary: Android & iOS Homescreen Widgets */}
+          <div className="space-y-6 pt-12 border-t border-[#303642]/60">
+            <div className="space-y-2">
+              <span className="text-xs font-mono font-bold text-[#B5FF55] uppercase tracking-wider">
+                LOCK-SCREEN & HOME WIDGETS
+              </span>
+              <h3 className="text-2xl font-black font-display uppercase text-white">
+                Standalone 2×2, 4×2, and 4×4 Widgets
+              </h3>
+            </div>
+            <div className="max-w-2xl mx-auto">
+              <MobileWidgetView standalone={false} />
+            </div>
           </div>
         </div>
       </section>
