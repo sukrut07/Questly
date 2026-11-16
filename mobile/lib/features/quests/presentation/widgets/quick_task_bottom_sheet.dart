@@ -244,7 +244,9 @@ class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
                   ),
                   labelStyle: TextStyle(
                     color: isSelected ? AppColors.darkBase : Colors.white,
-                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontWeight: isSelected
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                     fontSize: 11,
                   ),
                   onSelected: (val) {
