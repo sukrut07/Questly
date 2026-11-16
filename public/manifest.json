@@ -1,0 +1,19 @@
+{
+  "name": "Questly — Academic Operating System",
+  "short_name": "Questly",
+  "description": "Gamified academic operating system with atomic tasks, XP progression, arcade duels, and roadmap tracking.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#090A0D",
+  "theme_color": "#090A0D",
+  "categories": ["education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "prefer_related_applications": false
+}

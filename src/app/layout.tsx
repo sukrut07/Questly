@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Space_Grotesk, Space_Mono, Barlow_Condensed } from 'next/font/google';
 import './globals.css';
 import { QuestlyProvider } from '@/lib/store';
@@ -24,12 +24,27 @@ const spaceMono = Space_Mono({
   display: 'swap',
 });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+  themeColor: '#090A0D',
+};
+
 export const metadata: Metadata = {
   title: 'Questly — Personal Academic & Productivity Operating System',
   description:
     'Make progress. Make it count. Questly brings your tasks, learning goals, checklists, and daily progress into one system you control.',
   icons: {
     icon: '/favicon.ico',
+  },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'Questly',
   },
 };
 
