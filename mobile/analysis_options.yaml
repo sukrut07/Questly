@@ -7,6 +7,7 @@ analyzer:
     - ios/**
     - "**/*.g.dart"
     - "**/*.freezed.dart"
+    - web/**
   errors:
     invalid_annotation_target: ignore
 
