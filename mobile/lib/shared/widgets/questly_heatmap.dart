@@ -20,10 +20,10 @@ class HeatmapDayData {
   });
 
   int get level {
-    if (count == 0 && focusMinutes == 0) return 0;
-    if (count <= 1 && focusMinutes < 25) return 1;
-    if (count <= 3 || focusMinutes < 50) return 2;
-    if (count <= 5 || focusMinutes < 90) return 3;
+    if (count == 0 && focusMinutes == 0 && xpEarned == 0) return 0;
+    if (count <= 1 && focusMinutes < 25 && xpEarned < 25) return 1;
+    if (count <= 3 || focusMinutes < 50 || xpEarned < 60) return 2;
+    if (count <= 5 || focusMinutes < 90 || xpEarned < 120) return 3;
     return 4; // Peak intensity
   }
 }

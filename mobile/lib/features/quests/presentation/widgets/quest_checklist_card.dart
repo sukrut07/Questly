@@ -8,7 +8,9 @@ import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
@@ -59,6 +61,18 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
           completedAt: null,
         ),
       );
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              '-${widget.quest.xpReward} XP (Quest returned to In-Progress)',
+            ),
+            backgroundColor: AppColors.darkCard,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      }
     } else {
       await repo.completeQuest(widget.quest.id);
       if (mounted) {
@@ -66,20 +80,62 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
           context,
           title: widget.quest.title,
           xpReward: widget.quest.xpReward,
-          badge: 'Quest Master',
+          badge: '${widget.quest.priority.displayName.toUpperCase()} PRIORITY CLEARED',
         );
       }
     }
 
     ref.read(dashboardStateProvider.notifier).refresh();
+    ref.invalidate(analyticsDataProvider);
     widget.onChanged?.call();
     if (mounted) setState(() {});
   }
 
   Future<void> _toggleSubtask(String subtaskId) async {
     HapticFeedback.selectionClick();
+    final wasCompleted = widget.quest.subtasks
+        .any((s) => s.id == subtaskId && s.isCompleted);
+    final subXp = XpProgressionEngine.calculateSubtaskXp(widget.quest.priority);
+
     final repo = ref.read(questRepositoryProvider);
     final updated = await repo.toggleSubtask(widget.quest.id, subtaskId);
+
+    if (mounted) {
+      if (!wasCompleted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Row(
+              children: [
+                const Icon(
+                  Icons.check_circle_rounded,
+                  color: AppColors.limePrimary,
+                  size: 18,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '+$subXp XP • ${widget.quest.priority.displayName.toUpperCase()} Priority Subtask Checked!',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ],
+            ),
+            backgroundColor: const Color(0xFF161E12),
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(milliseconds: 1800),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('-$subXp XP (Subtask Unchecked)'),
+            backgroundColor: AppColors.darkCard,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(milliseconds: 1500),
+          ),
+        );
+      }
+    }
 
     // If all subtasks are now completed and parent is not, check if user completed the entire quest
     final allDone =
@@ -104,6 +160,7 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
     }
 
     ref.read(dashboardStateProvider.notifier).refresh();
+    ref.invalidate(analyticsDataProvider);
     widget.onChanged?.call();
     if (mounted) setState(() {});
   }
