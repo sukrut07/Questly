@@ -1,807 +1,587 @@
-'use client';
+﻿'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useQuestly } from '@/lib/store';
-import { LEVEL_CONFIG } from '@/lib/progressionEngine';
-import { AnimatedMobileRoadmap } from '@/components/roadmap/AnimatedMobileRoadmap';
-import { InteractiveWalkHeatmap } from '@/components/analytics/InteractiveWalkHeatmap';
-import { DailyCheckpoints } from '@/components/goals/DailyCheckpoints';
-import { StreakFlameAnimation } from '@/components/animations/StreakFlameAnimation';
-import { MobileTaskCreatorModal } from '@/components/quests/MobileTaskCreatorModal';
-import { ArcadeHub } from '@/components/arcade/ArcadeHub';
-import { QuestlyLogo } from '@/components/common/QuestlyLogo';
-import { sound } from '@/common/SoundService';
-import { fireCelebrationConfetti } from '@/common/Confetti';
 import {
-  Compass,
   CheckSquare,
-  Gamepad2,
-  Zap,
-  BarChart3,
+  BookOpen,
+  Hourglass,
+  Calendar,
+  Layers,
+  ArrowRight,
+  Menu,
+  X,
   Plus,
   Play,
+  CheckCircle2,
+  Circle,
+  ExternalLink,
   Flame,
   Clock,
   Sparkles,
-  ArrowRight,
-  CheckCircle2,
-  Circle,
+  Command,
+  Gamepad2,
+  Zap,
+  FolderKanban,
   Trophy,
-  Target,
-  Volume2,
-  VolumeX,
-  Wifi,
-  Battery,
-  Calendar,
-  ChevronDown,
-  ChevronUp,
-  SlidersHorizontal,
+  Lock,
   Check,
-  Trash2,
+  ShieldCheck,
+  Smartphone,
 } from 'lucide-react';
-
-export type MobileAppSection = 'roadmap' | 'checkpoints' | 'tasks' | 'arcade' | 'heatmap';
+import { QuestlyLogo } from '@/components/common/QuestlyLogo';
+import { InteractiveGraphBackground } from '@/components/common/InteractiveGraphBackground';
+import { MobileWidgetView } from '@/components/widgets/MobileWidgetView';
 
 export function LandingPage() {
-  const {
-    setMode,
-    user,
-    streak,
-    quests,
-    completeQuest,
-    reopenQuest,
-    createQuest,
-    updateQuest,
-    toggleSubtask,
-    settings,
-    updateSettings,
-    setCurrentTab,
-  } = useQuestly();
+  const { setMode } = useQuestly();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Active section state - Zero page scrolling, immediate tab transitions
-  const [activeSection, setActiveSection] = useState<MobileAppSection>('roadmap');
-
-  // Streak celebration modal state (triggered upon completing a task)
-  const [streakModalOpen, setStreakModalOpen] = useState(false);
-  const [lastCompletedTaskTitle, setLastCompletedTaskTitle] = useState('');
-
-  // Task Creator Modal state
-  const [creatorModalOpen, setCreatorModalOpen] = useState(false);
-
-  // Expanded task card details state
-  const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
-  const [inlineSubtaskInputs, setInlineSubtaskInputs] = useState<Record<string, string>>({});
-
-  // Quick inline task creation state
-  const [newQuestTitle, setNewQuestTitle] = useState('');
-  const [taskFilter, setTaskFilter] = useState<'all' | 'pending' | 'completed'>('all');
-
-  // Current Level info
-  const currentLvlConfig = LEVEL_CONFIG.find((l) => l.level === user.level) || LEVEL_CONFIG[0];
-
-  const handleTabSwitch = (sec: MobileAppSection) => {
-    sound.playButtonClick();
-    setActiveSection(sec);
-  };
-
-  const handleQuickAddQuest = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newQuestTitle.trim()) return;
-    sound.playButtonClick();
-    createQuest({
-      title: newQuestTitle.trim(),
-      description: 'Quick task added via Questly Mobile',
-      priority: 'MEDIUM',
-      difficulty: 'MEDIUM',
-      taskType: 'problem_solving',
-      subjectCode: 'General',
-      subjectId: 'gen',
-      dueDate: new Date().toISOString().split('T')[0],
-      status: 'NOT_STARTED',
-      isRecurring: false,
-      subtasks: [],
-      estimatedMinutes: 25,
-      xpReward: 50,
-    });
-    setNewQuestTitle('');
-  };
-
-  const handleToggleQuest = (questId: string, currentStatus: string, title: string) => {
-    if (currentStatus === 'COMPLETED') {
-      sound.playButtonClick();
-      reopenQuest(questId);
-    } else {
-      sound.playQuestComplete();
-      fireCelebrationConfetti();
-      setLastCompletedTaskTitle(title);
-      setStreakModalOpen(true);
-      completeQuest(questId);
-    }
-  };
-
-  const handleToggleSubtaskItem = (questId: string, subtaskId: string) => {
-    sound.playButtonClick();
-    toggleSubtask(questId, subtaskId);
-  };
-
-  const handleAddInlineSubtask = (questId: string) => {
-    const text = inlineSubtaskInputs[questId]?.trim();
-    if (!text) return;
-    sound.playButtonClick();
-
-    const quest = quests.find((q) => q.id === questId);
-    if (!quest) return;
-
-    const updatedSubtasks = [
-      ...quest.subtasks,
-      {
-        id: `st_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        title: text,
-        isCompleted: false,
-      },
-    ];
-
-    updateQuest({
-      ...quest,
-      subtasks: updatedSubtasks,
-    });
-
-    setInlineSubtaskInputs((prev) => ({ ...prev, [questId]: '' }));
-  };
-
-  const getDeadlineBadge = (dueDate: string | null) => {
-    if (!dueDate) return null;
-    const today = new Date().toISOString().split('T')[0];
-
-    if (dueDate === today) {
-      return {
-        label: 'Due Today',
-        className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
-      };
-    }
-    const diffDays = Math.ceil(
-      (new Date(dueDate).getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24)
-    );
-    if (diffDays < 0) {
-      return {
-        label: `Overdue by ${Math.abs(diffDays)}d`,
-        className: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
-      };
-    }
-    if (diffDays === 1) {
-      return {
-        label: 'Due Tomorrow',
-        className: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
-      };
-    }
-    return {
-      label: `Due ${dueDate}`,
-      className: 'bg-white/5 text-zinc-400 border-white/10',
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileMenuOpen(false);
     };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const handleLaunch = () => {
+    setMobileMenuOpen(false);
+    setMode('app');
   };
 
-  const filteredQuests = quests.filter((q) => {
-    if (taskFilter === 'pending') return q.status !== 'COMPLETED';
-    if (taskFilter === 'completed') return q.status === 'COMPLETED';
-    return true;
-  });
+  const scrollToSection = (id: string) => {
+    setMobileMenuOpen(false);
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#090A0D] text-[#F5F5F0] overflow-hidden flex flex-col justify-between selection:bg-[#B5FF55] selection:text-[#090A0D]">
-      {/* =========================================================================
-          1. TOP APP BAR & CLEAN STATUS BAR
-         ========================================================================= */}
-      <header className="shrink-0 bg-[#0C0E14] border-b border-white/[0.08] z-30">
-        {/* Native mobile device simulated top bar */}
-        <div className="px-4 py-1 flex items-center justify-between text-[11px] font-mono text-zinc-400 select-none">
-          <span className="font-semibold text-zinc-300">09:41</span>
+    <div className="min-h-screen bg-[#090A0D] text-[#F5F5F0] relative overflow-x-hidden selection:bg-[#B5FF55] selection:text-[#090A0D]">
+      {/* 1. Global Navigation Bar */}
+      <header className="sticky top-0 z-50 bg-[#090A0D]/90 backdrop-blur-md border-b border-[#303642]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+          {/* Brand Logo */}
           <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <Wifi className="w-3.5 h-3.5 text-zinc-400" />
-            </span>
-            <span className="flex items-center gap-1 font-semibold text-zinc-300">
-              <Battery className="w-4 h-4 text-emerald-400" /> 100%
-            </span>
-          </div>
-        </div>
-
-        {/* Brand Bar */}
-        <div className="px-3 sm:px-4 py-2 flex items-center justify-between gap-2">
-          {/* Logo & Scholar Rank */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#1A1E27] to-[#12151D] border border-white/10 flex items-center justify-center shadow-md">
+            <div className="w-8 h-8 rounded-xl bg-[#171A21] border border-[#303642] flex items-center justify-center brutal-shadow">
               <QuestlyLogo size={20} variant="lime" />
             </div>
-            <div>
-              <div className="flex items-center gap-1.5 leading-none">
-                <span className="font-display font-extrabold text-sm tracking-tight text-white uppercase">
-                  Questly
-                </span>
-                <span className="text-[10px] font-mono font-semibold text-[#B5FF55] px-1.5 py-0.2 rounded-md bg-[#B5FF55]/10 border border-[#B5FF55]/20">
-                  v2.0
-                </span>
-              </div>
-              <span className="text-[10px] font-mono text-zinc-400 block mt-0.5">
-                Level {user.level} • {currentLvlConfig.title}
+            <div className="flex items-baseline gap-1.5">
+              <span className="font-display font-black text-xl tracking-tight uppercase">QUESTLY</span>
+              <span className="text-[10px] font-mono font-bold text-[#B5FF55] px-1.5 py-0.2 rounded bg-[#B5FF55]/10 border border-[#B5FF55]/30">
+                v2.0
               </span>
             </div>
           </div>
 
-          {/* Right Header Controls: Streak Pill, XP Pill, Sound & Workspace Switch */}
-          <div className="flex items-center gap-2">
-            {/* Streak Trigger Pill */}
+          {/* Desktop Nav Links */}
+          <nav className="hidden md:flex items-center gap-8 text-xs font-mono uppercase tracking-wider text-[#A1A1A1]">
             <button
-              onClick={() => {
-                sound.playButtonClick();
-                setStreakModalOpen(true);
-              }}
-              className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-amber-500/10 border border-amber-500/25 hover:bg-amber-500/20 transition-all text-xs font-mono font-bold text-amber-400 shadow-sm"
-              title="View Daily Streak"
+              onClick={() => scrollToSection('features')}
+              className="hover:text-[#B5FF55] transition-colors"
             >
-              <Flame className="w-3.5 h-3.5 fill-current" />
-              <span>{streak.currentStreak}d</span>
+              Features
             </button>
-
-            {/* Total XP Badge */}
-            <div className="flex items-center gap-1 px-2.5 py-1 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-mono">
-              <Zap className="w-3.5 h-3.5 text-[#B5FF55]" />
-              <span className="font-bold text-white">{user.totalXp}</span>
-              <span className="text-[10px] text-zinc-500">XP</span>
-            </div>
-
-            {/* Sound Toggle */}
             <button
-              onClick={() => {
-                sound.playButtonClick();
-                updateSettings({ soundEnabled: !settings.soundEnabled });
-              }}
-              className="p-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] text-zinc-400 hover:text-white transition-colors"
-              title="Toggle audio feedback"
+              onClick={() => scrollToSection('roadmap')}
+              className="hover:text-[#B5FF55] transition-colors"
             >
-              {settings.soundEnabled ? (
-                <Volume2 className="w-3.5 h-3.5 text-[#B5FF55]" />
-              ) : (
-                <VolumeX className="w-3.5 h-3.5" />
-              )}
+              Progression
             </button>
-
-            {/* Switch to Desktop OS */}
             <button
-              onClick={() => {
-                sound.playButtonClick();
-                setMode('app');
-              }}
-              className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#B5FF55] hover:bg-[#A3F040] text-black font-extrabold text-xs uppercase tracking-wide transition-all shadow-md"
+              onClick={() => scrollToSection('arcade')}
+              className="hover:text-[#B5FF55] transition-colors"
             >
-              <span>Workspace</span>
-              <ArrowRight className="w-3 h-3 stroke-[3]" />
+              Arcade
+            </button>
+            <button
+              onClick={() => scrollToSection('mobile')}
+              className="hover:text-[#B5FF55] transition-colors"
+            >
+              Mobile
+            </button>
+            <a
+              href="https://github.com/sukrut07/Questly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#F5F5F0] transition-colors flex items-center gap-1"
+            >
+              <span>GitHub</span>
+              <ExternalLink className="w-3 h-3" />
+            </a>
+          </nav>
+
+          {/* Action Button */}
+          <div className="hidden md:flex items-center gap-3">
+            <button
+              onClick={handleLaunch}
+              className="px-5 py-2.5 rounded-xl bg-[#B5FF55] hover:bg-[#A3F040] text-[#090A0D] font-black text-xs uppercase tracking-wider font-display brutal-shadow transition-all flex items-center gap-2"
+            >
+              <span>Open Workspace</span>
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
+            </button>
+          </div>
+
+          {/* Mobile Hamburger Toggle */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl bg-[#171A21] border border-[#303642] text-[#F5F5F0]"
+              aria-label="Toggle navigation menu"
+            >
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
         </div>
 
-        {/* Quick Access Action Bar */}
-        <div className="px-3 py-1.5 bg-[#08090D] border-t border-white/[0.06] flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
-          <button
-            onClick={() => setCreatorModalOpen(true)}
-            className="px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 bg-[#B5FF55] text-black border-[#B5FF55] font-bold text-xs shadow-sm hover:bg-[#A3F040] transition-all"
-          >
-            <Plus className="w-3.5 h-3.5 stroke-[3]" />
-            <span>+ New Quest & Checkpoints</span>
-          </button>
-
-          <button
-            onClick={() => handleTabSwitch('checkpoints')}
-            className={`px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 transition-all text-xs font-medium ${
-              activeSection === 'checkpoints'
-                ? 'bg-purple-500 text-white border-purple-500 font-bold'
-                : 'bg-white/[0.03] text-zinc-300 border-white/[0.08] hover:border-purple-400'
-            }`}
-          >
-            <Target className="w-3 h-3" />
-            <span>Daily Checkpoints</span>
-          </button>
-
-          <button
-            onClick={() => handleTabSwitch('heatmap')}
-            className={`px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 transition-all text-xs font-medium ${
-              activeSection === 'heatmap'
-                ? 'bg-[#86EFAC] text-black border-[#86EFAC] font-bold'
-                : 'bg-white/[0.03] text-zinc-300 border-white/[0.08] hover:border-[#86EFAC]'
-            }`}
-          >
-            <BarChart3 className="w-3 h-3" />
-            <span>Random Walk Heatmap</span>
-          </button>
-
-          <button
-            onClick={() => handleTabSwitch('arcade')}
-            className={`px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 transition-all text-xs font-medium ${
-              activeSection === 'arcade'
-                ? 'bg-amber-400 text-black border-amber-400 font-bold'
-                : 'bg-white/[0.03] text-zinc-300 border-white/[0.08] hover:border-amber-400'
-            }`}
-          >
-            <Gamepad2 className="w-3 h-3" />
-            <span>Arcade Duels</span>
-          </button>
-
-          <button
-            onClick={() => {
-              sound.playButtonClick();
-              setMode('app');
-            }}
-            className="sm:hidden px-2.5 py-1 rounded-lg bg-[#B5FF55]/15 text-[#B5FF55] border border-[#B5FF55]/30 shrink-0 font-bold text-xs"
-          >
-            Full OS →
-          </button>
-        </div>
-      </header>
-
-      {/* =========================================================================
-          2. MAIN CONTENT VIEWPORT (ZERO PAGE SCROLLING - VIEWPORT LOCKED TABS)
-         ========================================================================= */}
-      <main className="flex-1 min-h-0 relative overflow-hidden bg-[#090A0D]">
-        {/* SECTION 1: MAP ANIMATED ROADMAP */}
-        {activeSection === 'roadmap' && (
-          <div className="h-full w-full animate-in fade-in duration-150">
-            <AnimatedMobileRoadmap
-              onSelectAction={(action) => {
-                if (action === 'tasks') setActiveSection('tasks');
-                if (action === 'arcade') setActiveSection('arcade');
-                if (action === 'focus') {
-                  setMode('app');
-                  setCurrentTab('focus');
-                }
-              }}
-            />
-          </div>
-        )}
-
-        {/* SECTION 2: DAILY GOALS & REAL-TIME CHECKPOINTS */}
-        {activeSection === 'checkpoints' && (
-          <div className="h-full w-full overflow-y-auto p-4 max-w-xl mx-auto space-y-4 animate-in fade-in duration-150">
-            <DailyCheckpoints
-              onStartFocus={() => {
-                setMode('app');
-                setCurrentTab('focus');
-              }}
-              onOpenTasks={() => setActiveSection('tasks')}
-            />
-          </div>
-        )}
-
-        {/* SECTION 3: INTERACTIVE ATOMIC QUEST TO-DO LIST (WITH SUBTASKS & DEADLINES) */}
-        {activeSection === 'tasks' && (
-          <div className="h-full w-full flex flex-col overflow-hidden p-3 sm:p-5 space-y-3 max-w-xl mx-auto animate-in fade-in duration-150">
-            {/* Header */}
-            <div className="flex items-center justify-between pb-2 border-b border-white/[0.08] shrink-0">
-              <div>
-                <h3 className="text-base font-bold text-white tracking-tight">
-                  Atomic Quests
-                </h3>
-                <p className="text-[11px] text-zinc-400">
-                  Tap any quest to view descriptions, deadlines, and milestone checkpoints
-                </p>
-              </div>
-
-              {/* Filter Pills */}
-              <div className="flex items-center gap-1 bg-white/[0.03] p-1 rounded-xl border border-white/[0.08] text-xs">
-                <button
-                  onClick={() => setTaskFilter('all')}
-                  className={`px-2.5 py-1 rounded-lg transition-colors ${
-                    taskFilter === 'all'
-                      ? 'bg-white/10 text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  All ({quests.length})
-                </button>
-                <button
-                  onClick={() => setTaskFilter('pending')}
-                  className={`px-2.5 py-1 rounded-lg transition-colors ${
-                    taskFilter === 'pending'
-                      ? 'bg-white/10 text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  Active
-                </button>
-                <button
-                  onClick={() => setTaskFilter('completed')}
-                  className={`px-2.5 py-1 rounded-lg transition-colors ${
-                    taskFilter === 'completed'
-                      ? 'bg-white/10 text-white font-semibold'
-                      : 'text-zinc-400 hover:text-zinc-200'
-                  }`}
-                >
-                  Done
-                </button>
-              </div>
-            </div>
-
-            {/* Quick Add Quest Input Form + Creator Trigger */}
-            <div className="flex gap-2 shrink-0">
-              <form onSubmit={handleQuickAddQuest} className="flex-1 flex gap-2">
-                <input
-                  type="text"
-                  value={newQuestTitle}
-                  onChange={(e) => setNewQuestTitle(e.target.value)}
-                  placeholder="Quick add quest title..."
-                  className="flex-1 bg-[#12151D] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B5FF55] transition-colors"
-                />
-                <button
-                  type="submit"
-                  disabled={!newQuestTitle.trim()}
-                  className="px-3.5 py-2 bg-[#B5FF55] hover:bg-[#A3F040] disabled:opacity-40 text-black font-extrabold text-xs uppercase tracking-wide rounded-xl shadow-md flex items-center gap-1"
-                >
-                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
-                  <span>Add</span>
-                </button>
-              </form>
-
+        {/* Mobile Slide-Out Drawer */}
+        {mobileMenuOpen && (
+          <div className="md:hidden bg-[#111319] border-b border-[#303642] px-6 py-6 space-y-4 animate-in slide-in-from-top-2 duration-150">
+            <div className="flex flex-col gap-3 font-mono text-sm tracking-wider">
               <button
-                type="button"
-                onClick={() => setCreatorModalOpen(true)}
-                className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
-                title="Full Quest & Checkpoint Creator"
+                onClick={() => scrollToSection('features')}
+                className="text-left py-2 text-[#A1A1A1] hover:text-[#B5FF55]"
               >
-                <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-400" />
-                <span className="hidden sm:inline">Details</span>
+                // 01 Features
+              </button>
+              <button
+                onClick={() => scrollToSection('roadmap')}
+                className="text-left py-2 text-[#A1A1A1] hover:text-[#B5FF55]"
+              >
+                // 02 Progression Roadmap
+              </button>
+              <button
+                onClick={() => scrollToSection('arcade')}
+                className="text-left py-2 text-[#A1A1A1] hover:text-[#B5FF55]"
+              >
+                // 03 Questly Arcade
+              </button>
+              <button
+                onClick={() => scrollToSection('mobile')}
+                className="text-left py-2 text-[#A1A1A1] hover:text-[#B5FF55]"
+              >
+                // 04 Flutter Mobile App
+              </button>
+              <a
+                href="https://github.com/sukrut07/Questly"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-left py-2 text-[#A1A1A1] hover:text-[#B5FF55] flex items-center gap-1.5"
+              >
+                <span>// 05 GitHub Repository</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            <div className="pt-3 border-t border-[#303642]">
+              <button
+                onClick={handleLaunch}
+                className="w-full py-3 rounded-xl bg-[#B5FF55] text-[#090A0D] font-black text-xs uppercase tracking-wider font-display brutal-shadow flex items-center justify-center gap-2"
+              >
+                <span>Launch Workspace</span>
+                <ArrowRight className="w-4 h-4 stroke-[3]" />
               </button>
             </div>
-
-            {/* Quest Feed */}
-            <div className="flex-1 min-h-0 overflow-y-auto space-y-2.5 pr-1">
-              {filteredQuests.length === 0 ? (
-                <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-zinc-500 text-xs">
-                  <CheckCircle2 className="w-8 h-8 text-[#B5FF55]/60" />
-                  <span>No quests found. Tap Add or Full Creator above.</span>
-                </div>
-              ) : (
-                filteredQuests.map((quest) => {
-                  const isDone = quest.status === 'COMPLETED';
-                  const isExpanded = expandedQuestId === quest.id;
-                  const deadline = getDeadlineBadge(quest.dueDate);
-
-                  const completedSubtasksCount = quest.subtasks.filter(
-                    (s) => s.isCompleted
-                  ).length;
-                  const totalSubtasksCount = quest.subtasks.length;
-                  const subtaskProgressPct =
-                    totalSubtasksCount > 0
-                      ? Math.round((completedSubtasksCount / totalSubtasksCount) * 100)
-                      : 0;
-
-                  return (
-                    <div
-                      key={quest.id}
-                      className={`rounded-2xl border transition-all overflow-hidden ${
-                        isDone
-                          ? 'bg-white/[0.02] border-white/[0.05] opacity-60'
-                          : isExpanded
-                          ? 'bg-[#11141D] border-[#B5FF55]/40 shadow-lg'
-                          : 'bg-[#0E1118] border-white/[0.08] hover:border-white/20 shadow-sm'
-                      }`}
-                    >
-                      {/* Quest Primary Header */}
-                      <div className="p-3.5 flex items-start gap-3">
-                        {/* Checkbox Button */}
-                        <button
-                          onClick={() =>
-                            handleToggleQuest(quest.id, quest.status, quest.title)
-                          }
-                          className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
-                            isDone
-                              ? 'bg-[#B5FF55] border-[#B5FF55] text-black shadow-sm'
-                              : 'border-zinc-700 hover:border-[#B5FF55]'
-                          }`}
-                          aria-label={`Toggle quest completion: ${quest.title}`}
-                        >
-                          {isDone && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}
-                        </button>
-
-                        {/* Title and Badges */}
-                        <div
-                          className="flex-1 min-w-0 cursor-pointer"
-                          onClick={() =>
-                            setExpandedQuestId(isExpanded ? null : quest.id)
-                          }
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span
-                              className={`text-xs font-semibold leading-snug truncate ${
-                                isDone ? 'line-through text-zinc-500' : 'text-zinc-100'
-                              }`}
-                            >
-                              {quest.title}
-                            </span>
-
-                            <div className="flex items-center gap-1.5 shrink-0">
-                              {deadline && (
-                                <span
-                                  className={`text-[10px] font-mono px-2 py-0.5 rounded-md border ${deadline.className}`}
-                                >
-                                  {deadline.label}
-                                </span>
-                              )}
-                              <button
-                                className="p-0.5 text-zinc-500 hover:text-zinc-300"
-                                aria-label="Toggle details"
-                              >
-                                {isExpanded ? (
-                                  <ChevronUp className="w-4 h-4" />
-                                ) : (
-                                  <ChevronDown className="w-4 h-4" />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Secondary Meta Row */}
-                          <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-zinc-400">
-                            <span className="px-1.5 py-0.2 rounded bg-white/[0.04] text-[#B5FF55] font-bold">
-                              +{quest.xpReward} XP
-                            </span>
-                            <span className="text-zinc-500">
-                              {quest.subjectCode || 'General'}
-                            </span>
-                            {totalSubtasksCount > 0 && (
-                              <span className="text-purple-300">
-                                {completedSubtasksCount}/{totalSubtasksCount} Checkpoints
-                              </span>
-                            )}
-                            {quest.priority === 'URGENT' && (
-                              <span className="text-rose-400 font-bold">Urgent</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-
-                      {/* Expanded Section: Description, Subtasks, and Checkpoints */}
-                      {isExpanded && (
-                        <div className="px-3.5 pb-3.5 pt-1 border-t border-white/[0.06] space-y-3 bg-black/20 text-xs">
-                          {/* Task Description */}
-                          {quest.description && (
-                            <div className="space-y-1">
-                              <span className="text-[10px] uppercase font-mono text-zinc-500 font-semibold tracking-wider">
-                                Description & Objective
-                              </span>
-                              <p className="text-zinc-300 text-xs leading-relaxed bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.04]">
-                                {quest.description}
-                              </p>
-                            </div>
-                          )}
-
-                          {/* Subtasks / Milestone Checkpoints */}
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between text-[10px] uppercase font-mono text-zinc-400 font-semibold tracking-wider">
-                              <span className="flex items-center gap-1.5">
-                                <CheckCircle2 className="w-3.5 h-3.5 text-[#B5FF55]" />
-                                <span>Milestone Checkpoints ({totalSubtasksCount})</span>
-                              </span>
-                              {totalSubtasksCount > 0 && (
-                                <span className="text-[#B5FF55]">
-                                  {subtaskProgressPct}% cleared
-                                </span>
-                              )}
-                            </div>
-
-                            {/* Progress bar */}
-                            {totalSubtasksCount > 0 && (
-                              <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
-                                <div
-                                  className="h-full bg-gradient-to-r from-purple-400 to-[#B5FF55] transition-all"
-                                  style={{ width: `${subtaskProgressPct}%` }}
-                                />
-                              </div>
-                            )}
-
-                            {/* Subtask items list */}
-                            <div className="space-y-1.5">
-                              {quest.subtasks.map((st) => (
-                                <div
-                                  key={st.id}
-                                  onClick={() =>
-                                    handleToggleSubtaskItem(quest.id, st.id)
-                                  }
-                                  className={`p-2 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-colors ${
-                                    st.isCompleted
-                                      ? 'bg-emerald-950/20 border-emerald-500/20 text-zinc-400'
-                                      : 'bg-white/[0.03] border-white/[0.06] text-zinc-200 hover:border-white/20'
-                                  }`}
-                                >
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <div
-                                      className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 ${
-                                        st.isCompleted
-                                          ? 'bg-[#B5FF55] border-[#B5FF55] text-black'
-                                          : 'border-zinc-600'
-                                      }`}
-                                    >
-                                      {st.isCompleted && (
-                                        <Check className="w-3 h-3 stroke-[3]" />
-                                      )}
-                                    </div>
-                                    <span
-                                      className={`truncate text-xs ${
-                                        st.isCompleted
-                                          ? 'line-through text-zinc-500'
-                                          : 'text-zinc-200'
-                                      }`}
-                                    >
-                                      {st.title}
-                                    </span>
-                                  </div>
-
-                                  {st.checkpointTime && (
-                                    <span className="text-[10px] font-mono text-amber-400 shrink-0 px-1.5 py-0.2 rounded bg-amber-500/10 border border-amber-500/20">
-                                      {st.checkpointTime}
-                                    </span>
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-
-                            {/* Inline Add Subtask Input */}
-                            <div className="flex gap-1.5 pt-1">
-                              <input
-                                type="text"
-                                value={inlineSubtaskInputs[quest.id] || ''}
-                                onChange={(e) =>
-                                  setInlineSubtaskInputs((prev) => ({
-                                    ...prev,
-                                    [quest.id]: e.target.value,
-                                  }))
-                                }
-                                placeholder="Add checkpoint or subtask..."
-                                className="flex-1 bg-[#141720] border border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B5FF55]"
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    e.preventDefault();
-                                    handleAddInlineSubtask(quest.id);
-                                  }
-                                }}
-                              />
-                              <button
-                                type="button"
-                                onClick={() => handleAddInlineSubtask(quest.id)}
-                                className="px-3 py-1.5 bg-white/10 hover:bg-[#B5FF55] hover:text-black text-white text-xs font-semibold rounded-xl transition-all"
-                              >
-                                Add
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })
-              )}
-            </div>
           </div>
         )}
+      </header>
 
-        {/* SECTION 4: QUESTLY ARCADE MINI-GAMES */}
-        {activeSection === 'arcade' && (
-          <div className="h-full w-full overflow-hidden flex flex-col p-2 sm:p-4 animate-in fade-in duration-150">
-            <div className="flex-1 min-h-0 overflow-y-auto">
-              <ArcadeHub />
-            </div>
-          </div>
-        )}
+      {/* 2. Hero Section on Interactive Coordinate Grid */}
+      <section className="relative pt-20 pb-24 lg:pt-32 lg:pb-36 px-4 sm:px-6 lg:px-8 border-b border-[#303642] overflow-hidden">
+        {/* Interactive Responsive Canvas Grid */}
+        <InteractiveGraphBackground intensity={0.65} cellSize={36} />
 
-        {/* SECTION 5: INTERACTIVE 2D RANDOM WALK HEATMAP */}
-        {activeSection === 'heatmap' && (
-          <div className="h-full w-full overflow-y-auto p-4 max-w-2xl mx-auto space-y-4 animate-in fade-in duration-150">
-            <InteractiveWalkHeatmap />
-          </div>
-        )}
-      </main>
-
-      {/* =========================================================================
-          3. FIXED BOTTOM MOBILE NAVIGATION DOCK (5 SECTIONS)
-         ========================================================================= */}
-      <nav className="shrink-0 bg-[#0C0E14]/95 border-t border-white/[0.08] px-2 py-1.5 backdrop-blur-xl z-30 pb-[env(safe-area-inset-bottom)]">
-        <div className="grid grid-cols-5 gap-1 max-w-md mx-auto">
-          {/* TAB 1: ROADMAP */}
-          <button
-            onClick={() => handleTabSwitch('roadmap')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all relative ${
-              activeSection === 'roadmap'
-                ? 'bg-white/[0.06] text-[#B5FF55] font-bold'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            <Compass className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] font-mono tracking-tight">Roadmap</span>
-            {activeSection === 'roadmap' && (
-              <span className="absolute -bottom-1 w-2 h-0.5 bg-[#B5FF55] rounded-full" />
-            )}
-          </button>
-
-          {/* TAB 2: CHECKPOINTS */}
-          <button
-            onClick={() => handleTabSwitch('checkpoints')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all relative ${
-              activeSection === 'checkpoints'
-                ? 'bg-white/[0.06] text-purple-400 font-bold'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            <Target className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] font-mono tracking-tight">Goals</span>
-            {activeSection === 'checkpoints' && (
-              <span className="absolute -bottom-1 w-2 h-0.5 bg-purple-400 rounded-full" />
-            )}
-          </button>
-
-          {/* TAB 3: TO-DO */}
-          <button
-            onClick={() => handleTabSwitch('tasks')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all relative ${
-              activeSection === 'tasks'
-                ? 'bg-white/[0.06] text-[#B5FF55] font-bold'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            <CheckSquare className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] font-mono tracking-tight">Quests</span>
-            {activeSection === 'tasks' && (
-              <span className="absolute -bottom-1 w-2 h-0.5 bg-[#B5FF55] rounded-full" />
-            )}
-          </button>
-
-          {/* TAB 4: ARCADE */}
-          <button
-            onClick={() => handleTabSwitch('arcade')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all relative ${
-              activeSection === 'arcade'
-                ? 'bg-white/[0.06] text-amber-400 font-bold'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            <Gamepad2 className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] font-mono tracking-tight">Arcade</span>
-            {activeSection === 'arcade' && (
-              <span className="absolute -bottom-1 w-2 h-0.5 bg-amber-400 rounded-full" />
-            )}
-          </button>
-
-          {/* TAB 5: RANDOM WALK HEATMAP */}
-          <button
-            onClick={() => handleTabSwitch('heatmap')}
-            className={`flex flex-col items-center justify-center py-1.5 rounded-xl transition-all relative ${
-              activeSection === 'heatmap'
-                ? 'bg-white/[0.06] text-[#86EFAC] font-bold'
-                : 'text-zinc-400 hover:text-white'
-            }`}
-          >
-            <BarChart3 className="w-4 h-4 mb-0.5" />
-            <span className="text-[10px] font-mono tracking-tight">Heatmap</span>
-            {activeSection === 'heatmap' && (
-              <span className="absolute -bottom-1 w-2 h-0.5 bg-[#86EFAC] rounded-full" />
-            )}
-          </button>
+        {/* Decorative Grid References */}
+        <div className="absolute top-6 left-6 coord-marker hidden sm:block z-10 text-[#777]">
+          [COORD: 45°N // GRID_REF: 0x8F]
         </div>
-      </nav>
+        <div className="absolute top-6 right-6 coord-marker hidden sm:block z-10 text-[#777]">
+          [WORKSPACE_ID: QS-2026]
+        </div>
 
-      {/* =========================================================================
-          4. FULL QUEST & CHECKPOINT CREATOR MODAL
-         ========================================================================= */}
-      <MobileTaskCreatorModal
-        isOpen={creatorModalOpen}
-        onClose={() => setCreatorModalOpen(false)}
-      />
+        <div className="max-w-5xl mx-auto text-center space-y-8 relative z-10">
+          {/* Top Pill Status */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#171A21] border border-[#303642] coord-marker shadow-lg">
+            <span className="w-2 h-2 rounded-full bg-[#B5FF55] animate-ping" />
+            <span className="text-[#F5F5F0] font-bold text-xs">YOUR WORK. YOUR PROGRESS. YOUR SYSTEM.</span>
+          </div>
 
-      {/* =========================================================================
-          5. STREAK FLAME CELEBRATION MODAL (LOTTIE FLAME MASTER)
-         ========================================================================= */}
-      <StreakFlameAnimation
-        isOpen={streakModalOpen}
-        onClose={() => setStreakModalOpen(false)}
-        streakCount={streak.currentStreak}
-        taskTitle={lastCompletedTaskTitle}
-      />
+          {/* Condensed Punchy Heading */}
+          <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[0.98] uppercase font-display">
+            TURN STUDY TIME <br />
+            <span className="text-[#B5FF55]">INTO REAL</span>{' '}
+            <span className="text-[#A879FF]">PROGRESS.</span>
+          </h1>
+
+          {/* Supporting Subheading */}
+          <p className="max-w-2xl mx-auto text-base sm:text-lg text-[#A1A1A1] font-mono leading-relaxed">
+            Questly combines academic timetables, atomic tasks, deep focus timers, and verified XP progression
+            into one razor-sharp personal operating system.
+          </p>
+
+          {/* Action CTAs */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-2">
+            <button
+              onClick={handleLaunch}
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#B5FF55] hover:bg-[#A3F040] text-[#090A0D] font-black text-sm uppercase tracking-wider font-display brutal-shadow-lime transition-all flex items-center justify-center gap-2.5"
+            >
+              <span>Get Started Free</span>
+              <ArrowRight className="w-4 h-4 stroke-[3]" />
+            </button>
+
+            <button
+              onClick={() => scrollToSection('features')}
+              className="w-full sm:w-auto px-8 py-4 rounded-xl bg-[#171A21] hover:bg-[#20242D] text-[#F5F5F0] border border-[#303642] font-mono font-bold text-xs uppercase tracking-wider transition-all"
+            >
+              Explore Features ↓
+            </button>
+          </div>
+        </div>
+
+        {/* 2.1 Hero Visual: Workspace Preview Card with Neon Accents */}
+        <div className="max-w-5xl mx-auto mt-16 p-2 rounded-2xl bg-[#171A21] border border-[#303642] brutal-shadow relative z-10">
+          <div className="p-4 sm:p-6 rounded-xl bg-[#090A0D] border border-[#303642] space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-[#303642] coord-marker">
+              <div className="flex items-center gap-2">
+                <span className="w-3 h-3 rounded-full bg-[#FF806B]" />
+                <span className="w-3 h-3 rounded-full bg-[#FFD76A]" />
+                <span className="w-3 h-3 rounded-full bg-[#B5FF55]" />
+                <span className="ml-2 text-xs font-bold text-[#F5F5F0] font-display uppercase tracking-wider">
+                  QUESTLY WORKSPACE PREVIEW
+                </span>
+              </div>
+              <div className="hidden sm:block text-[10px] font-mono text-[#A1A1A1]">
+                [AUTHENTIC_DATA_SYSTEM]
+              </div>
+            </div>
+
+            {/* 3 Modular Showcase Blocks */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
+              {/* Block 1: Tasks & XP */}
+              <div className="p-5 rounded-xl bg-[#111319] border border-[#303642] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <CheckSquare className="w-4 h-4 text-[#B5FF55]" />
+                    <span className="text-xs font-black uppercase font-display">Atomic Tasks</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#B5FF55] font-bold">+75 XP</span>
+                </div>
+                <p className="text-xs text-[#A1A1A1] font-mono">
+                  Multi-step academic tasks with checklists and verified XP rewards.
+                </p>
+                <div className="space-y-1.5 pt-1">
+                  <div className="flex items-center gap-2 text-xs text-[#F5F5F0] p-2 rounded-lg bg-[#171A21] border border-[#303642]">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#B5FF55]" />
+                    <span>Dynamic Programming Proofs</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-[#A1A1A1] p-2 rounded-lg bg-[#171A21] border border-[#303642]">
+                    <Circle className="w-3.5 h-3.5 text-[#777]" />
+                    <span>Distributed Systems Raft Lab</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Block 2: Timetable */}
+              <div className="p-5 rounded-xl bg-[#111319] border border-[#303642] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Clock className="w-4 h-4 text-[#42DFFF]" />
+                    <span className="text-xs font-black uppercase font-display">Live Timetable</span>
+                  </div>
+                  <span className="text-[9px] font-mono px-2 py-0.2 rounded-full bg-[#42DFFF]/15 text-[#42DFFF] border border-[#42DFFF]/30">
+                    ACTIVE NOW
+                  </span>
+                </div>
+                <p className="text-xs text-[#A1A1A1] font-mono">
+                  Weekly class tracker with room numbers, instructors, and Day/Week/Agenda views.
+                </p>
+                <div className="p-3 rounded-lg bg-[#171A21] border border-[#303642] space-y-1 font-mono">
+                  <div className="flex justify-between text-xs font-bold text-[#F5F5F0]">
+                    <span>CS-204 Algorithms</span>
+                    <span className="text-[#42DFFF]">10:00 - 11:30</span>
+                  </div>
+                  <span className="text-[10px] text-[#A1A1A1]">Lecture Hall 3B • Prof. Vaswani</span>
+                </div>
+              </div>
+
+              {/* Block 3: Questly Arcade */}
+              <div className="p-5 rounded-xl bg-[#111319] border border-[#303642] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Gamepad2 className="w-4 h-4 text-[#A879FF]" />
+                    <span className="text-xs font-black uppercase font-display">Questly Arcade</span>
+                  </div>
+                  <span className="text-[10px] font-mono text-[#A879FF] font-bold">20 XP CAP</span>
+                </div>
+                <p className="text-xs text-[#A1A1A1] font-mono">
+                  Mini-games for cognitive warmup between deep focus sprints.
+                </p>
+                <div className="p-3 rounded-lg bg-[#171A21] border border-[#303642] flex items-center justify-between">
+                  <div>
+                    <div className="text-xs font-black text-[#F5F5F0] font-display uppercase">Space Defender</div>
+                    <span className="text-[10px] font-mono text-[#A1A1A1]">Best: 450 pts</span>
+                  </div>
+                  <span className="text-xs font-mono font-bold text-[#B5FF55]">+10 XP</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Features That Show Progress (Inspired by Matiks sticker cards) */}
+      <section id="features" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642]">
+        <div className="max-w-6xl mx-auto space-y-16">
+          <div className="space-y-4">
+            <span className="coord-marker text-[#B5FF55]">// 01 CORE CAPABILITIES</span>
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display">
+              FEATURES THAT SHOW <br />
+              <span className="text-[#B5FF55]">REAL PROGRESS.</span>
+            </h2>
+            <p className="text-sm text-[#A1A1A1] font-mono max-w-xl">
+              Eliminate academic ambiguity with verified task completions, transparent workload math, and dedicated study tracks.
+            </p>
+          </div>
+
+          {/* Chunky Sticker Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Card 1 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#B5FF55] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#B5FF55]/15 border border-[#B5FF55]/40 flex items-center justify-center text-[#B5FF55]">
+                <Zap className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Idempotent XP Ledger
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                No cheating by toggling tasks on and off. Every XP point is written to an immutable transaction ledger
+                with source IDs and timestamps.
+              </p>
+            </div>
+
+            {/* Card 2 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#42DFFF] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#42DFFF]/15 border border-[#42DFFF]/40 flex items-center justify-center text-[#42DFFF]">
+                <Clock className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Academic Timetable
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Full-featured class scheduler with Day, Week, and Agenda views. Highlights currently active sessions and
+                upcoming lectures.
+              </p>
+            </div>
+
+            {/* Card 3 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#A879FF] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#A879FF]/15 border border-[#A879FF]/40 flex items-center justify-center text-[#A879FF]">
+                <FolderKanban className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Academic Workspaces
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Isolate your coursework, research labs, and exam preparations into focused operational environments with
+                linked subjects.
+              </p>
+            </div>
+
+            {/* Card 4 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#FF9C45] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#FF9C45]/15 border border-[#FF9C45]/40 flex items-center justify-center text-[#FF9C45]">
+                <Hourglass className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Verified Focus Chamber
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Distraction-free Pomodoro sprints that log actual elapsed seconds into your daily flow quota and award XP
+                upon sprint completion.
+              </p>
+            </div>
+
+            {/* Card 5 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#FF5EBB] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#FF5EBB]/15 border border-[#FF5EBB]/40 flex items-center justify-center text-[#FF5EBB]">
+                <Gamepad2 className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Questly Arcade
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Sudoku, Space Defender, Match Grid, and Pattern Memory. Strictly capped at 20 XP/day so mini-games never
+                compete with study time.
+              </p>
+            </div>
+
+            {/* Card 6 */}
+            <div className="p-6 rounded-2xl bg-[#171A21] border border-[#303642] space-y-4 brutal-shadow hover:border-[#B5FF55] transition-all">
+              <div className="w-12 h-12 rounded-xl bg-[#B5FF55]/15 border border-[#B5FF55]/40 flex items-center justify-center text-[#B5FF55]">
+                <Smartphone className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-black uppercase font-display tracking-tight text-[#F5F5F0]">
+                Interactive Mobile Widgets
+              </h3>
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Android AppWidgets and iOS WidgetKit small, medium, and large widgets with interactive checkboxes and live
+                progress sync.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Progression Roadmap (Inspired by 10 Steps Roadmap & Matiks Level Road) */}
+      <section id="roadmap" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642] bg-[#111319]/40">
+        <div className="max-w-6xl mx-auto space-y-16">
+          <div className="text-center space-y-3">
+            <span className="coord-marker text-[#A879FF]">// 02 PROGRESSION ARCHITECTURE</span>
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display">
+              7-LEVEL ACADEMIC ROADMAP
+            </h2>
+            <p className="text-sm text-[#A1A1A1] font-mono max-w-lg mx-auto">
+              Level up your scholar rank by finishing verified coursework and unlock custom cosmetic enhancements.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-7 gap-3">
+            {[
+              { lvl: 1, rank: 'Initiate', xp: 0, unlock: 'Standard graph grid & lime theme' },
+              { lvl: 2, rank: 'Explorer', xp: 200, unlock: 'Electric purple theme & coordinate crosshair' },
+              { lvl: 3, rank: 'Builder', xp: 500, unlock: 'Electric cyan theme & audio sound pack' },
+              { lvl: 4, rank: 'Strategist', xp: 900, unlock: 'Isometric grid & tactical calendar' },
+              { lvl: 5, rank: 'Specialist', xp: 1400, unlock: 'Neon orange theme & particle trails' },
+              { lvl: 6, rank: 'Architect', xp: 2000, unlock: 'Cyberpunk pink & soundboard' },
+              { lvl: 7, rank: 'Master', xp: 2800, unlock: 'Golden scholar prestige & gradient cursor' },
+            ].map((milestone) => (
+              <div
+                key={milestone.lvl}
+                className="p-4 rounded-xl bg-[#171A21] border border-[#303642] flex flex-col justify-between space-y-3 brutal-shadow hover:border-[#B5FF55] transition-all"
+              >
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] font-mono font-black px-2 py-0.5 rounded-full bg-[#B5FF55]/15 text-[#B5FF55]">
+                    LVL {milestone.lvl}
+                  </span>
+                  <Trophy className="w-3.5 h-3.5 text-[#B5FF55]" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-black text-[#F5F5F0] font-display uppercase tracking-tight">
+                    {milestone.rank}
+                  </h4>
+                  <span className="text-[10px] font-mono text-[#A1A1A1] block mt-0.5">
+                    {milestone.xp} XP Required
+                  </span>
+                </div>
+                <div className="pt-2 border-t border-[#303642]/60 text-[10px] font-mono text-[#D0D0D0]">
+                  <span className="text-[#B5FF55] font-bold block">UNLOCK:</span>
+                  <span>{milestone.unlock}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 4.1 Interactive Mobile Widget Showcase */}
+      <section id="mobile" className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642] relative bg-graph-grid">
+        <div className="max-w-5xl mx-auto space-y-12 text-center">
+          <div className="space-y-3">
+            <span className="coord-marker text-[#42DFFF]">// 03 MOBILE WIDGET ARCHITECTURE</span>
+            <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight font-display text-[#F5F5F0]">
+              LIVE INTERACTIVE MOBILE WIDGET
+            </h2>
+            <p className="text-sm text-[#A1A1A1] font-mono max-w-xl mx-auto">
+              Check off tasks, track daily XP, and inspect upcoming timetable sessions right from your phone&apos;s home screen.
+              Embed anywhere via iframe or standalone PWA.
+            </p>
+          </div>
+
+          {/* Render the interactive widget directly */}
+          <div className="max-w-2xl mx-auto">
+            <MobileWidgetView standalone={false} />
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Giant Neon Lime Sticker Card (Inspired by Matiks "LET'S SEE WHAT YOUR BRAIN CAN DO") */}
+      <section className="py-24 px-4 sm:px-6 lg:px-8 border-b border-[#303642]">
+        <div className="max-w-5xl mx-auto">
+          <div className="p-8 sm:p-14 rounded-3xl bg-[#B5FF55] text-[#090A0D] brutal-shadow relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-4 max-w-xl text-left">
+              <span className="text-xs font-mono font-black uppercase tracking-widest px-3 py-1 rounded-full bg-[#090A0D] text-[#B5FF55]">
+                START ACADEMIC SPRINT
+              </span>
+              <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight leading-[0.98] font-display">
+                LET&apos;S SEE WHAT YOU ACCOMPLISH TODAY.
+              </h2>
+              <p className="text-sm font-mono font-bold text-[#090A0D]/80">
+                Launch Questly directly in your browser or download the companion mobile app. Zero credit card or setup required.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3.5 shrink-0 w-full sm:w-auto">
+              <button
+                onClick={handleLaunch}
+                className="px-8 py-4 rounded-2xl bg-[#090A0D] hover:bg-[#171A21] text-[#F5F5F0] font-display font-black text-sm uppercase tracking-wider brutal-shadow transition-all flex items-center justify-center gap-2"
+              >
+                <span>Launch Web OS</span>
+                <ArrowRight className="w-4 h-4 stroke-[3] text-[#B5FF55]" />
+              </button>
+
+              <a
+                href="https://github.com/sukrut07/Questly"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-8 py-3.5 rounded-2xl bg-white hover:bg-[#F0F0F0] text-[#090A0D] font-display font-black text-xs uppercase tracking-wider text-center border-2 border-[#090A0D] transition-all"
+              >
+                View on GitHub
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Lavender Footer Banner (Inspired by Matiks footer banner) */}
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-[#A879FF] text-[#090A0D]">
+        <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-6 font-mono text-xs">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-[#090A0D] text-[#B5FF55] flex items-center justify-center font-display font-black text-sm">
+              <QuestlyLogo size={18} variant="lime" />
+            </div>
+            <div>
+              <span className="font-display font-black text-lg text-[#090A0D] tracking-tight">
+                QUESTLY 2.0
+              </span>
+              <p className="text-[10px] text-[#090A0D]/80">Personal Academic Operating System</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-6 font-bold">
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="hover:underline flex items-center gap-1"
+            >
+              <span>BACK TO TOP</span>
+              <span>↑</span>
+            </button>
+            <a
+              href="https://github.com/sukrut07/Questly"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:underline flex items-center gap-1"
+            >
+              <span>SOURCE CODE</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+            <button onClick={handleLaunch} className="hover:underline">
+              WORKSPACE APP
+            </button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
