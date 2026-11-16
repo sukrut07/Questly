@@ -37,7 +37,7 @@ interface DailyCheckpointsProps {
 }
 
 export function DailyCheckpoints({ onStartFocus, onOpenTasks }: DailyCheckpointsProps) {
-  const { quests, focusSessions, settings, streak, addXp } = useQuestly();
+  const { quests, focusSessions, settings, streak, awardXp } = useQuestly();
 
   // Local state for user checkpoints, persisted per day
   const todayDateStr = new Date().toISOString().split('T')[0];
@@ -124,7 +124,7 @@ export function DailyCheckpoints({ onStartFocus, onOpenTasks }: DailyCheckpoints
 
     if (isNowCompleted) {
       sound.playQuestComplete();
-      addXp(cp.xpReward, `Completed Checkpoint: ${cp.title}`);
+      awardXp(cp.xpReward, `Completed Checkpoint: ${cp.title}`);
       fireCelebrationConfetti();
       setCelebratingCheckpoint(cp);
     } else {
@@ -147,7 +147,7 @@ export function DailyCheckpoints({ onStartFocus, onOpenTasks }: DailyCheckpoints
       .map((q) => ({
         id: `cp-quest-${q.id}`,
         title: q.title,
-        time: q.dueTime || 'Today',
+        time: q.dueDate ? `Due ${q.dueDate}` : 'Today',
         xpReward: q.xpReward || 30,
         completed: q.status === 'COMPLETED',
         category: 'task',
@@ -457,6 +457,7 @@ export function DailyCheckpoints({ onStartFocus, onOpenTasks }: DailyCheckpoints
       {/* 5. Streak Flame Completion Celebration Modal */}
       {celebratingCheckpoint && (
         <StreakFlameAnimation
+          isOpen={true}
           streakCount={streak.currentStreak || 1}
           xpEarned={celebratingCheckpoint.xpReward}
           taskTitle={celebratingCheckpoint.title}

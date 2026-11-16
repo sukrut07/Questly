@@ -17,7 +17,7 @@ export interface HeatmapCell {
 }
 
 export function InteractiveWalkHeatmap() {
-  const { focusSessions, quests, addFocusSession, addXp } = useQuestly();
+  const { focusSessions, quests, recordFocusSession, awardXp } = useQuestly();
   const [selectedCell, setSelectedCell] = useState<HeatmapCell | null>(null);
   const [previewMode, setPreviewMode] = useState<boolean>(false);
   const [quickLogMins, setQuickLogMins] = useState<number>(45);
@@ -152,17 +152,15 @@ export function InteractiveWalkHeatmap() {
   const handleQuickLog = () => {
     sound.playButtonClick();
     const durationSec = quickLogMins * 60;
-    addFocusSession({
-      subjectId: 'general',
-      topic: 'Momentum Study Sprint',
-      sessionType: 'focus',
-      scheduledMinutes: quickLogMins,
+    recordFocusSession({
+      questId: null,
+      questTitle: 'Momentum Study Sprint',
+      subjectId: null,
+      plannedSeconds: durationSec,
       elapsedSeconds: durationSec,
-      completedEarly: false,
-      xpEarned: Math.round(quickLogMins * 1.5),
-      distractionsLogged: 0,
+      isCompleted: true,
+      notes: `${quickLogMins}m momentum sprint`,
     });
-    addXp(Math.round(quickLogMins * 1.5), `Logged ${quickLogMins}m Focus Session`);
     setShowLogModal(false);
   };
 
