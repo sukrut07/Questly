@@ -46,7 +46,7 @@ export function LandingPage() {
     quests,
     completeQuest,
     reopenQuest,
-    addQuest,
+    createQuest,
     focusSessions,
     activityHistory,
     settings,
@@ -92,8 +92,8 @@ export function LandingPage() {
   const handleQuickAddQuest = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newQuestTitle.trim()) return;
-    sound.playTaskAdd();
-    addQuest({
+    sound.playButtonClick();
+    createQuest({
       title: newQuestTitle.trim(),
       description: 'Created via Questly Mobile Quick Add',
       priority: 'MEDIUM',
@@ -113,7 +113,7 @@ export function LandingPage() {
       sound.playButtonClick();
       reopenQuest(questId);
     } else {
-      sound.playTaskComplete();
+      sound.playQuestComplete();
       fireCelebrationConfetti();
       completeQuest(questId);
     }
