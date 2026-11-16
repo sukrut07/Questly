@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
@@ -33,6 +34,7 @@ class DashboardScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dashboardState = ref.watch(dashboardStateProvider);
     final widgetsConfigState = ref.watch(dashboardWidgetsProvider);
+    final analyticsAsync = ref.watch(analyticsDataProvider);
 
     return Scaffold(
       backgroundColor: AppColors.darkBase,
@@ -73,20 +75,8 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
             data: (data) {
-              // Generate mock preview heatmap data for the past 6 weeks
-              final now = DateTime.now();
-              final previewHeatmap = <String, HeatmapDayData>{};
-              for (int i = 0; i < 42; i++) {
-                final d = now.subtract(Duration(days: i));
-                final key = DateFormat('yyyy-MM-dd').format(d);
-                final count = (i * 3 + d.weekday) % 5;
-                previewHeatmap[key] = HeatmapDayData(
-                  date: d,
-                  count: count,
-                  xpEarned: count * 50,
-                  focusMinutes: count * 25,
-                );
-              }
+              final previewHeatmap = analyticsAsync.asData?.value.heatmapData ??
+                  <String, HeatmapDayData>{};
 
               final activeWidgets =
                   widgetsConfigState.value

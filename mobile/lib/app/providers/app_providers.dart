@@ -74,7 +74,8 @@ final themeModeProvider = NotifierProvider<ThemeModeNotifier, ThemeMode>(
 /// Quest Repository Provider
 final questRepositoryProvider = Provider<QuestRepository>((ref) {
   final apiClient = ref.watch(apiClientProvider);
-  return QuestRepositoryImpl(apiClient);
+  final storage = ref.watch(localStorageProvider);
+  return QuestRepositoryImpl(apiClient, storage);
 });
 
 /// Task Repository Provider
@@ -83,10 +84,37 @@ final taskRepositoryProvider = Provider<TaskRepository>((ref) {
   return TaskRepositoryImpl(questRepo);
 });
 
+/// Focus Repository Provider
+final focusRepositoryProvider = Provider<FocusRepository>((ref) {
+  final storage = ref.watch(localStorageProvider);
+  return FocusRepositoryImpl(storage);
+});
+
 /// Dashboard Repository Provider
 final dashboardRepositoryProvider = Provider<DashboardRepository>((ref) {
   final questRepo = ref.watch(questRepositoryProvider);
-  return MockDashboardRepository(questRepository: questRepo);
+  final focusRepo = ref.watch(focusRepositoryProvider);
+  final storage = ref.watch(localStorageProvider);
+  return MockDashboardRepository(
+    questRepository: questRepo,
+    focusRepository: focusRepo,
+    storage: storage,
+  );
+});
+
+/// Analytics Repository Provider
+final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
+  final questRepo = ref.watch(questRepositoryProvider);
+  final focusRepo = ref.watch(focusRepositoryProvider);
+  final dashboardRepo = ref.watch(dashboardRepositoryProvider);
+  return AnalyticsRepositoryImpl(questRepo, focusRepo, dashboardRepo);
+});
+
+/// Analytics Data Provider (recomputes whenever dashboard state changes)
+final analyticsDataProvider = FutureProvider<AnalyticsData>((ref) {
+  final repo = ref.watch(analyticsRepositoryProvider);
+  ref.watch(dashboardStateProvider);
+  return repo.getSummary();
 });
 
 /// Notebook Repository Provider
