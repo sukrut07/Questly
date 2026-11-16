@@ -127,12 +127,14 @@ class MockDashboardRepository implements DashboardRepository {
     final totalXp = _bonusXp + earnedQuestXp + earnedSubtaskXp + earnedFocusXp;
     final levelInfo = XpProgressionEngine.calculateLevelInfo(totalXp);
 
-    // Update real profile
+    // Update real profile while preserving user's custom title if edited
     _profile = _profile.copyWith(
       totalXp: totalXp,
       level: levelInfo.currentLevel,
       currentStage: levelInfo.stage,
-      title: levelInfo.stage.subtitle,
+      title: _profile.title.isNotEmpty
+          ? _profile.title
+          : levelInfo.stage.subtitle,
     );
 
     // 4. Dynamic Streak Calculation based on real activity

@@ -61,7 +61,7 @@ void main() {
         final newQuest = Quest(
           id: 'user_task_1',
           title: 'Implement Graph BFS & Shortest Path',
-          category: QuestCategory.learning,
+          category: QuestCategory.coding,
           priority: QuestPriority.urgent,
           difficulty: QuestDifficulty.hard,
           estimatedMinutes: 45,
@@ -99,7 +99,7 @@ void main() {
           Quest(
             id: 'user_task_urgent',
             title: 'Prepare Distributed Systems Presentation',
-            category: QuestCategory.career,
+            category: QuestCategory.study,
             priority: QuestPriority.urgent,
             difficulty: QuestDifficulty.hard,
             estimatedMinutes: 60,
@@ -132,23 +132,17 @@ void main() {
         expect(dashboardAfterSubtask1.profile.totalXp, 18);
         expect(analyticsAfterSubtask1.totalXpEarned, 18);
 
-        // Check off 2nd subtask
+        // Check off 2nd subtask (all subtasks complete, which automatically completes the parent quest)
         final subtask2Id = afterAdd.subtasks[1].id;
         await questRepo.toggleSubtask(quest.id, subtask2Id);
 
         final dashboardAfterSubtask2 = await dashboardRepo.getDashboardData();
-        expect(dashboardAfterSubtask2.profile.totalXp, 36);
-
-        // Complete the parent quest
-        await questRepo.completeQuest(quest.id);
-
-        final finalDashboard = await dashboardRepo.getDashboardData();
         final finalAnalytics = await analyticsRepo.getSummary();
 
         // 36 (subtasks) + 120 (parent quest) = 156 XP
-        expect(finalDashboard.profile.totalXp, 156);
-        expect(finalDashboard.activeQuests, isEmpty);
-        expect(finalDashboard.todayCompletedCount, 1);
+        expect(dashboardAfterSubtask2.profile.totalXp, 156);
+        expect(dashboardAfterSubtask2.activeQuests, isEmpty);
+        expect(dashboardAfterSubtask2.todayCompletedCount, 1);
         expect(finalAnalytics.totalQuestsCompleted, 1);
         expect(finalAnalytics.weeklyCompletionRate, 100.0);
       },
