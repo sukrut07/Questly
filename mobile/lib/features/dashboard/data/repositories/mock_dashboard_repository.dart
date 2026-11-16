@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:math' as math;
+
+import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:questly/features/focus/domain/models/focus_session.dart';
+import 'package:questly/features/focus/domain/repositories/focus_repository.dart';
 import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
@@ -6,112 +12,83 @@ import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/models/streak_info.dart';
 import 'package:questly/shared/models/user_profile.dart';
 
-/// Preview/seed repository used in development mode to showcase the Questly 2.0 UI shell.
+/// Dynamic, reactive dashboard repository computing real metrics from user input & activity.
 class MockDashboardRepository implements DashboardRepository {
   final QuestRepository? questRepository;
+  final FocusRepository? focusRepository;
+  final LocalStorage? storage;
 
-  MockDashboardRepository({this.questRepository});
+  static const String _bonusXpKey = 'questly_bonus_xp';
+  static const String _profileKey = 'questly_user_profile';
+  static const String _streakKey = 'questly_user_streak';
 
+  int _bonusXp = 0;
   UserProfile _profile = UserProfile(
-    id: 'user_dev_01',
-    displayName: 'Quest Explorer',
+    id: 'user_local',
+    displayName: 'Student',
     avatarId: 'avatar_mage',
-    level: 3,
-    totalXp: 620,
-    currentStage: ProgressionStage.builder,
+    level: 1,
+    totalXp: 0,
+    currentStage: ProgressionStage.explorer,
     visualTheme: 'dark',
-    title: 'The Consistent Builder',
-    createdAt: DateTime.now().subtract(const Duration(days: 14)),
+    title: 'The Novice Scholar',
+    createdAt: DateTime.now(),
   );
 
-  final StreakInfo _streak = StreakInfo(
-    currentStreak: 5,
-    longestStreak: 8,
-    lastActiveDate: DateTime.now().toIso8601String().split('T').first,
-    activeDaysCount: 12,
+  StreakInfo _streak = StreakInfo(
+    currentStreak: 0,
+    longestStreak: 0,
+    lastActiveDate: '',
+    activeDaysCount: 0,
     isProtectedToday: false,
     freezesRemaining: 1,
   );
 
-  final List<Quest> _quests = [
-    Quest(
-      id: 'quest_1',
-      title: 'Architect Flutter Clean Core',
-      description: 'Establish repository pattern, Riverpod dependency injection, and theme system.',
-      category: QuestCategory.coding,
-      difficulty: QuestDifficulty.epic,
-      priority: QuestPriority.urgent,
-      estimatedMinutes: 60,
-      xpReward: 100,
-      status: QuestStatus.inProgress,
-      createdAt: DateTime.now().subtract(const Duration(hours: 3)),
-      subtasks: const [
-        QuestSubtask(
-          id: 'sub_1',
-          questId: 'quest_1',
-          title: 'Define Domain Models',
-          isCompleted: true,
-        ),
-        QuestSubtask(
-          id: 'sub_2',
-          questId: 'quest_1',
-          title: 'Setup GoRouter Shell Navigation',
-          isCompleted: true,
-        ),
-        QuestSubtask(
-          id: 'sub_3',
-          questId: 'quest_1',
-          title: 'Implement Dashboard UI Components',
-          isCompleted: false,
-        ),
-      ],
-    ),
-    Quest(
-      id: 'quest_2',
-      title: 'Deep Focus Morning Ritual',
-      description: 'Complete a 45-minute focused sprint without smartphone distractions.',
-      category: QuestCategory.study,
-      difficulty: QuestDifficulty.medium,
-      priority: QuestPriority.high,
-      estimatedMinutes: 45,
-      xpReward: 40,
-      status: QuestStatus.notStarted,
-      createdAt: DateTime.now().subtract(const Duration(hours: 1)),
-      subtasks: const [
-        QuestSubtask(
-          id: 'sub_4',
-          questId: 'quest_2',
-          title: 'Prepare tea & notebook',
-          isCompleted: true,
-        ),
-        QuestSubtask(
-          id: 'sub_5',
-          questId: 'quest_2',
-          title: 'Execute focus block',
-          isCompleted: false,
-        ),
-      ],
-    ),
-    Quest(
-      id: 'quest_3',
-      title: 'Physical Mobility & Posture',
-      description: 'Perform a 20-minute mobility and ergonomics routine.',
-      category: QuestCategory.fitness,
-      difficulty: QuestDifficulty.easy,
-      priority: QuestPriority.medium,
-      estimatedMinutes: 20,
-      xpReward: 20,
-      status: QuestStatus.notStarted,
-      createdAt: DateTime.now().subtract(const Duration(minutes: 30)),
-      subtasks: const [],
-    ),
-  ];
+  MockDashboardRepository({
+    this.questRepository,
+    this.focusRepository,
+    this.storage,
+  }) {
+    _loadState();
+  }
+
+  void _loadState() {
+    if (storage != null) {
+      _bonusXp = storage!.getInt(_bonusXpKey) ?? 0;
+
+      final profileJson = storage!.getString(_profileKey);
+      if (profileJson != null && profileJson.isNotEmpty) {
+        try {
+          _profile = UserProfile.fromJson(
+            jsonDecode(profileJson) as Map<String, dynamic>,
+          );
+        } catch (_) {}
+      }
+
+      final streakJson = storage!.getString(_streakKey);
+      if (streakJson != null && streakJson.isNotEmpty) {
+        try {
+          _streak = StreakInfo.fromJson(
+            jsonDecode(streakJson) as Map<String, dynamic>,
+          );
+        } catch (_) {}
+      }
+    }
+  }
+
+  Future<void> _persistState() async {
+    if (storage != null) {
+      await storage!.setInt(_bonusXpKey, _bonusXp);
+      await storage!.setString(_profileKey, jsonEncode(_profile.toJson()));
+      await storage!.setString(_streakKey, jsonEncode(_streak.toJson()));
+    }
+  }
 
   @override
   Future<DashboardData> getDashboardData() async {
     final quests = questRepository != null
         ? await questRepository!.getQuests()
-        : _quests;
+        : <Quest>[];
 
     final completedQuests = quests
         .where((q) => q.status == QuestStatus.completed)
@@ -120,33 +97,88 @@ class MockDashboardRepository implements DashboardRepository {
         .where((q) => q.status != QuestStatus.completed)
         .toList();
 
+    // 1. Earned Quest XP
     final earnedQuestXp = completedQuests.fold<int>(
       0,
       (sum, q) => sum + q.xpReward,
     );
-    final totalXp = _profile.totalXp + earnedQuestXp;
-    final levelInfo = XpProgressionEngine.calculateLevelInfo(totalXp);
 
-    final updatedProfile = _profile.copyWith(
-      totalXp: totalXp,
-      level: levelInfo.currentLevel,
-      currentStage: levelInfo.stage,
-    );
-
-    final completedSubtasks = quests
+    // 2. Earned Subtask XP (10 XP per subtask completed)
+    final completedSubtasksCount = quests
         .expand((q) => q.subtasks)
         .where((s) => s.isCompleted)
         .length;
-    final totalSubtasks = quests.expand((q) => q.subtasks).length;
+    final earnedSubtaskXp = completedSubtasksCount * 10;
 
-    final totalCompleted = completedQuests.length + completedSubtasks;
+    // 3. Earned Focus XP
+    final focusSessions = focusRepository != null
+        ? await focusRepository!.getRecentSessions()
+        : <FocusSession>[];
+    final completedFocusSessions = focusSessions.where((s) => s.isCompleted);
+    final earnedFocusXp = completedFocusSessions.fold<int>(
+      0,
+      (sum, s) => sum + s.xpEarned,
+    );
+
+    // Dynamic Total XP (0 dummy data)
+    final totalXp = _bonusXp + earnedQuestXp + earnedSubtaskXp + earnedFocusXp;
+    final levelInfo = XpProgressionEngine.calculateLevelInfo(totalXp);
+
+    // Update real profile
+    _profile = _profile.copyWith(
+      totalXp: totalXp,
+      level: levelInfo.currentLevel,
+      currentStage: levelInfo.stage,
+      title: levelInfo.stage.subtitle,
+    );
+
+    // 4. Dynamic Streak Calculation based on real activity
+    final now = DateTime.now();
+    final todayStr =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    final hasActivityToday = completedQuests.any((q) {
+          final d = q.completedAt ?? q.createdAt;
+          return d.year == now.year && d.month == now.month && d.day == now.day;
+        }) ||
+        completedFocusSessions.any((s) {
+          final d = s.startedAt;
+          return d.year == now.year && d.month == now.month && d.day == now.day;
+        }) ||
+        _bonusXp > 0;
+
+    if (hasActivityToday) {
+      if (_streak.lastActiveDate != todayStr) {
+        final newStreak = math.max(1, _streak.currentStreak + 1);
+        _streak = _streak.copyWith(
+          currentStreak: newStreak,
+          longestStreak: math.max(newStreak, _streak.longestStreak),
+          lastActiveDate: todayStr,
+          activeDaysCount: _streak.activeDaysCount + 1,
+        );
+      }
+    } else if (_streak.currentStreak == 0) {
+      // Default initial idle state
+      _streak = _streak.copyWith(
+        currentStreak: 1,
+        longestStreak: 1,
+        lastActiveDate: todayStr,
+        activeDaysCount: 1,
+      );
+    }
+
+    _persistState();
+
+    // 5. Dynamic Daily Productivity Metrics
+    final totalSubtasks = quests.expand((q) => q.subtasks).length;
+    final totalCompleted = completedQuests.length + completedSubtasksCount;
     final totalPlanned = quests.length + totalSubtasks;
     final score = totalPlanned == 0
         ? 0
         : ((totalCompleted / totalPlanned) * 100).round();
 
     return DashboardData(
-      profile: updatedProfile,
+      profile: _profile,
       levelInfo: levelInfo,
       streak: _streak,
       activeQuests: List.unmodifiable(activeQuests),
@@ -158,11 +190,13 @@ class MockDashboardRepository implements DashboardRepository {
 
   @override
   Future<void> refresh() async {
-    // Allows immediate re-computation of reactive state
+    // Re-evaluates all state reactively
+    _loadState();
   }
 
   @override
   void addXp(int amount) {
-    _profile = _profile.copyWith(totalXp: _profile.totalXp + amount);
+    _bonusXp += amount;
+    _persistState();
   }
 }

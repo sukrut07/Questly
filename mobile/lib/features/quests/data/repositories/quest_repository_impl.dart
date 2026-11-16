@@ -1,75 +1,75 @@
+import 'dart:convert';
+
 import 'package:questly/core/network/api_client.dart';
+import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 
 class QuestRepositoryImpl implements QuestRepository {
   final ApiClient? _apiClient;
+  final LocalStorage? _storage;
   final List<Quest> _localQuests = [];
 
-  QuestRepositoryImpl([this._apiClient]) {
-    // Seed default starter quests for local mode
+  static const String _storageKey = 'questly_local_quests';
+
+  QuestRepositoryImpl([this._apiClient, this._storage]) {
+    _loadQuests();
+  }
+
+  void _loadQuests() {
+    if (_storage != null) {
+      final jsonStr = _storage.getString(_storageKey);
+      if (jsonStr != null && jsonStr.isNotEmpty) {
+        try {
+          final list = jsonDecode(jsonStr) as List<dynamic>;
+          _localQuests.addAll(
+            list.map((e) => Quest.fromJson(e as Map<String, dynamic>)),
+          );
+          return;
+        } catch (_) {}
+      }
+    }
+
+    // Default starter quests for initial launch
     if (_localQuests.isEmpty) {
       _localQuests.addAll([
         Quest(
-          id: 'quest_1',
-          title: 'Architect Flutter Clean Core',
-          description: 'Establish repository pattern, Riverpod dependency injection, and theme system.',
-          category: QuestCategory.coding,
-          difficulty: QuestDifficulty.epic,
-          priority: QuestPriority.urgent,
-          estimatedMinutes: 60,
-          xpReward: 100,
-          status: QuestStatus.inProgress,
-          createdAt: DateTime.now().subtract(const Duration(hours: 3)),
+          id: 'quest_starter_1',
+          title: 'Explore Questly Productivity Tools',
+          description:
+              'Check off a subtask, customize your command center, or complete a focus session.',
+          category: QuestCategory.study,
+          difficulty: QuestDifficulty.easy,
+          priority: QuestPriority.high,
+          estimatedMinutes: 20,
+          xpReward: 30,
+          status: QuestStatus.notStarted,
+          createdAt: DateTime.now(),
           subtasks: const [
             QuestSubtask(
-              id: 'sub_1',
-              questId: 'quest_1',
-              title: 'Define Domain Models',
-              isCompleted: true,
-            ),
-            QuestSubtask(
-              id: 'sub_2',
-              questId: 'quest_1',
-              title: 'Setup GoRouter Navigation',
-              isCompleted: true,
-            ),
-            QuestSubtask(
-              id: 'sub_3',
-              questId: 'quest_1',
-              title: 'Implement Dashboard UI',
+              id: 'sub_s1',
+              questId: 'quest_starter_1',
+              title: 'Check off this first subtask',
               isCompleted: false,
             ),
-          ],
-        ),
-        Quest(
-          id: 'quest_2',
-          title: 'Deep Focus Morning Ritual',
-          description: 'Complete a 45-minute focused sprint without smartphone distractions.',
-          category: QuestCategory.study,
-          difficulty: QuestDifficulty.medium,
-          priority: QuestPriority.high,
-          estimatedMinutes: 45,
-          xpReward: 40,
-          status: QuestStatus.notStarted,
-          createdAt: DateTime.now().subtract(const Duration(hours: 1)),
-          subtasks: const [
             QuestSubtask(
-              id: 'sub_4',
-              questId: 'quest_2',
-              title: 'Prepare tea & workspace',
-              isCompleted: true,
-            ),
-            QuestSubtask(
-              id: 'sub_5',
-              questId: 'quest_2',
-              title: 'Execute focus block',
+              id: 'sub_s2',
+              questId: 'quest_starter_1',
+              title: 'Launch a 25-minute Pomodoro sprint',
               isCompleted: false,
             ),
           ],
         ),
       ]);
+      _persist();
+    }
+  }
+
+  Future<void> _persist() async {
+    if (_storage != null) {
+      final jsonStr = jsonEncode(_localQuests.map((q) => q.toJson()).toList());
+      await _storage.setString(_storageKey, jsonStr);
     }
   }
 
@@ -110,6 +110,7 @@ class QuestRepositoryImpl implements QuestRepository {
   @override
   Future<Quest> createQuest(Quest quest) async {
     _localQuests.insert(0, quest);
+    await _persist();
     return quest;
   }
 
@@ -118,26 +119,37 @@ class QuestRepositoryImpl implements QuestRepository {
     final index = _localQuests.indexWhere((q) => q.id == quest.id);
     if (index != -1) {
       _localQuests[index] = quest;
+      await _persist();
       return quest;
     }
     _localQuests.add(quest);
+    await _persist();
     return quest;
   }
 
   @override
   Future<void> deleteQuest(String id) async {
     _localQuests.removeWhere((q) => q.id == id);
+    await _persist();
   }
 
   @override
   Future<Quest> completeQuest(String id) async {
     final index = _localQuests.indexWhere((q) => q.id == id);
     if (index != -1) {
-      final updated = _localQuests[index].copyWith(
+      final current = _localQuests[index];
+      // When completing, also mark all subtasks completed
+      final completedSubtasks = current.subtasks
+          .map((s) => s.copyWith(isCompleted: true))
+          .toList();
+
+      final updated = current.copyWith(
         status: QuestStatus.completed,
         completedAt: DateTime.now(),
+        subtasks: completedSubtasks,
       );
       _localQuests[index] = updated;
+      await _persist();
       return updated;
     }
     throw Exception('Quest with id $id not found');
@@ -155,8 +167,15 @@ class QuestRepositoryImpl implements QuestRepository {
         return s;
       }).toList();
 
-      final updated = quest.copyWith(subtasks: newSubtasks);
+      final allDone =
+          newSubtasks.isNotEmpty && newSubtasks.every((s) => s.isCompleted);
+      final updated = quest.copyWith(
+        subtasks: newSubtasks,
+        status: allDone ? QuestStatus.completed : quest.status,
+        completedAt: allDone ? (quest.completedAt ?? DateTime.now()) : null,
+      );
       _localQuests[qIndex] = updated;
+      await _persist();
       return updated;
     }
     throw Exception('Quest with id $questId not found');
@@ -173,8 +192,15 @@ class QuestRepositoryImpl implements QuestRepository {
         title: title,
         isCompleted: false,
       );
-      final updated = quest.copyWith(subtasks: [...quest.subtasks, newSubtask]);
+      final updated = quest.copyWith(
+        subtasks: [...quest.subtasks, newSubtask],
+        // If it was completed, adding a new subtask makes it in-progress
+        status: quest.status == QuestStatus.completed
+            ? QuestStatus.inProgress
+            : quest.status,
+      );
       _localQuests[qIndex] = updated;
+      await _persist();
       return updated;
     }
     throw Exception('Quest with id $questId not found');
@@ -185,11 +211,11 @@ class QuestRepositoryImpl implements QuestRepository {
     final qIndex = _localQuests.indexWhere((q) => q.id == questId);
     if (qIndex != -1) {
       final quest = _localQuests[qIndex];
-      final updatedSubtasks = quest.subtasks
-          .where((s) => s.id != subtaskId)
-          .toList();
+      final updatedSubtasks =
+          quest.subtasks.where((s) => s.id != subtaskId).toList();
       final updated = quest.copyWith(subtasks: updatedSubtasks);
       _localQuests[qIndex] = updated;
+      await _persist();
       return updated;
     }
     throw Exception('Quest with id $questId not found');

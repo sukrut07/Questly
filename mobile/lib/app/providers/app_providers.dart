@@ -5,6 +5,8 @@ import 'package:questly/core/constants/app_constants.dart';
 import 'package:questly/core/network/api_client.dart';
 import 'package:questly/core/storage/local_storage.dart';
 import 'package:questly/core/storage/secure_storage.dart';
+import 'package:questly/features/analytics/data/repositories/analytics_repository_impl.dart';
+import 'package:questly/features/analytics/domain/repositories/analytics_repository.dart';
 import 'package:questly/features/dashboard/data/repositories/mock_dashboard_repository.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
 import 'package:questly/features/focus/data/repositories/focus_repository_impl.dart';
