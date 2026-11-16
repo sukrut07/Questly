@@ -110,13 +110,6 @@ final analyticsRepositoryProvider = Provider<AnalyticsRepository>((ref) {
   return AnalyticsRepositoryImpl(questRepo, focusRepo, dashboardRepo);
 });
 
-/// Analytics Data Provider (recomputes whenever dashboard state changes)
-final analyticsDataProvider = FutureProvider<AnalyticsData>((ref) {
-  final repo = ref.watch(analyticsRepositoryProvider);
-  ref.watch(dashboardStateProvider);
-  return repo.getSummary();
-});
-
 /// Notebook Repository Provider
 final notebookRepositoryProvider = Provider<NotebookRepository>((ref) {
   final storage = ref.watch(localStorageProvider);
@@ -127,10 +120,4 @@ final notebookRepositoryProvider = Provider<NotebookRepository>((ref) {
 final roadmapRepositoryProvider = Provider<RoadmapRepository>((ref) {
   final storage = ref.watch(localStorageProvider);
   return RoadmapRepositoryImpl(storage);
-});
-
-/// Focus Repository Provider
-final focusRepositoryProvider = Provider<FocusRepository>((ref) {
-  final storage = ref.watch(localStorageProvider);
-  return FocusRepositoryImpl(storage);
 });

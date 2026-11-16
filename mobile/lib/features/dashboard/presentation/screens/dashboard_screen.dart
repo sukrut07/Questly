@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
-import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/router/route_names.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
@@ -75,7 +74,8 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
             data: (data) {
-              final previewHeatmap = analyticsAsync.asData?.value.heatmapData ??
+              final previewHeatmap =
+                  analyticsAsync.asData?.value.heatmapData ??
                   <String, HeatmapDayData>{};
 
               final activeWidgets =
@@ -139,8 +139,13 @@ class DashboardScreen extends ConsumerWidget {
                     const SizedBox(height: AppSpacing.sm),
 
                     // Academic Workload Balancer
-                    const WorkloadBalancerCard(
-                      plannedMinutes: 45,
+                    WorkloadBalancerCard(
+                      plannedMinutes: data.activeQuests.fold<int>(
+                        0,
+                        (sum, q) =>
+                            sum +
+                            (q.estimatedMinutes > 0 ? q.estimatedMinutes : 30),
+                      ),
                       capacityMinutes: 180,
                     ),
                     const SizedBox(height: AppSpacing.sm),

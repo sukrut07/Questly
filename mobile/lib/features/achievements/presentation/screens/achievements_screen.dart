@@ -1,78 +1,26 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
+import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
 
-class AchievementsScreen extends StatefulWidget {
+class AchievementsScreen extends ConsumerStatefulWidget {
   const AchievementsScreen({super.key});
 
   @override
-  State<AchievementsScreen> createState() => _AchievementsScreenState();
+  ConsumerState<AchievementsScreen> createState() => _AchievementsScreenState();
 }
 
-class _AchievementsScreenState extends State<AchievementsScreen>
+class _AchievementsScreenState extends ConsumerState<AchievementsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-
-  final _allBadges = const [
-    {
-      'title': 'First Quest Victor',
-      'desc': 'Complete your very first mission.',
-      'category': 'Quests',
-      'xp': '+50 XP',
-      'tier': 'Bronze',
-      'unlocked': true,
-      'progress': '1/1',
-    },
-    {
-      'title': '7-Day Momentum',
-      'desc': 'Maintain an active daily streak for 7 continuous days.',
-      'category': 'Streaks',
-      'xp': '+150 XP',
-      'tier': 'Silver',
-      'unlocked': true,
-      'progress': '7/7',
-    },
-    {
-      'title': 'Deep Work Initiate',
-      'desc': 'Accumulate 120 minutes of distraction-free focus sessions.',
-      'category': 'Focus',
-      'xp': '+200 XP',
-      'tier': 'Gold',
-      'unlocked': true,
-      'progress': '120/120m',
-    },
-    {
-      'title': 'Citadel Architect',
-      'desc': 'Complete an entire 7-stage learning journey roadmap.',
-      'category': 'Roadmaps',
-      'xp': '+350 XP',
-      'tier': 'Diamond',
-      'unlocked': false,
-      'progress': '3/7 stages',
-    },
-    {
-      'title': 'Grandmaster Flow',
-      'desc': 'Complete 5 consecutive 50-minute deep work blocks in one week.',
-      'category': 'Focus',
-      'xp': '+500 XP',
-      'tier': 'Legendary',
-      'unlocked': false,
-      'progress': '2/5 sessions',
-    },
-    {
-      'title': 'Speed Mind Prodigy',
-      'desc': 'Achieve a score of 100+ in Mind Snap Arcade.',
-      'category': 'Arcade',
-      'xp': '+250 XP',
-      'tier': 'Gold',
-      'unlocked': false,
-      'progress': '60/100 pts',
-    },
-  ];
 
   @override
   void initState() {
@@ -86,9 +34,88 @@ class _AchievementsScreenState extends State<AchievementsScreen>
     super.dispose();
   }
 
+  List<Map<String, dynamic>> _computeDynamicBadges({
+    required int completedQuests,
+    required int streakDays,
+    required int focusMinutes,
+    required int totalXp,
+  }) {
+    return [
+      {
+        'title': 'First Quest Victor',
+        'desc': 'Complete your very first mission.',
+        'category': 'Quests',
+        'xp': '+50 XP',
+        'tier': 'Bronze',
+        'unlocked': completedQuests >= 1,
+        'progress': '${math.min(completedQuests, 1)}/1 quests',
+      },
+      {
+        'title': '7-Day Momentum',
+        'desc': 'Maintain an active daily streak for 7 continuous days.',
+        'category': 'Streaks',
+        'xp': '+150 XP',
+        'tier': 'Silver',
+        'unlocked': streakDays >= 7,
+        'progress': '${math.min(streakDays, 7)}/7 days',
+      },
+      {
+        'title': 'Deep Work Initiate',
+        'desc': 'Accumulate 120 minutes of distraction-free focus sessions.',
+        'category': 'Focus',
+        'xp': '+200 XP',
+        'tier': 'Gold',
+        'unlocked': focusMinutes >= 120,
+        'progress': '${math.min(focusMinutes, 120)}/120m',
+      },
+      {
+        'title': 'Citadel Architect',
+        'desc': 'Complete an entire 7-stage learning journey roadmap.',
+        'category': 'Roadmaps',
+        'xp': '+350 XP',
+        'tier': 'Diamond',
+        'unlocked': totalXp >= 1000,
+        'progress': '${math.min((totalXp ~/ 150), 7)}/7 stages',
+      },
+      {
+        'title': 'Grandmaster Flow',
+        'desc': 'Accumulate 250+ focus minutes in deep flow state.',
+        'category': 'Focus',
+        'xp': '+500 XP',
+        'tier': 'Legendary',
+        'unlocked': focusMinutes >= 250,
+        'progress': '${math.min(focusMinutes, 250)}/250m',
+      },
+      {
+        'title': 'Speed Mind Prodigy',
+        'desc': 'Earn 100+ XP across focus sessions and arcade games.',
+        'category': 'Arcade',
+        'xp': '+250 XP',
+        'tier': 'Gold',
+        'unlocked': totalXp >= 100,
+        'progress': '${math.min(totalXp, 100)}/100 XP',
+      },
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
-    final unlockedCount = _allBadges.where((b) => b['unlocked'] as bool).length;
+    final dashboardAsync = ref.watch(dashboardStateProvider);
+    final analyticsAsync = ref.watch(analyticsDataProvider);
+
+    final completedQuests =
+        analyticsAsync.asData?.value.totalQuestsCompleted ?? 0;
+    final streakDays = dashboardAsync.asData?.value.streak.currentStreak ?? 0;
+    final focusMinutes = analyticsAsync.asData?.value.focusMinutesTotal ?? 0;
+    final totalXp = dashboardAsync.asData?.value.profile.totalXp ?? 0;
+
+    final allBadges = _computeDynamicBadges(
+      completedQuests: completedQuests,
+      streakDays: streakDays,
+      focusMinutes: focusMinutes,
+      totalXp: totalXp,
+    );
+    final unlockedCount = allBadges.where((b) => b['unlocked'] as bool).length;
 
     return Scaffold(
       backgroundColor: AppColors.darkBase,
@@ -146,7 +173,7 @@ class _AchievementsScreenState extends State<AchievementsScreen>
                         ),
                       ),
                       child: Text(
-                        '$unlockedCount / ${_allBadges.length} UNLOCKED',
+                        '$unlockedCount / ${allBadges.length} UNLOCKED',
                         style: AppTypography.captionBold.copyWith(
                           color: AppColors.limePrimary,
                         ),
@@ -186,19 +213,17 @@ class _AchievementsScreenState extends State<AchievementsScreen>
                 child: TabBarView(
                   controller: _tabController,
                   children: [
-                    _buildBadgeList(_allBadges),
+                    _buildBadgeList(allBadges),
                     _buildBadgeList(
-                      _allBadges
-                          .where((b) => b['category'] == 'Focus')
-                          .toList(),
+                      allBadges.where((b) => b['category'] == 'Focus').toList(),
                     ),
                     _buildBadgeList(
-                      _allBadges
+                      allBadges
                           .where((b) => b['category'] == 'Streaks')
                           .toList(),
                     ),
                     _buildBadgeList(
-                      _allBadges
+                      allBadges
                           .where((b) => b['category'] == 'Quests')
                           .toList(),
                     ),

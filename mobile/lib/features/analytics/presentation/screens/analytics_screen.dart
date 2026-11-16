@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
-import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:questly/features/gamification/presentation/widgets/streak_flame_animation.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
@@ -24,38 +26,28 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
   int _selectedPeriodIndex = 0; // 0: Weekly, 1: Monthly, 2: All-Time
   HeatmapDayData? _selectedHeatmapDay;
 
-  // Generate mock realistic activity heatmap data for the past 120 days
-  Map<String, HeatmapDayData> _generateHeatmapData() {
-    final map = <String, HeatmapDayData>{};
-    final now = DateTime.now();
-
-    for (int i = 0; i < 112; i++) {
-      final date = now.subtract(Duration(days: i));
-      final dateKey = DateFormat('yyyy-MM-dd').format(date);
-      // Realistic pseudorandom pattern based on day of week and seed
-      final weekday = date.weekday;
-      final isWeekend =
-          weekday == DateTime.saturday || weekday == DateTime.sunday;
-      final base = (i * 7 + weekday * 3) % 7;
-      final count = isWeekend ? (base % 3) : ((base + 2) % 6);
-      final xp = count * 45 + (base * 10);
-      final focusMins = count * 25 + (base * 5);
-
-      map[dateKey] = HeatmapDayData(
-        date: date,
-        count: count,
-        xpEarned: xp,
-        focusMinutes: focusMins,
-      );
-    }
-    return map;
-  }
-
   @override
   Widget build(BuildContext context) {
-    final dashboardAsync = ref.watch(dashboardStateProvider);
-    final streakDays = dashboardAsync.asData?.value.streak.currentStreak ?? 14;
-    final heatmapData = _generateHeatmapData();
+    final analyticsAsync = ref.watch(analyticsDataProvider);
+    final analytics = analyticsAsync.asData?.value;
+
+    final streakDays = analytics?.currentStreak ?? 1;
+    final heatmapData = analytics?.heatmapData ?? <String, HeatmapDayData>{};
+    final completionRateStr =
+        '${(analytics?.weeklyCompletionRate ?? 0.0).toStringAsFixed(1)}%';
+    final focusHoursStr =
+        '${((analytics?.focusMinutesTotal ?? 0) / 60).toStringAsFixed(1)}h';
+    final xpEarnedStr = '+${analytics?.totalXpEarned ?? 0}';
+
+    final weeklyPattern =
+        analytics?.weeklyPattern ?? const [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+    final todayWeekdayIndex =
+        DateTime.now().weekday - 1; // 0 for Mon, 6 for Sun
+    final maxPatternVal = weeklyPattern.fold<double>(
+      0.0,
+      (prev, curr) => math.max(prev, curr),
+    );
+    final chartMaxY = math.max(6.0, maxPatternVal + 2);
 
     return Scaffold(
       backgroundColor: AppColors.darkBase,
@@ -111,7 +103,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                 ),
                                 const SizedBox(width: 4),
                                 Text(
-                                  '+24% VELOCITY',
+                                  'REAL-TIME AUDIT',
                                   style: AppTypography.captionBold.copyWith(
                                     color: AppColors.limePrimary,
                                   ),
@@ -123,7 +115,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                       ),
                       const SizedBox(height: AppSpacing.xs),
                       Text(
-                        'Heatmaps, consistency metrics & productivity analytics',
+                        'Live cadence, verified focus minutes & learning consistency',
                         style: AppTypography.bodySmall.copyWith(
                           color: AppColors.textSecondary,
                         ),
@@ -145,29 +137,31 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               ),
 
-              // KPI Stats Grid
+              // KPI Stats Grid (Fully Dynamic)
               SliverPadding(
                 padding: const EdgeInsets.all(AppSpacing.md),
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           Expanded(
                             child: QuestlyStatCard(
                               title: 'COMPLETION RATE',
-                              value: '94.2%',
-                              subtitle: '+5.4% from last week',
+                              value: completionRateStr,
+                              subtitle:
+                                  '${analytics?.totalQuestsCompleted ?? 0} quests finished',
                               icon: Icons.check_circle_outline,
                               accentColor: AppColors.limePrimary,
                             ),
                           ),
-                          SizedBox(width: AppSpacing.sm),
+                          const SizedBox(width: AppSpacing.sm),
                           Expanded(
                             child: QuestlyStatCard(
                               title: 'FOCUS TIME',
-                              value: '38.5h',
-                              subtitle: 'Top 10% productive',
+                              value: focusHoursStr,
+                              subtitle:
+                                  '${analytics?.focusMinutesTotal ?? 0}m logged',
                               icon: Icons.timer_outlined,
                               accentColor: AppColors.lavenderAccent,
                             ),
@@ -181,7 +175,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                             child: QuestlyStatCard(
                               title: 'DAILY STREAK',
                               value: '$streakDays DAYS',
-                              subtitle: 'Personal record: 28d',
+                              subtitle: 'Active momentum',
                               icon: Icons.local_fire_department,
                               accentColor: const Color(0xFFFF9F43),
                               onTap: () {
@@ -189,17 +183,17 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                   context,
                                   streakCount: streakDays,
                                   xpEarned: 50,
-                                  taskTitle: 'Momentum Tracking',
+                                  taskTitle: 'Consistency Maintained',
                                 );
                               },
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),
-                          const Expanded(
+                          Expanded(
                             child: QuestlyStatCard(
-                              title: 'XP VELOCITY',
-                              value: '+1,840',
-                              subtitle: 'This week',
+                              title: 'TOTAL XP',
+                              value: xpEarnedStr,
+                              subtitle: 'Earned by student',
                               icon: Icons.bolt,
                               accentColor: AppColors.limePrimary,
                             ),
@@ -211,7 +205,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               ),
 
-              // Heatmap Section
+              // Heatmap Section (16 Weeks Real Cadence)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -295,7 +289,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                 ),
               ),
 
-              // Weekly Productivity Bar Chart
+              // Weekly Productivity Bar Chart (Actual Completed Tasks per Weekday)
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(AppSpacing.md),
@@ -314,7 +308,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                           child: BarChart(
                             BarChartData(
                               alignment: BarChartAlignment.spaceAround,
-                              maxY: 8,
+                              maxY: chartMaxY,
                               barTouchData: BarTouchData(
                                 enabled: true,
                                 touchTooltipData: BarTouchTooltipData(
@@ -355,7 +349,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                             days[index],
                                             style: AppTypography.captionBold
                                                 .copyWith(
-                                                  color: index == 3
+                                                  color:
+                                                      index == todayWeekdayIndex
                                                       ? AppColors.limePrimary
                                                       : AppColors.textSecondary,
                                                 ),
@@ -379,13 +374,13 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               gridData: const FlGridData(show: false),
                               borderData: FlBorderData(show: false),
                               barGroups: [
-                                _makeBarGroup(0, 4, false),
-                                _makeBarGroup(1, 6, false),
-                                _makeBarGroup(2, 5, false),
-                                _makeBarGroup(3, 7, true), // Peak today
-                                _makeBarGroup(4, 3, false),
-                                _makeBarGroup(5, 4, false),
-                                _makeBarGroup(6, 2, false),
+                                for (int i = 0; i < 7; i++)
+                                  _makeBarGroup(
+                                    i,
+                                    weeklyPattern[i],
+                                    i == todayWeekdayIndex,
+                                    chartMaxY,
+                                  ),
                               ],
                             ),
                           ),
@@ -404,7 +399,12 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     );
   }
 
-  BarChartGroupData _makeBarGroup(int x, double y, bool isHighlight) {
+  BarChartGroupData _makeBarGroup(
+    int x,
+    double y,
+    bool isHighlight,
+    double maxY,
+  ) {
     return BarChartGroupData(
       x: x,
       barRods: [
@@ -417,7 +417,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
           borderRadius: const BorderRadius.vertical(top: Radius.circular(6)),
           backDrawRodData: BackgroundBarChartRodData(
             show: true,
-            toY: 8,
+            toY: maxY,
             color: AppColors.darkBorder.withValues(alpha: 0.4),
           ),
         ),
@@ -429,7 +429,8 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
     final isSelected = _selectedPeriodIndex == index;
     return GestureDetector(
       onTap: () => setState(() => _selectedPeriodIndex = index),
-      child: Container(
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.limePrimary : AppColors.darkCard,
@@ -440,11 +441,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
         ),
         child: Text(
           title,
-          style: TextStyle(
+          style: AppTypography.captionBold.copyWith(
             color: isSelected ? AppColors.darkBase : AppColors.textSecondary,
-            fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
-            fontSize: 11,
             letterSpacing: 0.8,
+            fontSize: 10,
           ),
         ),
       ),

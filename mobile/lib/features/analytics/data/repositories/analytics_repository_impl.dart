@@ -20,11 +20,13 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
   @override
   Future<AnalyticsData> getSummary() async {
     final quests = await _questRepository.getQuests();
-    final completedQuests =
-        quests.where((q) => q.status == QuestStatus.completed).toList();
+    final completedQuests = quests
+        .where((q) => q.status == QuestStatus.completed)
+        .toList();
     final focusSessions = await _focusRepository.getRecentSessions();
-    final completedSessions =
-        focusSessions.where((s) => s.isCompleted).toList();
+    final completedSessions = focusSessions
+        .where((s) => s.isCompleted)
+        .toList();
     final dashboardData = await _dashboardRepository.getDashboardData();
 
     final totalFocusMinutes = completedSessions.fold<int>(

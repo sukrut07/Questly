@@ -37,8 +37,7 @@ class QuestRepositoryImpl implements QuestRepository {
         Quest(
           id: 'quest_starter_1',
           title: 'Explore Questly Productivity Tools',
-          description:
-              'Check off a subtask, customize your command center, or complete a focus session.',
+          description: 'Check off a subtask, customize your command center, or complete a focus session.',
           category: QuestCategory.study,
           difficulty: QuestDifficulty.easy,
           priority: QuestPriority.high,
@@ -211,8 +210,9 @@ class QuestRepositoryImpl implements QuestRepository {
     final qIndex = _localQuests.indexWhere((q) => q.id == questId);
     if (qIndex != -1) {
       final quest = _localQuests[qIndex];
-      final updatedSubtasks =
-          quest.subtasks.where((s) => s.id != subtaskId).toList();
+      final updatedSubtasks = quest.subtasks
+          .where((s) => s.id != subtaskId)
+          .toList();
       final updated = quest.copyWith(subtasks: updatedSubtasks);
       _localQuests[qIndex] = updated;
       await _persist();
