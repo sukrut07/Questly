@@ -92,10 +92,12 @@ class ProfileScreen extends ConsumerWidget {
               final newName = nameController.text.trim();
               final newTitle = titleController.text.trim();
               if (newName.isNotEmpty) {
-                await ref.read(dashboardRepositoryProvider).updateProfile(
-                  displayName: newName,
-                  title: newTitle.isNotEmpty ? newTitle : null,
-                );
+                await ref
+                    .read(dashboardRepositoryProvider)
+                    .updateProfile(
+                      displayName: newName,
+                      title: newTitle.isNotEmpty ? newTitle : null,
+                    );
                 ref.read(dashboardStateProvider.notifier).refresh();
               }
               if (ctx.mounted) Navigator.of(ctx).pop();
@@ -121,7 +123,10 @@ class ProfileScreen extends ConsumerWidget {
             SizedBox(width: 8),
             Text(
               'Start Realm from 0?',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ],
         ),
@@ -245,11 +250,8 @@ class ProfileScreen extends ConsumerWidget {
                             size: 18,
                             color: AppColors.limePrimary,
                           ),
-                          onPressed: () => _showEditProfileDialog(
-                            context,
-                            ref,
-                            profile,
-                          ),
+                          onPressed: () =>
+                              _showEditProfileDialog(context, ref, profile),
                           tooltip: 'Edit Profile & Title',
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -398,7 +400,9 @@ class ProfileScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.xs),
 
               AppCard(
-                borderColor: AppColors.error.withValues(alpha: 0.35),
+                border: Border.all(
+                  color: AppColors.error.withValues(alpha: 0.35),
+                ),
                 padding: EdgeInsets.zero,
                 child: ListTile(
                   leading: const Icon(

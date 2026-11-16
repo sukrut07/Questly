@@ -81,7 +81,9 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           AppCard(
-            borderColor: AppColors.error.withValues(alpha: 0.35),
+            border: Border.all(
+              color: AppColors.error.withValues(alpha: 0.35),
+            ),
             padding: EdgeInsets.zero,
             child: ListTile(
               leading: const Icon(
@@ -109,7 +111,10 @@ class SettingsScreen extends ConsumerWidget {
                     backgroundColor: const Color(0xFF1E1313),
                     title: const Row(
                       children: [
-                        Icon(Icons.warning_amber_rounded, color: AppColors.error),
+                        Icon(
+                          Icons.warning_amber_rounded,
+                          color: AppColors.error,
+                        ),
                         SizedBox(width: 8),
                         Text(
                           'Reset All Data to 0?',

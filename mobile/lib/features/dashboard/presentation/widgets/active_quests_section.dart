@@ -68,7 +68,9 @@ class ActiveQuestsSection extends ConsumerWidget {
 
         if (quests.isEmpty)
           AppCard(
-            borderColor: AppColors.limePrimary.withValues(alpha: 0.3),
+            border: Border.all(
+              color: AppColors.limePrimary.withValues(alpha: 0.3),
+            ),
             child: Center(
               child: Padding(
                 padding: const EdgeInsets.symmetric(vertical: 20.0),

@@ -80,7 +80,8 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
           context,
           title: widget.quest.title,
           xpReward: widget.quest.xpReward,
-          badge: '${widget.quest.priority.displayName.toUpperCase()} PRIORITY CLEARED',
+          badge:
+              '${widget.quest.priority.displayName.toUpperCase()} PRIORITY CLEARED',
         );
       }
     }
@@ -93,8 +94,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
 
   Future<void> _toggleSubtask(String subtaskId) async {
     HapticFeedback.selectionClick();
-    final wasCompleted = widget.quest.subtasks
-        .any((s) => s.id == subtaskId && s.isCompleted);
+    final wasCompleted = widget.quest.subtasks.any(
+      (s) => s.id == subtaskId && s.isCompleted,
+    );
     final subXp = XpProgressionEngine.calculateSubtaskXp(widget.quest.priority);
 
     final repo = ref.read(questRepositoryProvider);

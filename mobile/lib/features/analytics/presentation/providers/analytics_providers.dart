@@ -8,4 +8,3 @@ final analyticsDataProvider = FutureProvider<AnalyticsData>((ref) {
   ref.watch(dashboardStateProvider);
   return repo.getSummary();
 });
-

@@ -140,7 +140,8 @@ class MockDashboardRepository implements DashboardRepository {
     final todayStr =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-    final hasActivityToday = completedQuests.any((q) {
+    final hasActivityToday =
+        completedQuests.any((q) {
           final d = q.completedAt ?? q.createdAt;
           return d.year == now.year && d.month == now.month && d.day == now.day;
         }) ||

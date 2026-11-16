@@ -19,8 +19,7 @@ class SkillTreeRepository {
         id: 'focus_2',
         branch: SkillBranch.focus,
         name: 'Deep Work Immersion',
-        description:
-            'Sustain 50+ minute uninterrupted focus sessions without checking notifications.',
+        description: 'Sustain 50+ minute uninterrupted focus sessions without checking notifications.',
         requiredLevel: 3,
         currentProgress: 0,
         maxProgress: 100,
@@ -43,8 +42,7 @@ class SkillTreeRepository {
         id: 'const_1',
         branch: SkillBranch.consistency,
         name: 'Streak Guardian',
-        description:
-            'Maintain a minimum 7-day productivity streak without freeze usage.',
+        description: 'Maintain a minimum 7-day productivity streak without freeze usage.',
         requiredLevel: 2,
         currentProgress: 0,
         maxProgress: 100,
@@ -66,8 +64,7 @@ class SkillTreeRepository {
         id: 'plan_1',
         branch: SkillBranch.planning,
         name: 'Roadmap Cartographer',
-        description:
-            'Break complex objectives into 5+ structured milestones with deadlines.',
+        description: 'Break complex objectives into 5+ structured milestones with deadlines.',
         requiredLevel: 2,
         currentProgress: 0,
         maxProgress: 100,
@@ -78,8 +75,7 @@ class SkillTreeRepository {
         id: 'learn_1',
         branch: SkillBranch.learning,
         name: 'Knowledge Synthesizer',
-        description:
-            'Capture 15+ linked markdown notes connected to quests and roadmaps.',
+        description: 'Capture 15+ linked markdown notes connected to quests and roadmaps.',
         requiredLevel: 1,
         currentProgress: 0,
         maxProgress: 100,

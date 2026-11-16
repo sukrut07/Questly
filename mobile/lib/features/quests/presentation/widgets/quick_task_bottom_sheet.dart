@@ -4,6 +4,8 @@ import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
+import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
 import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
@@ -69,6 +71,9 @@ class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
 
     final repo = ref.read(questRepositoryProvider);
     await repo.createQuest(newQuest);
+
+    ref.read(dashboardStateProvider.notifier).refresh();
+    ref.invalidate(analyticsDataProvider);
 
     if (mounted) {
       Navigator.of(context).pop();
