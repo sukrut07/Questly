@@ -187,7 +187,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
             const SizedBox(height: AppSpacing.xs),
             Text(
               'Keep your target task in direct view while the clock ticks.',
-              style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+              style: AppTypography.caption.copyWith(
+                color: AppColors.textSecondary,
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             if (activeQuests.isEmpty)
@@ -196,37 +198,52 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                 child: Center(
                   child: Text(
                     'No active quests found. Create one from the Dashboard!',
-                    style: AppTypography.bodySmall.copyWith(color: AppColors.textTertiary),
+                    style: AppTypography.bodySmall.copyWith(
+                      color: AppColors.textTertiary,
+                    ),
                   ),
                 ),
               )
             else
-              ...activeQuests.map((q) => ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: AppColors.limePrimary.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Icon(q.category.icon, color: AppColors.limePrimary, size: 18),
+              ...activeQuests.map(
+                (q) => ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  leading: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: AppColors.limePrimary.withValues(alpha: 0.15),
+                      borderRadius: BorderRadius.circular(8),
                     ),
-                    title: Text(
-                      q.title,
-                      style: AppTypography.titleSmall.copyWith(fontWeight: FontWeight.bold),
+                    child: Icon(
+                      q.category.icon,
+                      color: AppColors.limePrimary,
+                      size: 18,
                     ),
-                    subtitle: Text(
-                      '${q.subtasks.where((s) => s.isCompleted).length}/${q.subtasks.length} Subtasks · +${q.xpReward} XP',
-                      style: AppTypography.caption.copyWith(color: AppColors.textSecondary),
+                  ),
+                  title: Text(
+                    q.title,
+                    style: AppTypography.titleSmall.copyWith(
+                      fontWeight: FontWeight.bold,
                     ),
-                    trailing: _linkedQuest?.id == q.id
-                        ? const Icon(Icons.check_circle, color: AppColors.limePrimary)
-                        : null,
-                    onTap: () {
-                      setState(() => _linkedQuest = q);
-                      Navigator.pop(ctx);
-                    },
-                  )),
+                  ),
+                  subtitle: Text(
+                    '${q.subtasks.where((s) => s.isCompleted).length}/${q.subtasks.length} Subtasks · +${q.xpReward} XP',
+                    style: AppTypography.caption.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                  trailing: _linkedQuest?.id == q.id
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: AppColors.limePrimary,
+                        )
+                      : null,
+                  onTap: () {
+                    setState(() => _linkedQuest = q);
+                    Navigator.pop(ctx);
+                  },
+                ),
+              ),
             const SizedBox(height: AppSpacing.sm),
             if (_linkedQuest != null)
               SizedBox(
@@ -236,7 +253,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                     setState(() => _linkedQuest = null);
                     Navigator.pop(ctx);
                   },
-                  child: const Text('UNLINK QUEST', style: TextStyle(color: Colors.redAccent)),
+                  child: const Text(
+                    'UNLINK QUEST',
+                    style: TextStyle(color: Colors.redAccent),
+                  ),
                 ),
               ),
           ],
@@ -275,7 +295,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     IconButton(
-                      icon: const Icon(Icons.close, color: AppColors.textPrimary),
+                      icon: const Icon(
+                        Icons.close,
+                        color: AppColors.textPrimary,
+                      ),
                       onPressed: () => context.pop(),
                     ),
                     Row(
@@ -285,11 +308,15 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                           height: 8,
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color: isRunning ? AppColors.limePrimary : AppColors.textTertiary,
+                            color: isRunning
+                                ? AppColors.limePrimary
+                                : AppColors.textTertiary,
                             boxShadow: isRunning
                                 ? [
                                     BoxShadow(
-                                      color: AppColors.limePrimary.withValues(alpha: 0.7),
+                                      color: AppColors.limePrimary.withValues(
+                                        alpha: 0.7,
+                                      ),
                                       blurRadius: 6,
                                       spreadRadius: 2,
                                     ),
@@ -302,7 +329,9 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                           isRunning ? 'SPRINT IN PROGRESS' : 'POMODORO CHAMBER',
                           style: AppTypography.captionBold.copyWith(
                             letterSpacing: 1.5,
-                            color: isRunning ? AppColors.limePrimary : AppColors.textPrimary,
+                            color: isRunning
+                                ? AppColors.limePrimary
+                                : AppColors.textPrimary,
                           ),
                         ),
                       ],
@@ -381,8 +410,8 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                         color: i < _completedCycles
                             ? AppColors.limePrimary
                             : i == _completedCycles && isRunning
-                                ? AppColors.limePrimary.withValues(alpha: 0.6)
-                                : AppColors.darkBorder,
+                            ? AppColors.limePrimary.withValues(alpha: 0.6)
+                            : AppColors.darkBorder,
                         border: Border.all(
                           color: i <= _completedCycles
                               ? AppColors.limePrimary
@@ -418,7 +447,8 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                                 BoxShadow(
                                   color: isRunning
                                       ? AppColors.limePrimary.withValues(
-                                          alpha: 0.12 +
+                                          alpha:
+                                              0.12 +
                                               0.08 * _pulseController.value,
                                         )
                                       : Colors.transparent,
@@ -493,7 +523,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                   onTap: _openQuestSelectorSheet,
                   borderRadius: BorderRadius.circular(16),
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: AppColors.darkCard,
                       borderRadius: BorderRadius.circular(16),
@@ -567,7 +600,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                   children: [
                     // Reset Button
                     IconButton(
-                      icon: const Icon(Icons.refresh_rounded, color: AppColors.textSecondary),
+                      icon: const Icon(
+                        Icons.refresh_rounded,
+                        color: AppColors.textSecondary,
+                      ),
                       iconSize: 26,
                       onPressed: _resetTimer,
                       tooltip: 'Reset Timer',
@@ -585,14 +621,18 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
                           color: AppColors.limePrimary,
                           boxShadow: [
                             BoxShadow(
-                              color: AppColors.limePrimary.withValues(alpha: 0.45),
+                              color: AppColors.limePrimary.withValues(
+                                alpha: 0.45,
+                              ),
                               blurRadius: 18,
                               spreadRadius: 2,
                             ),
                           ],
                         ),
                         child: Icon(
-                          isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                          isRunning
+                              ? Icons.pause_rounded
+                              : Icons.play_arrow_rounded,
                           size: 40,
                           color: AppColors.darkBase,
                         ),
@@ -602,7 +642,10 @@ class _FocusScreenState extends ConsumerState<FocusScreen>
 
                     // Skip / Complete Step
                     IconButton(
-                      icon: const Icon(Icons.skip_next_rounded, color: AppColors.textSecondary),
+                      icon: const Icon(
+                        Icons.skip_next_rounded,
+                        color: AppColors.textSecondary,
+                      ),
                       iconSize: 28,
                       onPressed: _onSessionComplete,
                       tooltip: 'Complete Sesh (+XP)',
@@ -639,9 +682,7 @@ class _ModePill extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected
-              ? AppColors.limePrimary
-              : AppColors.darkCard,
+          color: isSelected ? AppColors.limePrimary : AppColors.darkCard,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: isSelected ? AppColors.limePrimary : AppColors.darkBorder,
@@ -746,6 +787,7 @@ class _PomodoroRingPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _PomodoroRingPainter oldDelegate) {
-    return oldDelegate.progress != progress || oldDelegate.isRunning != isRunning;
+    return oldDelegate.progress != progress ||
+        oldDelegate.isRunning != isRunning;
   }
 }

@@ -20,7 +20,8 @@ enum BotDifficulty { rookie, scholar, grandmaster }
 enum ActiveArcadeGame { none, mathSprint, kenken, sudoku, xoxoBot }
 
 class ArcadeScreen extends ConsumerStatefulWidget {
-  const ArcadeScreen({super.key});
+  final String? initialGame;
+  const ArcadeScreen({super.key, this.initialGame});
 
   @override
   ConsumerState<ArcadeScreen> createState() => _ArcadeScreenState();
@@ -29,6 +30,27 @@ class ArcadeScreen extends ConsumerStatefulWidget {
 class _ArcadeScreenState extends ConsumerState<ArcadeScreen> {
   ActiveArcadeGame _activeGame = ActiveArcadeGame.none;
   int _selectedCategoryIndex = 0; // 0: All, 1: Math, 2: Puzzle, 3: Duels
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialGame != null) {
+      switch (widget.initialGame?.toLowerCase()) {
+        case 'sudoku':
+          _activeGame = ActiveArcadeGame.sudoku;
+          break;
+        case 'kenken':
+          _activeGame = ActiveArcadeGame.kenken;
+          break;
+        case 'xoxo':
+          _activeGame = ActiveArcadeGame.xoxoBot;
+          break;
+        case 'math':
+          _activeGame = ActiveArcadeGame.mathSprint;
+          break;
+      }
+    }
+  }
 
   // Daily Arcade XP Cap Tracking (Max 20 XP / day)
   int _todayArcadeXp = 8;

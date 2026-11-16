@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:questly/app/theme/app_colors.dart';
 
@@ -136,44 +137,54 @@ class _AmbientGlowPainter extends CustomPainter {
     if (!isDark) return; // Keep crisp and clean on light mode
 
     // 1. Electric Lime drifting ambient glow top-left
-    final limeCenterX = size.width * (0.2 + 0.1 * math.sin(animValue * 2 * math.pi));
-    final limeCenterY = size.height * (0.15 + 0.08 * math.cos(animValue * 2 * math.pi));
+    final limeCenterX =
+        size.width * (0.2 + 0.1 * math.sin(animValue * 2 * math.pi));
+    final limeCenterY =
+        size.height * (0.15 + 0.08 * math.cos(animValue * 2 * math.pi));
     final limeRadius = math.min(size.width, size.height) * 0.45;
 
     final limePaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          AppColors.limePrimary.withValues(alpha: 0.045),
-          AppColors.limePrimary.withValues(alpha: 0.0),
-        ],
-      ).createShader(
-        Rect.fromCircle(
-          center: Offset(limeCenterX, limeCenterY),
-          radius: limeRadius,
-        ),
-      );
+      ..shader =
+          RadialGradient(
+            colors: [
+              AppColors.limePrimary.withValues(alpha: 0.045),
+              AppColors.limePrimary.withValues(alpha: 0.0),
+            ],
+          ).createShader(
+            Rect.fromCircle(
+              center: Offset(limeCenterX, limeCenterY),
+              radius: limeRadius,
+            ),
+          );
 
     canvas.drawCircle(Offset(limeCenterX, limeCenterY), limeRadius, limePaint);
 
     // 2. Lavender / Violet drifting ambient glow bottom-right
-    final violetCenterX = size.width * (0.8 - 0.12 * math.cos(animValue * 2 * math.pi));
-    final violetCenterY = size.height * (0.65 + 0.1 * math.sin(animValue * 2 * math.pi));
+    final violetCenterX =
+        size.width * (0.8 - 0.12 * math.cos(animValue * 2 * math.pi));
+    final violetCenterY =
+        size.height * (0.65 + 0.1 * math.sin(animValue * 2 * math.pi));
     final violetRadius = math.min(size.width, size.height) * 0.5;
 
     final violetPaint = Paint()
-      ..shader = RadialGradient(
-        colors: [
-          AppColors.lavenderAccent.withValues(alpha: 0.04),
-          AppColors.lavenderAccent.withValues(alpha: 0.0),
-        ],
-      ).createShader(
-        Rect.fromCircle(
-          center: Offset(violetCenterX, violetCenterY),
-          radius: violetRadius,
-        ),
-      );
+      ..shader =
+          RadialGradient(
+            colors: [
+              AppColors.lavenderAccent.withValues(alpha: 0.04),
+              AppColors.lavenderAccent.withValues(alpha: 0.0),
+            ],
+          ).createShader(
+            Rect.fromCircle(
+              center: Offset(violetCenterX, violetCenterY),
+              radius: violetRadius,
+            ),
+          );
 
-    canvas.drawCircle(Offset(violetCenterX, violetCenterY), violetRadius, violetPaint);
+    canvas.drawCircle(
+      Offset(violetCenterX, violetCenterY),
+      violetRadius,
+      violetPaint,
+    );
   }
 
   @override

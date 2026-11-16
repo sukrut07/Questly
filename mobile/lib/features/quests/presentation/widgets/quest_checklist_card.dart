@@ -82,7 +82,8 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
     final updated = await repo.toggleSubtask(widget.quest.id, subtaskId);
 
     // If all subtasks are now completed and parent is not, check if user completed the entire quest
-    final allDone = updated.subtasks.isNotEmpty &&
+    final allDone =
+        updated.subtasks.isNotEmpty &&
         updated.subtasks.every((s) => s.isCompleted);
 
     if (allDone && updated.status != QuestStatus.completed) {
@@ -137,7 +138,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
     final isDone = quest.status == QuestStatus.completed;
     final completedCount = quest.subtasks.where((s) => s.isCompleted).length;
     final totalCount = quest.subtasks.length;
-    final progress = totalCount > 0 ? completedCount / totalCount : (isDone ? 1.0 : 0.0);
+    final progress = totalCount > 0
+        ? completedCount / totalCount
+        : (isDone ? 1.0 : 0.0);
 
     return AnimatedContainer(
       duration: const Duration(milliseconds: 250),
@@ -146,8 +149,8 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
         borderColor: isDone
             ? AppColors.limePrimary.withValues(alpha: 0.45)
             : _isExpanded
-                ? AppColors.limePrimary.withValues(alpha: 0.3)
-                : AppColors.darkBorder,
+            ? AppColors.limePrimary.withValues(alpha: 0.3)
+            : AppColors.darkBorder,
         padding: const EdgeInsets.all(AppSpacing.md),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -161,7 +164,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                     Icon(
                       quest.category.icon,
                       size: 15,
-                      color: isDone ? AppColors.limePrimary : AppColors.limePrimary,
+                      color: isDone
+                          ? AppColors.limePrimary
+                          : AppColors.limePrimary,
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -174,7 +179,10 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                     ),
                     const SizedBox(width: 8),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
                       decoration: BoxDecoration(
                         color: quest.priority.color.withValues(alpha: 0.15),
                         borderRadius: BorderRadius.circular(4),
@@ -196,7 +204,10 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                   ],
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 3,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.limePrimary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(10),
@@ -207,7 +218,11 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.bolt, size: 13, color: AppColors.limePrimary),
+                      const Icon(
+                        Icons.bolt,
+                        size: 13,
+                        color: AppColors.limePrimary,
+                      ),
                       const SizedBox(width: 2),
                       Text(
                         '+${quest.xpReward} XP',
@@ -240,13 +255,17 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                           : Colors.white.withValues(alpha: 0.04),
                       borderRadius: BorderRadius.circular(7),
                       border: Border.all(
-                        color: isDone ? AppColors.limePrimary : AppColors.darkBorder,
+                        color: isDone
+                            ? AppColors.limePrimary
+                            : AppColors.darkBorder,
                         width: 1.5,
                       ),
                       boxShadow: isDone
                           ? [
                               BoxShadow(
-                                color: AppColors.limePrimary.withValues(alpha: 0.35),
+                                color: AppColors.limePrimary.withValues(
+                                  alpha: 0.35,
+                                ),
                                 blurRadius: 6,
                               ),
                             ]
@@ -273,7 +292,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                         quest.title.toUpperCase(),
                         style: AppTypography.titleMedium.copyWith(
                           fontWeight: FontWeight.bold,
-                          decoration: isDone ? TextDecoration.lineThrough : null,
+                          decoration: isDone
+                              ? TextDecoration.lineThrough
+                              : null,
                           color: isDone
                               ? AppColors.textTertiary
                               : AppColors.textPrimary,
@@ -289,7 +310,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                             color: isDone
                                 ? AppColors.textTertiary
                                 : AppColors.textSecondary,
-                            decoration: isDone ? TextDecoration.lineThrough : null,
+                            decoration: isDone
+                                ? TextDecoration.lineThrough
+                                : null,
                           ),
                         ),
                       ],
@@ -328,7 +351,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                       Icon(
                         Icons.checklist_rtl_rounded,
                         size: 13,
-                        color: isDone ? AppColors.limePrimary : AppColors.textSecondary,
+                        color: isDone
+                            ? AppColors.limePrimary
+                            : AppColors.textSecondary,
                       ),
                       const SizedBox(width: 4),
                       Text(
@@ -458,8 +483,9 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                             child: Text(
                               subtask.title,
                               style: AppTypography.bodySmall.copyWith(
-                                decoration:
-                                    subDone ? TextDecoration.lineThrough : null,
+                                decoration: subDone
+                                    ? TextDecoration.lineThrough
+                                    : null,
                                 color: subDone
                                     ? AppColors.textTertiary
                                     : AppColors.textPrimary,
@@ -510,13 +536,15 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
                             fillColor: AppColors.darkElevatedSurface,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  const BorderSide(color: AppColors.limePrimary),
+                              borderSide: const BorderSide(
+                                color: AppColors.limePrimary,
+                              ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(8),
-                              borderSide:
-                                  const BorderSide(color: AppColors.darkBorder),
+                              borderSide: const BorderSide(
+                                color: AppColors.darkBorder,
+                              ),
                             ),
                           ),
                           onSubmitted: (_) => _addSubtask(),
@@ -550,7 +578,11 @@ class _QuestChecklistCardState extends ConsumerState<QuestChecklistCard> {
               ] else ...[
                 TextButton.icon(
                   onPressed: () => setState(() => _isAddingSubtask = true),
-                  icon: const Icon(Icons.add, size: 14, color: AppColors.limePrimary),
+                  icon: const Icon(
+                    Icons.add,
+                    size: 14,
+                    color: AppColors.limePrimary,
+                  ),
                   label: Text(
                     '+ ADD SUBTASK',
                     style: TextStyle(

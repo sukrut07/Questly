@@ -1,4 +1,5 @@
 import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -102,11 +103,7 @@ class _FlamePainter extends CustomPainter {
   final List<_EmberParticle> particles;
   final Color? tint;
 
-  _FlamePainter({
-    required this.progress,
-    required this.particles,
-    this.tint,
-  });
+  _FlamePainter({required this.progress, required this.particles, this.tint});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -154,11 +151,7 @@ class _FlamePainter extends CustomPainter {
       ..shader = const LinearGradient(
         begin: Alignment.bottomCenter,
         end: Alignment.topCenter,
-        colors: [
-          Color(0xFFFF9F43),
-          Color(0xFFFFD32A),
-          Color(0xFFFFF275),
-        ],
+        colors: [Color(0xFFFF9F43), Color(0xFFFFD32A), Color(0xFFFFF275)],
       ).createShader(Rect.fromLTWH(0, 0, w, h))
       ..style = PaintingStyle.fill;
 
@@ -198,7 +191,11 @@ class _FlamePainter extends CustomPainter {
     // 5. Drifting Ember Particles
     for (final p in particles) {
       final currentY = (p.y - (progress * p.speed)) % 1.0;
-      final currentX = (p.x + math.sin((progress + p.y) * 2 * math.pi) * p.drift).clamp(0.1, 0.9);
+      final currentX =
+          (p.x + math.sin((progress + p.y) * 2 * math.pi) * p.drift).clamp(
+            0.1,
+            0.9,
+          );
       final fade = (1.0 - currentY).clamp(0.0, 1.0) * p.opacity;
 
       final emberPaint = Paint()
@@ -291,7 +288,8 @@ class StreakFlameBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap ??
+      onTap:
+          onTap ??
           () {
             HapticFeedback.lightImpact();
             StreakFlameDialog.show(
@@ -401,11 +399,7 @@ class StreakFlameDialog extends StatelessWidget {
           gradient: const LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF1E222D),
-              Color(0xFF141720),
-              Color(0xFF0C0E14),
-            ],
+            colors: [Color(0xFF1E222D), Color(0xFF141720), Color(0xFF0C0E14)],
           ),
           borderRadius: BorderRadius.circular(28),
           border: Border.all(
@@ -428,7 +422,11 @@ class StreakFlameDialog extends StatelessWidget {
             Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                icon: const Icon(Icons.close, color: AppColors.textSecondary, size: 20),
+                icon: const Icon(
+                  Icons.close,
+                  color: AppColors.textSecondary,
+                  size: 20,
+                ),
                 onPressed: () => Navigator.of(context).pop(),
                 padding: EdgeInsets.zero,
                 constraints: const BoxConstraints(),
@@ -533,11 +531,14 @@ class StreakFlameDialog extends StatelessWidget {
                               color: AppColors.limePrimary,
                             ),
                             const SizedBox(width: 2),
-                            Text(
-                              '+$xpEarned XP',
-                              style: AppTypography.titleMedium.copyWith(
-                                color: AppColors.limePrimary,
-                                fontWeight: FontWeight.bold,
+                            Flexible(
+                              child: Text(
+                                '+$xpEarned XP',
+                                style: AppTypography.titleMedium.copyWith(
+                                  color: AppColors.limePrimary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
@@ -566,6 +567,8 @@ class StreakFlameDialog extends StatelessWidget {
                             color: AppColors.textTertiary,
                             letterSpacing: 0.5,
                           ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                         const SizedBox(height: 4),
                         Row(
@@ -576,11 +579,14 @@ class StreakFlameDialog extends StatelessWidget {
                               color: Color(0xFFFFD32A),
                             ),
                             const SizedBox(width: 4),
-                            Text(
-                              '1.2x Active',
-                              style: AppTypography.titleMedium.copyWith(
-                                color: const Color(0xFFFFD32A),
-                                fontWeight: FontWeight.bold,
+                            Flexible(
+                              child: Text(
+                                '1.2x Active',
+                                style: AppTypography.titleMedium.copyWith(
+                                  color: const Color(0xFFFFD32A),
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],

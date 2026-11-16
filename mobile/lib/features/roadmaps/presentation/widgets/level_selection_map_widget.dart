@@ -598,11 +598,17 @@ class _LevelSelectionMapWidgetState
                       size: QuestlyButtonSize.small,
                       variant: QuestlyButtonVariant.secondaryLavender,
                       onPressed: () {
-                        if (widget.onOpenArcade != null) {
-                          widget.onOpenArcade!();
-                        } else {
-                          context.push(RoutePaths.arcade);
-                        }
+                        final gameParam = switch (_selectedLevel) {
+                          1 => 'xoxo',
+                          2 => 'sudoku',
+                          3 => 'kenken',
+                          4 => 'math',
+                          5 => 'kenken',
+                          6 => 'xoxo',
+                          7 => 'sudoku',
+                          _ => 'sudoku',
+                        };
+                        context.push('${RoutePaths.arcade}?game=$gameParam');
                       },
                     ),
                   ),

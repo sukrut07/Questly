@@ -173,9 +173,7 @@ class QuestRepositoryImpl implements QuestRepository {
         title: title,
         isCompleted: false,
       );
-      final updated = quest.copyWith(
-        subtasks: [...quest.subtasks, newSubtask],
-      );
+      final updated = quest.copyWith(subtasks: [...quest.subtasks, newSubtask]);
       _localQuests[qIndex] = updated;
       return updated;
     }
@@ -187,8 +185,9 @@ class QuestRepositoryImpl implements QuestRepository {
     final qIndex = _localQuests.indexWhere((q) => q.id == questId);
     if (qIndex != -1) {
       final quest = _localQuests[qIndex];
-      final updatedSubtasks =
-          quest.subtasks.where((s) => s.id != subtaskId).toList();
+      final updatedSubtasks = quest.subtasks
+          .where((s) => s.id != subtaskId)
+          .toList();
       final updated = quest.copyWith(subtasks: updatedSubtasks);
       _localQuests[qIndex] = updated;
       return updated;

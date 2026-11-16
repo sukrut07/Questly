@@ -143,7 +143,10 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
                   decoration: BoxDecoration(
                     color: AppColors.limePrimary.withValues(alpha: 0.15),
                     borderRadius: BorderRadius.circular(12),
@@ -222,7 +225,7 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
         : null;
     final selectedData = selectedKey != null
         ? widget.activityData[selectedKey] ??
-            HeatmapDayData(date: _selectedDate!)
+              HeatmapDayData(date: _selectedDate!)
         : null;
 
     final cellSize = widget.compact ? 11.0 : 13.5;
@@ -264,13 +267,16 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
                       child: Column(
                         children: week.map((date) {
                           final key = DateFormat('yyyy-MM-dd').format(date);
-                          final data = widget.activityData[key] ??
+                          final data =
+                              widget.activityData[key] ??
                               HeatmapDayData(date: date);
                           final isFuture = date.isAfter(today);
-                          final isToday = date.year == today.year &&
+                          final isToday =
+                              date.year == today.year &&
                               date.month == today.month &&
                               date.day == today.day;
-                          final isSelected = _selectedDate != null &&
+                          final isSelected =
+                              _selectedDate != null &&
                               _selectedDate!.year == date.year &&
                               _selectedDate!.month == date.month &&
                               _selectedDate!.day == date.day;
@@ -293,8 +299,8 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
                               builder: (context, child) {
                                 final todayBorderColor = isToday
                                     ? AppColors.limePrimary.withValues(
-                                        alpha: 0.5 +
-                                            0.5 * _pulseController.value,
+                                        alpha:
+                                            0.5 + 0.5 * _pulseController.value,
                                       )
                                     : Colors.transparent;
 
@@ -311,21 +317,21 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
                                             width: 1.5,
                                           )
                                         : isToday
-                                            ? Border.all(
-                                                color: todayBorderColor,
-                                                width: 1.5,
-                                              )
-                                            : Border.all(
-                                                color: isFuture
-                                                    ? Colors.transparent
-                                                    : (isDark
-                                                        ? AppColors.darkBorder
+                                        ? Border.all(
+                                            color: todayBorderColor,
+                                            width: 1.5,
+                                          )
+                                        : Border.all(
+                                            color: isFuture
+                                                ? Colors.transparent
+                                                : (isDark
+                                                      ? AppColors.darkBorder
                                                             .withValues(
                                                               alpha: 0.5,
                                                             )
-                                                        : Colors.grey.shade300),
-                                                width: 0.5,
-                                              ),
+                                                      : Colors.grey.shade300),
+                                            width: 0.5,
+                                          ),
                                     boxShadow: isSelected
                                         ? [
                                             BoxShadow(
@@ -335,17 +341,18 @@ class _QuestlyHeatmapState extends State<QuestlyHeatmap>
                                             ),
                                           ]
                                         : isToday
-                                            ? [
-                                                BoxShadow(
-                                                  color: AppColors.limePrimary
-                                                      .withValues(
-                                                    alpha: 0.25 *
+                                        ? [
+                                            BoxShadow(
+                                              color: AppColors.limePrimary
+                                                  .withValues(
+                                                    alpha:
+                                                        0.25 *
                                                         _pulseController.value,
                                                   ),
-                                                  blurRadius: 4,
-                                                ),
-                                              ]
-                                            : null,
+                                              blurRadius: 4,
+                                            ),
+                                          ]
+                                        : null,
                                   ),
                                 );
                               },

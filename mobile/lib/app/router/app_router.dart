@@ -104,7 +104,10 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         path: RoutePaths.arcade,
         name: RouteNames.arcade,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const ArcadeScreen(),
+        builder: (context, state) {
+          final game = state.uri.queryParameters['game'];
+          return ArcadeScreen(initialGame: game);
+        },
       ),
       GoRoute(
         path: RoutePaths.settings,

@@ -71,9 +71,7 @@ class ProgressionCard extends StatelessWidget {
               ),
 
               // Animated Streak Flame Badge
-              StreakFlameBadge(
-                streakDays: streak.currentStreak,
-              ),
+              StreakFlameBadge(streakDays: streak.currentStreak),
             ],
           ),
 

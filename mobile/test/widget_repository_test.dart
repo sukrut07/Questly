@@ -49,8 +49,9 @@ void main() {
       await repo.restoreDefaults();
 
       final restored = await repo.getWidgets();
-      final todaysChallenge =
-          restored.firstWhere((w) => w.id == 'w_todays_challenge');
+      final todaysChallenge = restored.firstWhere(
+        (w) => w.id == 'w_todays_challenge',
+      );
       expect(todaysChallenge.isVisible, true);
     });
   });
