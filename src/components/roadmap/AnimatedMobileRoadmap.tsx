@@ -18,8 +18,10 @@ import {
   Compass,
   Play,
   X,
+  Map,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
+import { LevelSelectionMap } from './LevelSelectionMap';
 
 interface AnimatedMobileRoadmapProps {
   onSelectAction?: (action: 'tasks' | 'arcade' | 'focus' | 'xp') => void;

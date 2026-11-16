@@ -7,6 +7,8 @@ import { MathSprintGame } from './MathSprintGame';
 import { CrossMathGame } from './CrossMathGame';
 import { MindSnapGame } from './MindSnapGame';
 import { SudokuGame } from './SudokuGame';
+import { KenKenGame } from './KenKenGame';
+import { XoxoBotGame } from './XoxoBotGame';
 import { SpaceDefenderGame } from './SpaceDefenderGame';
 import { MatchGridGame } from './MatchGridGame';
 import { PatternMemoryGame } from './PatternMemoryGame';
@@ -59,6 +61,12 @@ export function ArcadeHub() {
   }
   if (activeGame === 'sudoku') {
     return <SudokuGame onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === 'kenken') {
+    return <KenKenGame onBack={() => setActiveGame(null)} />;
+  }
+  if (activeGame === 'xoxo_bot') {
+    return <XoxoBotGame onBack={() => setActiveGame(null)} />;
   }
   if (activeGame === 'space_defender') {
     return <SpaceDefenderGame onBack={() => setActiveGame(null)} />;
@@ -346,6 +354,82 @@ export function ArcadeHub() {
               <div className="flex items-center justify-between pt-2 border-t border-[#303642] text-xs font-mono">
                 <span className="text-[#A1A1A1]">Deduction & Logic</span>
                 <span className="text-[#B5FF55] font-bold group-hover:underline">Play Duel →</span>
+              </div>
+            </div>
+          )}
+
+          {/* KenKen Calcudoku */}
+          {(activeTab === 'all' || activeTab === 'puzzle' || activeTab === 'math') && (
+            <div
+              onClick={() => handleSelectGame('kenken')}
+              className="p-5 rounded-3xl bg-[#171A21] border border-[#303642] hover:border-[#42DFFF] transition-all cursor-pointer brutal-shadow flex flex-col justify-between space-y-4 group"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#42DFFF]/15 border border-[#42DFFF]/40 flex items-center justify-center text-[#42DFFF]">
+                    <Grid className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black text-[#F5F5F0] font-display uppercase tracking-tight group-hover:text-[#42DFFF] transition-colors">
+                      KenKen Calcudoku
+                    </h4>
+                    <span className="text-[10px] font-mono text-[#A1A1A1]">4×4 Cage Arithmetic</span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-xs font-mono font-bold text-[#42DFFF] block">
+                    BEST: {getHighScore('kenken')}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#B5FF55]">+10 XP</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Combine logic and basic operations (+, -, ×, ÷) to solve outlined cages without row or column duplicate numbers.
+              </p>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#303642] text-xs font-mono">
+                <span className="text-[#A1A1A1]">Cage Math & Logic</span>
+                <span className="text-[#42DFFF] font-bold group-hover:underline">Play Puzzle →</span>
+              </div>
+            </div>
+          )}
+
+          {/* XOXO vs Bot */}
+          {(activeTab === 'all' || activeTab === 'puzzle' || activeTab === 'math') && (
+            <div
+              onClick={() => handleSelectGame('xoxo_bot')}
+              className="p-5 rounded-3xl bg-[#171A21] border border-[#303642] hover:border-[#A879FF] transition-all cursor-pointer brutal-shadow flex flex-col justify-between space-y-4 group"
+            >
+              <div className="flex items-start justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-2xl bg-[#A879FF]/15 border border-[#A879FF]/40 flex items-center justify-center text-[#A879FF]">
+                    <Brain className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="text-lg font-black text-[#F5F5F0] font-display uppercase tracking-tight group-hover:text-[#A879FF] transition-colors">
+                      XOXO vs Computer Bot
+                    </h4>
+                    <span className="text-[10px] font-mono text-[#A1A1A1]">3×3 Tactical Duel</span>
+                  </div>
+                </div>
+
+                <div className="text-right">
+                  <span className="text-xs font-mono font-bold text-[#A879FF] block">
+                    BEST: {getHighScore('xoxo_bot')}
+                  </span>
+                  <span className="text-[10px] font-mono text-[#B5FF55]">+8 XP</span>
+                </div>
+              </div>
+
+              <p className="text-xs text-[#A1A1A1] font-mono leading-relaxed">
+                Play as X against the AI computer bot. Choose Rookie, Scholar, or Grandmaster Minimax difficulties.
+              </p>
+
+              <div className="flex items-center justify-between pt-2 border-t border-[#303642] text-xs font-mono">
+                <span className="text-[#A1A1A1]">Strategy & Tactics</span>
+                <span className="text-[#A879FF] font-bold group-hover:underline">Play Match →</span>
               </div>
             </div>
           )}

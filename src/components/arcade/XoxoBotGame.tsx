@@ -11,14 +11,19 @@ import {
   Sparkles,
   ShieldAlert,
   Flame,
+  ArrowLeft,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 import { fireCelebrationConfetti } from '@/common/Confetti';
 
+interface XoxoBotGameProps {
+  onBack?: () => void;
+}
+
 type BoardState = (string | null)[];
 type BotDifficulty = 'rookie' | 'scholar' | 'grandmaster';
 
-export function XoxoBotGame() {
+export function XoxoBotGame({ onBack }: XoxoBotGameProps = {}) {
   const { awardXp } = useQuestly();
   const [board, setBoard] = useState<BoardState>(Array(9).fill(null));
   const [isPlayerTurn, setIsPlayerTurn] = useState<boolean>(true);
@@ -229,18 +234,32 @@ export function XoxoBotGame() {
     <div className="w-full max-w-md mx-auto p-4 sm:p-5 rounded-2xl bg-[#111319] border border-[#303642] space-y-4 text-[#F5F5F0] select-none shadow-2xl">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-display font-black text-lg uppercase tracking-tight text-[#B5FF55]">
-              XOXO vs BOT
-            </span>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#A879FF]/15 text-[#A879FF]">
-              TIC-TAC-TOE
-            </span>
+        <div className="flex items-center gap-2.5">
+          {onBack && (
+            <button
+              onClick={() => {
+                sound.playButtonClick();
+                onBack();
+              }}
+              className="p-1.5 rounded-lg bg-[#171A21] border border-[#303642] text-zinc-400 hover:text-white transition-colors"
+              title="Return to Arcade Arena"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-display font-black text-lg uppercase tracking-tight text-[#B5FF55]">
+                XOXO vs BOT
+              </span>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#A879FF]/15 text-[#A879FF]">
+                TIC-TAC-TOE
+              </span>
+            </div>
+            <p className="text-xs text-[#A1A1A1] font-mono">
+              Outsmart the AI bot in tactical 3×3 grid battles
+            </p>
           </div>
-          <p className="text-xs text-[#A1A1A1] font-mono">
-            Outsmart the AI bot in tactical 3×3 grid battles
-          </p>
         </div>
 
         <button

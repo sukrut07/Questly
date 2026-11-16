@@ -11,9 +11,14 @@ import {
   AlertCircle,
   Timer as TimerIcon,
   Zap,
+  ArrowLeft,
 } from 'lucide-react';
 import { sound } from '@/common/SoundService';
 import { fireCelebrationConfetti } from '@/common/Confetti';
+
+interface KenKenGameProps {
+  onBack?: () => void;
+}
 
 interface Cage {
   id: string;
@@ -79,7 +84,7 @@ const PUZZLES: KenKenPuzzle[] = [
   },
 ];
 
-export function KenKenGame() {
+export function KenKenGame({ onBack }: KenKenGameProps = {}) {
   const { awardXp } = useQuestly();
   const [puzzleIndex, setPuzzleIndex] = useState<number>(0);
   const activePuzzle = PUZZLES[puzzleIndex % PUZZLES.length];
@@ -215,18 +220,32 @@ export function KenKenGame() {
     <div className="w-full max-w-md mx-auto p-4 sm:p-5 rounded-2xl bg-[#111319] border border-[#303642] space-y-4 text-[#F5F5F0] select-none shadow-2xl">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="font-display font-black text-lg uppercase tracking-tight text-[#B5FF55]">
-              KENKEN 4×4
-            </span>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#B5FF55]/15 text-[#B5FF55]">
-              CALCUDOKU
-            </span>
+        <div className="flex items-center gap-2.5">
+          {onBack && (
+            <button
+              onClick={() => {
+                sound.playButtonClick();
+                onBack();
+              }}
+              className="p-1.5 rounded-lg bg-[#171A21] border border-[#303642] text-zinc-400 hover:text-white transition-colors"
+              title="Return to Arcade Arena"
+            >
+              <ArrowLeft className="w-4 h-4" />
+            </button>
+          )}
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-display font-black text-lg uppercase tracking-tight text-[#B5FF55]">
+                KENKEN 4×4
+              </span>
+              <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#B5FF55]/15 text-[#B5FF55]">
+                CALCUDOKU
+              </span>
+            </div>
+            <p className="text-xs text-[#A1A1A1] font-mono">
+              Fill 1-4 without duplicates to satisfy cage math
+            </p>
           </div>
-          <p className="text-xs text-[#A1A1A1] font-mono">
-            Fill 1-4 without duplicates to satisfy cage math
-          </p>
         </div>
 
         <div className="flex items-center gap-2">

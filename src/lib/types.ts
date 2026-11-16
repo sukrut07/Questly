@@ -252,6 +252,8 @@ export type ArcadeGameType =
   | 'cross_math'
   | 'mind_snap'
   | 'sudoku'
+  | 'kenken'
+  | 'xoxo_bot'
   | 'space_defender'
   | 'match_grid'
   | 'pattern_memory';
