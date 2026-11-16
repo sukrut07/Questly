@@ -32,8 +32,8 @@ class QuickTaskBottomSheet extends ConsumerStatefulWidget {
 class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
   final _titleController = TextEditingController();
   QuestCategory _selectedCategory = QuestCategory.study;
-  final QuestPriority _selectedPriority = QuestPriority.high;
-  final QuestDifficulty _selectedDifficulty = QuestDifficulty.medium;
+  QuestPriority _selectedPriority = QuestPriority.high;
+  QuestDifficulty _selectedDifficulty = QuestDifficulty.medium;
   int _estimatedMinutes = 30;
   bool _isSaving = false;
 
@@ -43,9 +43,10 @@ class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
     super.dispose();
   }
 
-  int get _xpReward => XpProgressionEngine.calculateQuestXp(
-    _selectedDifficulty,
-    _estimatedMinutes,
+  int get _xpReward => XpProgressionEngine.calculateTaskChecklistXp(
+    priority: _selectedPriority,
+    difficulty: _selectedDifficulty,
+    estimatedMinutes: _estimatedMinutes,
   );
 
   Future<void> _handleSave() async {
@@ -187,6 +188,70 @@ class _QuickTaskBottomSheetState extends ConsumerState<QuickTaskBottomSheet> {
                       },
                     );
                   }).toList(),
+            ),
+            const SizedBox(height: AppSpacing.md),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'PRIORITY & CHECKLIST REWARD',
+                  style: AppTypography.captionBold.copyWith(
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                Text(
+                  _selectedPriority == QuestPriority.urgent
+                      ? 'HIGH XP MULTIPLIER (+20 BONUS)'
+                      : _selectedPriority == QuestPriority.high
+                      ? 'PRIORITY BOOST (+10 BONUS)'
+                      : 'STANDARD XP',
+                  style: TextStyle(
+                    fontSize: 9,
+                    fontWeight: FontWeight.bold,
+                    color: _selectedPriority.color,
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: AppSpacing.xs),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: QuestPriority.values.map((p) {
+                final isSelected = _selectedPriority == p;
+                return ChoiceChip(
+                  label: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        p == QuestPriority.urgent
+                            ? Icons.local_fire_department_rounded
+                            : p == QuestPriority.high
+                            ? Icons.priority_high_rounded
+                            : Icons.flag_rounded,
+                        size: 13,
+                        color: isSelected ? AppColors.darkBase : p.color,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(p.displayName.toUpperCase()),
+                    ],
+                  ),
+                  selected: isSelected,
+                  selectedColor: p.color,
+                  backgroundColor: AppColors.darkCard,
+                  side: BorderSide(
+                    color: isSelected ? p.color : AppColors.darkBorder,
+                  ),
+                  labelStyle: TextStyle(
+                    color: isSelected ? AppColors.darkBase : Colors.white,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 11,
+                  ),
+                  onSelected: (val) {
+                    if (val) setState(() => _selectedPriority = p);
+                  },
+                );
+              }).toList(),
             ),
             const SizedBox(height: AppSpacing.md),
             Text(

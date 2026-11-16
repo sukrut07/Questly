@@ -81,6 +81,39 @@ class XpProgressionEngine {
     return (base + bonus).clamp(10, 150);
   }
 
+  /// Calculates Priority-scaled Checklist XP for completing a main task on priority.
+  static int calculateTaskChecklistXp({
+    required QuestPriority priority,
+    required QuestDifficulty difficulty,
+    int estimatedMinutes = 30,
+  }) {
+    final base = calculateQuestXp(difficulty, estimatedMinutes);
+    switch (priority) {
+      case QuestPriority.urgent:
+        return ((base * 1.5).round() + 20).clamp(25, 200);
+      case QuestPriority.high:
+        return ((base * 1.25).round() + 10).clamp(20, 180);
+      case QuestPriority.medium:
+        return base;
+      case QuestPriority.low:
+        return (base * 0.8).round().clamp(10, 120);
+    }
+  }
+
+  /// Calculates Priority-scaled Checklist XP for checking off an individual subtask.
+  static int calculateSubtaskXp(QuestPriority priority) {
+    switch (priority) {
+      case QuestPriority.urgent:
+        return 18;
+      case QuestPriority.high:
+        return 14;
+      case QuestPriority.medium:
+        return 10;
+      case QuestPriority.low:
+        return 8;
+    }
+  }
+
   static int calculateFocusXp(int elapsedMinutes) {
     if (elapsedMinutes <= 0) return 0;
     return elapsedMinutes.clamp(1, AppConstants.maxSessionFocusXp);
