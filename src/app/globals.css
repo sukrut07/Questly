@@ -164,3 +164,14 @@
 .text-electric-purple { color: var(--electric-purple); }
 .text-electric-cyan { color: var(--electric-cyan); }
 .border-theme { border-color: var(--border-color); }
+
+/* SVG Map Animation */
+@keyframes dash {
+  to {
+    stroke-dashoffset: -100;
+  }
+}
+
+.animate-dash {
+  animation: dash 15s linear infinite;
+}
