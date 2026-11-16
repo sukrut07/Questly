@@ -176,7 +176,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               title: 'DAILY STREAK',
                               value: '$streakDays DAYS',
                               subtitle: 'Active momentum',
-                              icon: Icons.local_fire_department,
+                              customIcon: const StreakFlameWidget(
+                                size: 22,
+                                showEmbers: false,
+                              ),
                               accentColor: const Color(0xFFFF9F43),
                               onTap: () {
                                 StreakFlameDialog.show(

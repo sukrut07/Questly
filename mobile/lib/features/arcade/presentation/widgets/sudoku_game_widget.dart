@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
@@ -109,7 +110,16 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
   }
 
   void _handleNumberInput(int num) {
-    if (_selectedRow == null || _selectedCol == null || _isCompleted) return;
+    if (_isCompleted) return;
+
+    // If no cell or a given cell is currently selected, find the first editable cell
+    if (_selectedRow == null ||
+        _selectedCol == null ||
+        _isGiven(_selectedRow!, _selectedCol!)) {
+      _selectNextEmptyCell();
+    }
+
+    if (_selectedRow == null || _selectedCol == null) return;
 
     final r = _selectedRow!;
     final c = _selectedCol!;
@@ -118,17 +128,27 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
     if (_isGiven(r, c)) return;
 
     setState(() {
-      // Toggle off if clicking the same number, otherwise set
-      if (_board[r][c] == num) {
-        _board[r][c] = 0;
+      _board[r][c] = num;
+      if (_hasConflict(r, c)) {
+        _mistakes++;
       } else {
-        _board[r][c] = num;
-        if (_hasConflict(r, c)) {
-          _mistakes++;
-        }
+        // Auto-advance to next empty cell on valid move
+        _selectNextEmptyCell();
       }
       _checkWin();
     });
+  }
+
+  void _selectNextEmptyCell() {
+    for (int r = 0; r < 6; r++) {
+      for (int c = 0; c < 6; c++) {
+        if (!_isGiven(r, c) && _board[r][c] == 0) {
+          _selectedRow = r;
+          _selectedCol = c;
+          return;
+        }
+      }
+    }
   }
 
   void _handleClearCell() {
@@ -182,8 +202,28 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
         ? _board[_selectedRow!][_selectedCol!]
         : 0;
 
-    return QuestlyCard(
-      borderColor: AppColors.limePrimary,
+    return Focus(
+      autofocus: true,
+      onKeyEvent: (node, event) {
+        if (event is KeyDownEvent) {
+          final char = event.character;
+          if (char != null && int.tryParse(char) != null) {
+            final digit = int.parse(char);
+            if (digit >= 1 && digit <= 6) {
+              _handleNumberInput(digit);
+              return KeyEventResult.handled;
+            }
+          }
+          if (event.logicalKey == LogicalKeyboardKey.backspace ||
+              event.logicalKey == LogicalKeyboardKey.delete) {
+            _handleClearCell();
+            return KeyEventResult.handled;
+          }
+        }
+        return KeyEventResult.ignored;
+      },
+      child: QuestlyCard(
+        borderColor: AppColors.limePrimary,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -480,6 +520,7 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
           ),
         ],
       ),
+    ),
     );
   }
 }

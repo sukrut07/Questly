@@ -10,6 +10,7 @@ class QuestlyStatCard extends StatelessWidget {
   final String value;
   final String? subtitle;
   final IconData? icon;
+  final Widget? customIcon;
   final Color? accentColor;
   final VoidCallback? onTap;
 
@@ -20,6 +21,7 @@ class QuestlyStatCard extends StatelessWidget {
     required this.value,
     this.subtitle,
     this.icon,
+    this.customIcon,
     this.accentColor,
     this.onTap,
   }) : assert(
@@ -57,7 +59,10 @@ class QuestlyStatCard extends StatelessWidget {
                       : AppColors.lightTextSecondary,
                 ),
               ),
-              if (icon != null) Icon(icon, size: 16, color: color),
+              if (customIcon != null)
+                customIcon!
+              else if (icon != null)
+                Icon(icon, size: 16, color: color),
             ],
           ),
           const SizedBox(height: AppSpacing.xs),
