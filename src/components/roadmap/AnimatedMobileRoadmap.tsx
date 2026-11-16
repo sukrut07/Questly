@@ -86,6 +86,34 @@ export function AnimatedMobileRoadmap({ onSelectAction, onOpenTaskModal }: Anima
     setSelectedLevel(lvl);
   };
 
+  const [viewMode, setViewMode] = useState<'level_map' | 'milestones'>('level_map');
+
+  if (viewMode === 'level_map') {
+    return (
+      <div className="h-full flex flex-col justify-between overflow-y-auto select-none space-y-3">
+        <div className="flex items-center justify-between px-2 pt-1">
+          <span className="text-[10px] font-mono font-bold text-zinc-400 uppercase">
+            Map Mode: 3D Level Selection
+          </span>
+          <button
+            onClick={() => {
+              sound.playButtonClick();
+              setViewMode('milestones');
+            }}
+            className="text-[10px] font-mono font-bold text-[#B5FF55] hover:underline"
+          >
+            Switch to Detailed Goals →
+          </button>
+        </div>
+        <LevelSelectionMap
+          onOpenTasks={() => onSelectAction?.('tasks')}
+          onOpenArcade={() => onSelectAction?.('arcade')}
+          onOpenFocus={() => onSelectAction?.('focus')}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="h-full flex flex-col justify-between overflow-hidden select-none">
       {/* 1. Academic Roadmap Header */}
@@ -102,6 +130,15 @@ export function AnimatedMobileRoadmap({ onSelectAction, onOpenTaskModal }: Anima
           </div>
         </div>
         <div className="flex items-center gap-2 text-xs font-mono">
+          <button
+            onClick={() => {
+              sound.playButtonClick();
+              setViewMode('level_map');
+            }}
+            className="px-2 py-0.5 rounded-lg bg-[#B5FF55]/15 border border-[#B5FF55]/30 text-[#B5FF55] font-bold text-[10px]"
+          >
+            3D Map View
+          </button>
           <span className="px-2 py-0.5 rounded-lg bg-[#171A21] border border-[#303642] text-[#B5FF55] font-bold">
             {currentXp} XP
           </span>
