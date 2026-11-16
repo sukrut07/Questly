@@ -4,6 +4,10 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
+base {
+    archivesName.set("Questly")
+}
+
 android {
     namespace = "com.questly.mobile"
     compileSdk = flutter.compileSdkVersion
@@ -34,6 +38,14 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig = signingConfigs.getByName("debug")
+        }
+    }
+
+    applicationVariants.all {
+        val variantName = name
+        outputs.all {
+            val output = this as? com.android.build.gradle.internal.api.BaseVariantOutputImpl
+            output?.outputFileName = if (variantName == "release") "Questly.apk" else "Questly-$variantName.apk"
         }
     }
 }

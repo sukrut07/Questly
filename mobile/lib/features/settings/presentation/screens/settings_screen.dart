@@ -81,9 +81,7 @@ class SettingsScreen extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           AppCard(
-            border: Border.all(
-              color: AppColors.error.withValues(alpha: 0.35),
-            ),
+            border: Border.all(color: AppColors.error.withValues(alpha: 0.35)),
             padding: EdgeInsets.zero,
             child: ListTile(
               leading: const Icon(

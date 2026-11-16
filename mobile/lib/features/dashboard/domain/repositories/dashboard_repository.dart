@@ -37,6 +37,4 @@ abstract class DashboardRepository {
     String? avatarId,
   });
   Future<void> resetToZero();
-  Future<void> updateProfile({String? displayName, String? title, String? avatarId});
-  Future<void> resetToZero();
 }

@@ -24,7 +24,7 @@ class EnvironmentConfig {
 
   static const EnvironmentConfig development = EnvironmentConfig(
     environment: AppEnvironment.development,
-    appTitle: 'Questly (Dev)',
+    appTitle: 'Questly',
     apiBaseUrl: 'http://10.0.2.2:3000/api', // Android Emulator localhost bridge
     enableLogging: true,
     enableMockFallbacks: true,
