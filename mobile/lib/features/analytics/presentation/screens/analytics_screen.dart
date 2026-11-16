@@ -6,6 +6,7 @@ import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/gamification/presentation/widgets/streak_flame_animation.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
 import 'package:questly/shared/widgets/questly_heatmap.dart';
@@ -183,6 +184,14 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                               subtitle: 'Personal record: 28d',
                               icon: Icons.local_fire_department,
                               accentColor: const Color(0xFFFF9F43),
+                              onTap: () {
+                                StreakFlameDialog.show(
+                                  context,
+                                  streakCount: streakDays,
+                                  xpEarned: 50,
+                                  taskTitle: 'Momentum Tracking',
+                                );
+                              },
                             ),
                           ),
                           const SizedBox(width: AppSpacing.sm),

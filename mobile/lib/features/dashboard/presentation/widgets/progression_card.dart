@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
+import 'package:questly/features/gamification/presentation/widgets/streak_flame_animation.dart';
 import 'package:questly/shared/models/level_info.dart';
 import 'package:questly/shared/models/streak_info.dart';
 import 'package:questly/shared/widgets/app_card.dart';
-import 'package:questly/shared/widgets/stat_badge.dart';
 import 'package:questly/shared/widgets/xp_progress_bar.dart';
 
 class ProgressionCard extends StatelessWidget {
@@ -70,11 +70,9 @@ class ProgressionCard extends StatelessWidget {
                 ],
               ),
 
-              // Streak Flame Badge
-              StatBadge(
-                label: '${streak.currentStreak} Day Streak',
-                icon: Icons.local_fire_department_rounded,
-                color: AppColors.darkAccent,
+              // Animated Streak Flame Badge
+              StreakFlameBadge(
+                streakDays: streak.currentStreak,
               ),
             ],
           ),
