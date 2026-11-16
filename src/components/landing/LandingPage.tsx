@@ -97,13 +97,16 @@ export function LandingPage() {
       title: newQuestTitle.trim(),
       description: 'Created via Questly Mobile Quick Add',
       priority: 'MEDIUM',
+      difficulty: 'MEDIUM',
+      taskType: 'problem_solving',
       subjectCode: 'General',
       subjectId: 'gen',
-      dueType: 'TODAY',
+      dueDate: new Date().toISOString().split('T')[0],
+      status: 'NOT_STARTED',
+      isRecurring: false,
       subtasks: [],
       estimatedMinutes: 25,
       xpReward: 50,
-      tags: ['Mobile'],
     });
     setNewQuestTitle('');
   };
