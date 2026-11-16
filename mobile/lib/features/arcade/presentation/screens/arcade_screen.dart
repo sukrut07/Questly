@@ -8,6 +8,7 @@ import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:questly/features/arcade/presentation/widgets/kenken_game_widget.dart';
 import 'package:questly/features/arcade/presentation/widgets/sudoku_game_widget.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
@@ -52,8 +53,8 @@ class _ArcadeScreenState extends ConsumerState<ArcadeScreen> {
     }
   }
 
-  // Daily Arcade XP Cap Tracking (Max 20 XP / day)
-  int _todayArcadeXp = 8;
+  // Daily Arcade XP Cap Tracking (Max 20 XP / day) - starts clean from 0
+  int _todayArcadeXp = 0;
   static const int _dailyArcadeCap = 20;
 
   // Math Sprint State
@@ -87,6 +88,7 @@ class _ArcadeScreenState extends ConsumerState<ArcadeScreen> {
       });
       ref.read(dashboardRepositoryProvider).addXp(granted);
       ref.read(dashboardStateProvider.notifier).refresh();
+      ref.invalidate(analyticsDataProvider);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('$title: +$granted XP awarded!'),

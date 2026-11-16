@@ -6,12 +6,171 @@ import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/core/constants/app_constants.dart';
+import 'package:questly/features/analytics/presentation/providers/analytics_providers.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/shared/models/user_profile.dart';
 import 'package:questly/shared/widgets/app_card.dart';
 import 'package:questly/shared/widgets/stat_badge.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
+
+  void _showEditProfileDialog(
+    BuildContext context,
+    WidgetRef ref,
+    UserProfile profile,
+  ) {
+    final nameController = TextEditingController(text: profile.displayName);
+    final titleController = TextEditingController(text: profile.title);
+
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF161922),
+        title: const Text(
+          'Edit Profile & Aspirations',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              'DISPLAY NAME',
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            TextField(
+              controller: nameController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.darkCard,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+            const Text(
+              'SCHOLAR TITLE / GOAL',
+              style: TextStyle(
+                fontSize: 10,
+                color: AppColors.textSecondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 4),
+            TextField(
+              controller: titleController,
+              style: const TextStyle(color: Colors.white),
+              decoration: InputDecoration(
+                filled: true,
+                fillColor: AppColors.darkCard,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('CANCEL'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.limePrimary,
+              foregroundColor: AppColors.darkBase,
+            ),
+            onPressed: () async {
+              final newName = nameController.text.trim();
+              final newTitle = titleController.text.trim();
+              if (newName.isNotEmpty) {
+                await ref.read(dashboardRepositoryProvider).updateProfile(
+                  displayName: newName,
+                  title: newTitle.isNotEmpty ? newTitle : null,
+                );
+                ref.read(dashboardStateProvider.notifier).refresh();
+              }
+              if (ctx.mounted) Navigator.of(ctx).pop();
+            },
+            child: const Text(
+              'SAVE',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showResetConfirmDialog(BuildContext context, WidgetRef ref) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: const Color(0xFF1E1313),
+        title: const Row(
+          children: [
+            Icon(Icons.warning_amber_rounded, color: AppColors.error),
+            SizedBox(width: 8),
+            Text(
+              'Start Realm from 0?',
+              style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        content: const Text(
+          'This will clear all active quests, roadmaps, notes, focus history, and reset your level to Level 1 (0 XP) so you can input everything from scratch.\n\nThis cannot be undone.',
+          style: TextStyle(color: AppColors.textSecondary, fontSize: 13),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(),
+            child: const Text('CANCEL'),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.error,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              await ref.read(questRepositoryProvider).clearAll();
+              await ref.read(roadmapRepositoryProvider).clearAll();
+              await ref.read(notebookRepositoryProvider).clearAll();
+              await ref.read(focusRepositoryProvider).clearAll();
+              await ref.read(dashboardRepositoryProvider).resetToZero();
+
+              ref.read(dashboardStateProvider.notifier).refresh();
+              ref.invalidate(analyticsDataProvider);
+
+              if (ctx.mounted) Navigator.of(ctx).pop();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text(
+                      'All maps and metrics reset to 0! Ready for your custom input.',
+                    ),
+                    backgroundColor: AppColors.limePrimary,
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              }
+            },
+            child: const Text(
+              'CONFIRM RESET TO 0',
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -67,14 +226,35 @@ class ProfileScreen extends ConsumerWidget {
                       ),
                     ),
                     const SizedBox(height: AppSpacing.sm),
-                    Text(
-                      profile.displayName,
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.w800,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          profile.displayName,
+                          style: theme.textTheme.headlineSmall?.copyWith(
+                            fontWeight: FontWeight.w800,
+                            color: isDark
+                                ? AppColors.darkTextPrimary
+                                : AppColors.lightTextPrimary,
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        IconButton(
+                          icon: const Icon(
+                            Icons.edit_outlined,
+                            size: 18,
+                            color: AppColors.limePrimary,
+                          ),
+                          onPressed: () => _showEditProfileDialog(
+                            context,
+                            ref,
+                            profile,
+                          ),
+                          tooltip: 'Edit Profile & Title',
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: AppSpacing.xxs),
                     Text(
@@ -202,6 +382,44 @@ class ProfileScreen extends ConsumerWidget {
                       onTap: () => context.pushNamed(RouteNames.settings),
                     ),
                   ],
+                ),
+              ),
+
+              const SizedBox(height: AppSpacing.md),
+
+              // Danger Zone: Reset Realm to 0
+              Text(
+                'Data & Realm Control',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.error,
+                ),
+              ),
+              const SizedBox(height: AppSpacing.xs),
+
+              AppCard(
+                borderColor: AppColors.error.withValues(alpha: 0.35),
+                padding: EdgeInsets.zero,
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.restart_alt_rounded,
+                    color: AppColors.error,
+                  ),
+                  title: const Text(
+                    'Reset Realm to Zero (Start from 0)',
+                    style: TextStyle(
+                      color: AppColors.error,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: const Text(
+                    'Clear all quests, roadmaps, notes, focus history & XP to 0',
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: AppColors.error,
+                  ),
+                  onTap: () => _showResetConfirmDialog(context, ref),
                 ),
               ),
 

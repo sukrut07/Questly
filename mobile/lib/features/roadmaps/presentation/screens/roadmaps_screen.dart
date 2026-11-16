@@ -227,17 +227,45 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
             ),
             const SizedBox(height: AppSpacing.md),
             Text(
-              'NO ACTIVE ROADMAPS',
+              'NO ACTIVE JOURNEYS YET',
               style: AppTypography.headlineSmall.copyWith(
-                color: AppColors.textSecondary,
+                color: AppColors.textPrimary,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: AppSpacing.xs),
-            Text(
-              'Select a template or create your own custom milestone path.',
-              style: AppTypography.bodySmall.copyWith(
-                color: AppColors.textTertiary,
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 32),
+              child: Text(
+                'Start from 0: Design your custom milestone roadmap or adopt a journey from Templates.',
+                textAlign: TextAlign.center,
+                style: AppTypography.bodySmall.copyWith(
+                  color: AppColors.textSecondary,
+                ),
               ),
+            ),
+            const SizedBox(height: AppSpacing.lg),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                QuestlyButton(
+                  text: '+ NEW ROADMAP',
+                  icon: Icons.add,
+                  size: QuestlyButtonSize.medium,
+                  variant: QuestlyButtonVariant.primaryLime,
+                  onPressed: () => context
+                      .push(RoutePaths.createRoadmap)
+                      .then((_) => _loadData()),
+                ),
+                const SizedBox(width: AppSpacing.sm),
+                QuestlyButton(
+                  text: 'TEMPLATES',
+                  icon: Icons.auto_awesome_rounded,
+                  size: QuestlyButtonSize.medium,
+                  variant: QuestlyButtonVariant.darkOutline,
+                  onPressed: () => _tabController.animateTo(2),
+                ),
+              ],
             ),
           ],
         ),

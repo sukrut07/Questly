@@ -6,8 +6,10 @@ import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
 import 'package:questly/features/quests/presentation/widgets/quest_checklist_card.dart';
+import 'package:questly/features/quests/presentation/widgets/quick_task_bottom_sheet.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/app_card.dart';
+import 'package:questly/shared/widgets/questly_button.dart';
 
 class ActiveQuestsSection extends ConsumerWidget {
   final List<Quest> quests;
@@ -66,24 +68,43 @@ class ActiveQuestsSection extends ConsumerWidget {
 
         if (quests.isEmpty)
           AppCard(
+            borderColor: AppColors.limePrimary.withValues(alpha: 0.3),
             child: Center(
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 24.0),
+                padding: const EdgeInsets.symmetric(vertical: 20.0),
                 child: Column(
                   children: [
                     const Icon(
-                      Icons.flag_outlined,
-                      size: 32,
-                      color: AppColors.darkTextMuted,
+                      Icons.checklist_rounded,
+                      size: 34,
+                      color: AppColors.limePrimary,
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      'No active quests right now',
-                      style: theme.textTheme.bodyMedium?.copyWith(
+                      'START YOUR REALM FROM 0',
+                      style: theme.textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 0.8,
+                        color: AppColors.limePrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Add your first task on priority to earn checklist XP and ignite your streak.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(
                         color: isDark
                             ? AppColors.darkTextSecondary
                             : AppColors.lightTextSecondary,
                       ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+                    QuestlyButton(
+                      text: '+ ADD FIRST TASK',
+                      icon: Icons.add,
+                      size: QuestlyButtonSize.small,
+                      variant: QuestlyButtonVariant.primaryLime,
+                      onPressed: () => QuickTaskBottomSheet.show(context),
                     ),
                   ],
                 ),

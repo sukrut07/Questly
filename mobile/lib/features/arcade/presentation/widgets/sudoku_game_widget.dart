@@ -128,12 +128,16 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
     if (_isGiven(r, c)) return;
 
     setState(() {
-      _board[r][c] = num;
-      if (_hasConflict(r, c)) {
-        _mistakes++;
+      if (_board[r][c] == num) {
+        _board[r][c] = 0;
       } else {
-        // Auto-advance to next empty cell on valid move
-        _selectNextEmptyCell();
+        _board[r][c] = num;
+        if (_hasConflict(r, c)) {
+          _mistakes++;
+        } else {
+          // Auto-advance to next empty cell on valid move
+          _selectNextEmptyCell();
+        }
       }
       _checkWin();
     });
@@ -166,7 +170,6 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
   void _checkWin() {
     bool allFilled = true;
     bool hasAnyConflict = false;
-    bool matchesSolution = true;
 
     for (int r = 0; r < 6; r++) {
       for (int c = 0; c < 6; c++) {
@@ -175,13 +178,10 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
         } else if (_hasConflict(r, c)) {
           hasAnyConflict = true;
         }
-        if (_board[r][c] != _solutionBoard[r][c]) {
-          matchesSolution = false;
-        }
       }
     }
 
-    if (allFilled && !hasAnyConflict && matchesSolution && !_isCompleted) {
+    if (allFilled && !hasAnyConflict && !_isCompleted) {
       _isCompleted = true;
       _ticker?.cancel();
       if (widget.onWon != null) {
@@ -456,67 +456,72 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
           ],
 
           // Numbers Keypad (1 to 6 + Clear button)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ...List.generate(6, (idx) {
-                final num = idx + 1;
-                final isCurrentSelectedNumber = selectedVal == num;
-                return Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 3),
-                  child: SizedBox(
-                    width: 42,
-                    height: 46,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isCurrentSelectedNumber
-                            ? AppColors.limePrimary
-                            : AppColors.darkElevatedSurface,
-                        foregroundColor: isCurrentSelectedNumber
-                            ? AppColors.darkBase
-                            : AppColors.limePrimary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          side: BorderSide(
-                            color: isCurrentSelectedNumber
+          Center(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ...List.generate(6, (idx) {
+                    final num = idx + 1;
+                    final isCurrentSelectedNumber = selectedVal == num;
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: SizedBox(
+                        width: 44,
+                        height: 48,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isCurrentSelectedNumber
                                 ? AppColors.limePrimary
-                                : AppColors.darkBorder,
+                                : AppColors.darkElevatedSurface,
+                            foregroundColor: isCurrentSelectedNumber
+                                ? AppColors.darkBase
+                                : AppColors.limePrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide(
+                                color: isCurrentSelectedNumber
+                                    ? AppColors.limePrimary
+                                    : AppColors.darkBorder,
+                              ),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
+                          onPressed: () => _handleNumberInput(num),
+                          child: Text(
+                            '$num',
+                            style: AppTypography.titleLarge.copyWith(
+                              fontWeight: FontWeight.w900,
+                            ),
                           ),
                         ),
-                        padding: EdgeInsets.zero,
                       ),
-                      onPressed: () => _handleNumberInput(num),
-                      child: Text(
-                        '$num',
-                        style: AppTypography.titleLarge.copyWith(
-                          fontWeight: FontWeight.w900,
+                    );
+                  }),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: SizedBox(
+                      width: 44,
+                      height: 48,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.darkElevatedSurface,
+                          foregroundColor: AppColors.error,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: AppColors.darkBorder),
+                          ),
+                          padding: EdgeInsets.zero,
                         ),
+                        onPressed: _handleClearCell,
+                        child: const Icon(Icons.backspace_outlined, size: 18),
                       ),
                     ),
                   ),
-                );
-              }),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: SizedBox(
-                  width: 42,
-                  height: 46,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkElevatedSurface,
-                      foregroundColor: AppColors.error,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        side: const BorderSide(color: AppColors.darkBorder),
-                      ),
-                      padding: EdgeInsets.zero,
-                    ),
-                    onPressed: _handleClearCell,
-                    child: const Icon(Icons.backspace_outlined, size: 18),
-                  ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ],
       ),
