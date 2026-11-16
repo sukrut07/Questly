@@ -12,4 +12,5 @@ abstract class QuestRepository {
   Future<Quest> toggleSubtask(String questId, String subtaskId);
   Future<Quest> addSubtask(String questId, String title);
   Future<Quest> deleteSubtask(String questId, String subtaskId);
+  Future<void> clearAll();
 }

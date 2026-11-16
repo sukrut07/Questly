@@ -30,39 +30,7 @@ class QuestRepositoryImpl implements QuestRepository {
         } catch (_) {}
       }
     }
-
-    // Default starter quests for initial launch
-    if (_localQuests.isEmpty) {
-      _localQuests.addAll([
-        Quest(
-          id: 'quest_starter_1',
-          title: 'Explore Questly Productivity Tools',
-          description: 'Check off a subtask, customize your command center, or complete a focus session.',
-          category: QuestCategory.study,
-          difficulty: QuestDifficulty.easy,
-          priority: QuestPriority.high,
-          estimatedMinutes: 20,
-          xpReward: 30,
-          status: QuestStatus.notStarted,
-          createdAt: DateTime.now(),
-          subtasks: const [
-            QuestSubtask(
-              id: 'sub_s1',
-              questId: 'quest_starter_1',
-              title: 'Check off this first subtask',
-              isCompleted: false,
-            ),
-            QuestSubtask(
-              id: 'sub_s2',
-              questId: 'quest_starter_1',
-              title: 'Launch a 25-minute Pomodoro sprint',
-              isCompleted: false,
-            ),
-          ],
-        ),
-      ]);
-      _persist();
-    }
+    // Starts completely clean from 0 by default. User inputs all tasks.
   }
 
   Future<void> _persist() async {
@@ -70,6 +38,12 @@ class QuestRepositoryImpl implements QuestRepository {
       final jsonStr = jsonEncode(_localQuests.map((q) => q.toJson()).toList());
       await _storage.setString(_storageKey, jsonStr);
     }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    _localQuests.clear();
+    await _persist();
   }
 
   ApiClient? get apiClient => _apiClient;
@@ -210,9 +184,8 @@ class QuestRepositoryImpl implements QuestRepository {
     final qIndex = _localQuests.indexWhere((q) => q.id == questId);
     if (qIndex != -1) {
       final quest = _localQuests[qIndex];
-      final updatedSubtasks = quest.subtasks
-          .where((s) => s.id != subtaskId)
-          .toList();
+      final updatedSubtasks =
+          quest.subtasks.where((s) => s.id != subtaskId).toList();
       final updated = quest.copyWith(subtasks: updatedSubtasks);
       _localQuests[qIndex] = updated;
       await _persist();

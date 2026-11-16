@@ -7,4 +7,5 @@ abstract class RoadmapRepository {
   Future<void> toggleMilestone(String roadmapId, String milestoneId);
   Future<void> deleteRoadmap(String id);
   Future<List<Roadmap>> getTemplates();
+  Future<void> clearAll();
 }

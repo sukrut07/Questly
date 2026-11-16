@@ -4,4 +4,5 @@ abstract class FocusRepository {
   Future<List<FocusSession>> getRecentSessions();
   Future<FocusSession> saveSession(FocusSession session);
   Future<int> getTotalFocusMinutes();
+  Future<void> clearAll();
 }

@@ -27,42 +27,7 @@ class FocusRepositoryImpl implements FocusRepository {
         } catch (_) {}
       }
     }
-
-    // Default sample focus sessions
-    if (_sessions.isEmpty) {
-      _sessions.addAll([
-        FocusSession(
-          id: 'focus_1',
-          questId: 'quest_1',
-          questTitle: 'Algorithm Design Sprint',
-          mode: FocusMode.deepWork,
-          plannedSeconds: 50 * 60,
-          elapsedSeconds: 50 * 60,
-          isCompleted: true,
-          xpEarned: 120,
-          startedAt: DateTime.now().subtract(const Duration(hours: 3)),
-          endedAt: DateTime.now().subtract(
-            const Duration(hours: 2, minutes: 10),
-          ),
-          notes: 'Completed two-pointer and sliding window modules with zero distraction.',
-        ),
-        FocusSession(
-          id: 'focus_2',
-          questId: 'quest_2',
-          questTitle: 'Flutter Architecture Review',
-          mode: FocusMode.pomodoro,
-          plannedSeconds: 25 * 60,
-          elapsedSeconds: 25 * 60,
-          isCompleted: true,
-          xpEarned: 60,
-          startedAt: DateTime.now().subtract(const Duration(days: 1, hours: 4)),
-          endedAt: DateTime.now().subtract(
-            const Duration(days: 1, hours: 3, minutes: 35),
-          ),
-          notes: 'Wired up Riverpod state providers and Clean Architecture domain contracts.',
-        ),
-      ]);
-    }
+    // Starts completely clean from 0 focus sessions by default. User logs focus sessions.
   }
 
   Future<void> _persist() async {
@@ -70,6 +35,12 @@ class FocusRepositoryImpl implements FocusRepository {
       final jsonStr = jsonEncode(_sessions.map((s) => s.toJson()).toList());
       await _storage.setString(_storageKey, jsonStr);
     }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    _sessions.clear();
+    await _persist();
   }
 
   @override

@@ -31,4 +31,6 @@ abstract class DashboardRepository {
   Future<DashboardData> getDashboardData();
   Future<void> refresh();
   void addXp(int amount);
+  Future<void> updateProfile({String? displayName, String? title, String? avatarId});
+  Future<void> resetToZero();
 }

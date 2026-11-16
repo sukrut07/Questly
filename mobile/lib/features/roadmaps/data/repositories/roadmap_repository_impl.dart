@@ -27,10 +27,7 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
         } catch (_) {}
       }
     }
-
-    if (_roadmaps.isEmpty) {
-      _roadmaps.addAll(_defaultRoadmaps);
-    }
+    // Starts from 0 active roadmaps by default. User inputs custom roadmaps or adopts templates.
   }
 
   Future<void> _persist() async {
@@ -38,6 +35,12 @@ class RoadmapRepositoryImpl implements RoadmapRepository {
       final jsonStr = jsonEncode(_roadmaps.map((r) => r.toJson()).toList());
       await _storage.setString(_storageKey, jsonStr);
     }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    _roadmaps.clear();
+    await _persist();
   }
 
   static List<Roadmap> get _defaultRoadmaps => [

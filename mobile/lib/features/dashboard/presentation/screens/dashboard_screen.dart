@@ -74,8 +74,7 @@ class DashboardScreen extends ConsumerWidget {
               ),
             ),
             data: (data) {
-              final previewHeatmap =
-                  analyticsAsync.asData?.value.heatmapData ??
+              final previewHeatmap = analyticsAsync.asData?.value.heatmapData ??
                   <String, HeatmapDayData>{};
 
               final activeWidgets =
@@ -144,7 +143,9 @@ class DashboardScreen extends ConsumerWidget {
                         0,
                         (sum, q) =>
                             sum +
-                            (q.estimatedMinutes > 0 ? q.estimatedMinutes : 30),
+                            (q.estimatedMinutes > 0
+                                ? q.estimatedMinutes
+                                : 30),
                       ),
                       capacityMinutes: 180,
                     ),

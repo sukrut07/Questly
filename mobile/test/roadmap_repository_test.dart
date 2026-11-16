@@ -10,16 +10,21 @@ void main() {
       repository = RoadmapRepositoryImpl();
     });
 
-    test('loads default roadmaps and starter templates', () async {
+    test('starts with 0 active roadmaps and loads starter templates', () async {
       final roadmaps = await repository.getRoadmaps();
       final templates = await repository.getTemplates();
 
-      expect(roadmaps.isNotEmpty, isTrue);
+      // Starts from zero: user inputs or adopts journeys
+      expect(roadmaps.isEmpty, isTrue);
       expect(templates.isNotEmpty, isTrue);
-      expect(roadmaps.first.milestones.isNotEmpty, isTrue);
+      expect(templates.first.milestones.isNotEmpty, isTrue);
     });
 
-    test('calculates roadmap progress correctly', () async {
+    test('calculates roadmap progress correctly for adopted journey', () async {
+      final templates = await repository.getTemplates();
+      final template = templates.first;
+      await repository.saveRoadmap(template);
+
       final roadmaps = await repository.getRoadmaps();
       final r = roadmaps.first;
 
@@ -31,6 +36,10 @@ void main() {
     });
 
     test('can toggle milestone completion', () async {
+      final templates = await repository.getTemplates();
+      final template = templates.first;
+      await repository.saveRoadmap(template);
+
       final roadmaps = await repository.getRoadmaps();
       final r = roadmaps.first;
       final m = r.milestones.first;

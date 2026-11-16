@@ -10,10 +10,9 @@ void main() {
       repository = NotebookRepositoryImpl();
     });
 
-    test('loads default notes', () async {
+    test('starts with 0 notes by default', () async {
       final notes = await repository.getNotes();
-      expect(notes.isNotEmpty, isTrue);
-      expect(notes.first.title.isNotEmpty, isTrue);
+      expect(notes.isEmpty, isTrue);
     });
 
     test('can save a new note and retrieve it', () async {
@@ -34,9 +33,17 @@ void main() {
     });
 
     test('can toggle pin on a note', () async {
-      final notes = await repository.getNotes();
-      final target = notes.first;
-      final initialPin = target.isPinned;
+      final newNote = Note(
+        id: 'pinned_test_note',
+        title: 'Note to Pin',
+        content: 'Content',
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+      await repository.saveNote(newNote);
+
+      final target = await repository.getNoteById('pinned_test_note');
+      final initialPin = target!.isPinned;
 
       await repository.togglePin(target.id);
       final updated = await repository.getNoteById(target.id);

@@ -27,39 +27,7 @@ class NotebookRepositoryImpl implements NotebookRepository {
         } catch (_) {}
       }
     }
-
-    // Default starter notes
-    if (_notes.isEmpty) {
-      _notes.addAll([
-        Note(
-          id: 'note_1',
-          title: 'System Design Patterns for High Concurrency',
-          content: 'Key strategies:\n- Event sourcing for immutable audit logs\n- CQRS to separate read and write scaling\n- Bloom filters for fast cache existence checks\n\nRelated to Backend Architecture Quest.',
-          tags: ['Tech', 'Architecture'],
-          isPinned: true,
-          createdAt: DateTime.now().subtract(const Duration(days: 2)),
-          updatedAt: DateTime.now().subtract(const Duration(hours: 4)),
-        ),
-        Note(
-          id: 'note_2',
-          title: 'Deep Work Session Protocol',
-          content: '1. Clear workspace of phone and notifications\n2. Fill water bottle\n3. Set 50-minute Pomodoro timer\n4. Single-task on high-priority objective only.',
-          tags: ['Productivity', 'Habits'],
-          isPinned: true,
-          createdAt: DateTime.now().subtract(const Duration(days: 5)),
-          updatedAt: DateTime.now().subtract(const Duration(days: 1)),
-        ),
-        Note(
-          id: 'note_3',
-          title: 'Flutter CustomPainter Roadmap Ideas',
-          content: 'Implement a winding path layout with bezier curves connecting circular nodes. Use lime gradient strokes for completed milestones.',
-          tags: ['Flutter', 'Ideas'],
-          isPinned: false,
-          createdAt: DateTime.now().subtract(const Duration(days: 1)),
-          updatedAt: DateTime.now().subtract(const Duration(minutes: 45)),
-        ),
-      ]);
-    }
+    // Starts completely clean from 0 notes by default. User inputs all notes.
   }
 
   Future<void> _persist() async {
@@ -67,6 +35,12 @@ class NotebookRepositoryImpl implements NotebookRepository {
       final jsonStr = jsonEncode(_notes.map((n) => n.toJson()).toList());
       await _storage.setString(_storageKey, jsonStr);
     }
+  }
+
+  @override
+  Future<void> clearAll() async {
+    _notes.clear();
+    await _persist();
   }
 
   @override

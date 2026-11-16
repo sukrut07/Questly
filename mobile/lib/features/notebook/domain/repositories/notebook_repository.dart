@@ -7,4 +7,5 @@ abstract class NotebookRepository {
   Future<void> deleteNote(String id);
   Future<void> togglePin(String id);
   Future<List<NotebookFolder>> getFolders();
+  Future<void> clearAll();
 }

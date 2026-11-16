@@ -41,8 +41,7 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
 
     final weeklyPattern =
         analytics?.weeklyPattern ?? const [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
-    final todayWeekdayIndex =
-        DateTime.now().weekday - 1; // 0 for Mon, 6 for Sun
+    final todayWeekdayIndex = DateTime.now().weekday - 1; // 0 for Mon, 6 for Sun
     final maxPatternVal = weeklyPattern.fold<double>(
       0.0,
       (prev, curr) => math.max(prev, curr),
@@ -354,8 +353,10 @@ class _AnalyticsScreenState extends ConsumerState<AnalyticsScreen> {
                                                 .copyWith(
                                                   color:
                                                       index == todayWeekdayIndex
-                                                      ? AppColors.limePrimary
-                                                      : AppColors.textSecondary,
+                                                          ? AppColors
+                                                              .limePrimary
+                                                          : AppColors
+                                                              .textSecondary,
                                                 ),
                                           ),
                                         );

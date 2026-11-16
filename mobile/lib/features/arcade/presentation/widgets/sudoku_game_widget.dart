@@ -224,308 +224,303 @@ class _SudokuGameWidgetState extends State<SudokuGameWidget> {
       },
       child: QuestlyCard(
         borderColor: AppColors.limePrimary,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Header Bar
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    if (widget.onBack != null)
-                      IconButton(
-                        icon: const Icon(
-                          Icons.arrow_back_ios_new,
-                          color: AppColors.textPrimary,
-                          size: 18,
-                        ),
-                        onPressed: widget.onBack,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Header Bar
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  if (widget.onBack != null)
+                    IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.textPrimary,
+                        size: 18,
                       ),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              'SUDOKU BLITZ 6×6',
-                              style: AppTypography.titleMedium.copyWith(
-                                letterSpacing: 1.0,
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.limePrimary,
-                              ),
-                            ),
-                            const SizedBox(width: 6),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 6,
-                                vertical: 2,
-                              ),
-                              decoration: BoxDecoration(
-                                color: AppColors.limePrimary.withValues(
-                                  alpha: 0.15,
-                                ),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                '+15 XP',
-                                style: AppTypography.captionBold.copyWith(
-                                  color: AppColors.limePrimary,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        Text(
-                          'Time: ${_formatTime(_timer)} • Mistakes: $_mistakes',
-                          style: AppTypography.caption.copyWith(
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
+                      onPressed: widget.onBack,
                     ),
-                  ],
-                ),
-                IconButton(
-                  icon: const Icon(
-                    Icons.refresh,
-                    color: AppColors.textSecondary,
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            'SUDOKU BLITZ 6×6',
+                            style: AppTypography.titleMedium.copyWith(
+                              letterSpacing: 1.0,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.limePrimary,
+                            ),
+                          ),
+                          const SizedBox(width: 6),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 2,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.limePrimary.withValues(
+                                alpha: 0.15,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Text(
+                              '+15 XP',
+                              style: AppTypography.captionBold.copyWith(
+                                color: AppColors.limePrimary,
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Text(
+                        'Time: ${_formatTime(_timer)} • Mistakes: $_mistakes',
+                        style: AppTypography.caption.copyWith(
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
                   ),
-                  onPressed: () {
-                    setState(() => _resetBoard());
-                    _startTimer();
-                  },
-                  tooltip: 'Reset Puzzle',
-                ),
-              ],
-            ),
+                ],
+              ),
+              IconButton(
+                icon: const Icon(Icons.refresh, color: AppColors.textSecondary),
+                onPressed: () {
+                  setState(() => _resetBoard());
+                  _startTimer();
+                },
+                tooltip: 'Reset Puzzle',
+              ),
+            ],
+          ),
 
-            const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
-            // 6x6 Sudoku Grid
-            Center(
-              child: Container(
-                width: 310,
-                height: 310,
-                decoration: BoxDecoration(
-                  border: Border.all(color: AppColors.darkBorder, width: 2),
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color(0xFF0E1015),
-                ),
-                child: Column(
-                  children: List.generate(6, (r) {
-                    return Expanded(
-                      child: Row(
-                        children: List.generate(6, (c) {
-                          final val = _board[r][c];
-                          final isGiven = _isGiven(r, c);
-                          final isSelected =
-                              _selectedRow == r && _selectedCol == c;
-                          final isSameNumber =
-                              selectedVal > 0 && val == selectedVal;
-                          final hasError = _hasConflict(r, c);
+          // 6x6 Sudoku Grid
+          Center(
+            child: Container(
+              width: 310,
+              height: 310,
+              decoration: BoxDecoration(
+                border: Border.all(color: AppColors.darkBorder, width: 2),
+                borderRadius: BorderRadius.circular(10),
+                color: const Color(0xFF0E1015),
+              ),
+              child: Column(
+                children: List.generate(6, (r) {
+                  return Expanded(
+                    child: Row(
+                      children: List.generate(6, (c) {
+                        final val = _board[r][c];
+                        final isGiven = _isGiven(r, c);
+                        final isSelected =
+                            _selectedRow == r && _selectedCol == c;
+                        final isSameNumber =
+                            selectedVal > 0 && val == selectedVal;
+                        final hasError = _hasConflict(r, c);
 
-                          // Block borders: 2 rows x 3 columns
-                          final borderRight = (c == 2)
-                              ? const BorderSide(
-                                  color: AppColors.limePrimary,
-                                  width: 2,
-                                )
-                              : const BorderSide(
-                                  color: AppColors.darkBorder,
-                                  width: 0.5,
-                                );
-                          final borderBottom = (r == 1 || r == 3)
-                              ? const BorderSide(
-                                  color: AppColors.limePrimary,
-                                  width: 2,
-                                )
-                              : const BorderSide(
-                                  color: AppColors.darkBorder,
-                                  width: 0.5,
-                                );
+                        // Block borders: 2 rows x 3 columns
+                        final borderRight = (c == 2)
+                            ? const BorderSide(
+                                color: AppColors.limePrimary,
+                                width: 2,
+                              )
+                            : const BorderSide(
+                                color: AppColors.darkBorder,
+                                width: 0.5,
+                              );
+                        final borderBottom = (r == 1 || r == 3)
+                            ? const BorderSide(
+                                color: AppColors.limePrimary,
+                                width: 2,
+                              )
+                            : const BorderSide(
+                                color: AppColors.darkBorder,
+                                width: 0.5,
+                              );
 
-                          Color cellBg;
-                          if (isSelected) {
-                            cellBg = AppColors.limePrimary.withValues(
-                              alpha: 0.3,
-                            );
-                          } else if (hasError) {
-                            cellBg = AppColors.error.withValues(alpha: 0.25);
-                          } else if (isSameNumber) {
-                            cellBg = AppColors.lavenderAccent.withValues(
-                              alpha: 0.15,
-                            );
-                          } else if (isGiven) {
-                            cellBg = AppColors.darkCard;
-                          } else {
-                            cellBg = AppColors.darkBase;
-                          }
+                        Color cellBg;
+                        if (isSelected) {
+                          cellBg = AppColors.limePrimary.withValues(alpha: 0.3);
+                        } else if (hasError) {
+                          cellBg = AppColors.error.withValues(alpha: 0.25);
+                        } else if (isSameNumber) {
+                          cellBg = AppColors.lavenderAccent.withValues(
+                            alpha: 0.15,
+                          );
+                        } else if (isGiven) {
+                          cellBg = AppColors.darkCard;
+                        } else {
+                          cellBg = AppColors.darkBase;
+                        }
 
-                          return Expanded(
-                            child: GestureDetector(
-                              behavior: HitTestBehavior.opaque,
-                              onTap: () {
-                                setState(() {
-                                  _selectedRow = r;
-                                  _selectedCol = c;
-                                });
-                              },
-                              child: AnimatedContainer(
-                                duration: const Duration(milliseconds: 120),
-                                decoration: BoxDecoration(
-                                  color: cellBg,
-                                  border: Border(
-                                    right: borderRight,
-                                    bottom: borderBottom,
-                                  ),
+                        return Expanded(
+                          child: GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              setState(() {
+                                _selectedRow = r;
+                                _selectedCol = c;
+                              });
+                            },
+                            child: AnimatedContainer(
+                              duration: const Duration(milliseconds: 120),
+                              decoration: BoxDecoration(
+                                color: cellBg,
+                                border: Border(
+                                  right: borderRight,
+                                  bottom: borderBottom,
                                 ),
-                                child: Center(
-                                  child: Text(
-                                    val > 0 ? '$val' : '',
-                                    style: AppTypography.titleLarge.copyWith(
-                                      fontWeight: isGiven
-                                          ? FontWeight.w900
-                                          : FontWeight.bold,
-                                      color: hasError
-                                          ? AppColors.error
-                                          : isGiven
-                                          ? AppColors.textPrimary
-                                          : isSelected
-                                          ? AppColors.limePrimary
-                                          : const Color(0xFF42DFFF),
-                                      fontSize: 22,
-                                    ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  val > 0 ? '$val' : '',
+                                  style: AppTypography.titleLarge.copyWith(
+                                    fontWeight: isGiven
+                                        ? FontWeight.w900
+                                        : FontWeight.bold,
+                                    color: hasError
+                                        ? AppColors.error
+                                        : isGiven
+                                        ? AppColors.textPrimary
+                                        : isSelected
+                                        ? AppColors.limePrimary
+                                        : const Color(0xFF42DFFF),
+                                    fontSize: 22,
                                   ),
                                 ),
                               ),
                             ),
-                          );
-                        }),
-                      ),
-                    );
-                  }),
-                ),
+                          ),
+                        );
+                      }),
+                    ),
+                  );
+                }),
               ),
             ),
+          ),
 
-            const SizedBox(height: AppSpacing.md),
+          const SizedBox(height: AppSpacing.md),
 
-            // Completed Celebration Banner
-            if (_isCompleted) ...[
-              Container(
-                padding: const EdgeInsets.all(AppSpacing.sm),
-                decoration: BoxDecoration(
-                  color: AppColors.limePrimary.withValues(alpha: 0.15),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.limePrimary),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(
-                          Icons.emoji_events_rounded,
-                          color: AppColors.limePrimary,
-                          size: 24,
-                        ),
-                        const SizedBox(width: AppSpacing.xs),
-                        Text(
-                          'SUDOKU SOLVED! +15 XP',
-                          style: AppTypography.titleSmall.copyWith(
-                            color: AppColors.limePrimary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        setState(() => _resetBoard());
-                        _startTimer();
-                      },
-                      child: const Text(
-                        'PLAY AGAIN',
-                        style: TextStyle(
+          // Completed Celebration Banner
+          if (_isCompleted) ...[
+            Container(
+              padding: const EdgeInsets.all(AppSpacing.sm),
+              decoration: BoxDecoration(
+                color: AppColors.limePrimary.withValues(alpha: 0.15),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.limePrimary),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.emoji_events_rounded,
+                        color: AppColors.limePrimary,
+                        size: 24,
+                      ),
+                      const SizedBox(width: AppSpacing.xs),
+                      Text(
+                        'SUDOKU SOLVED! +15 XP',
+                        style: AppTypography.titleSmall.copyWith(
                           color: AppColors.limePrimary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: AppSpacing.sm),
-            ],
-
-            // Numbers Keypad (1 to 6 + Clear button)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ...List.generate(6, (idx) {
-                  final num = idx + 1;
-                  final isCurrentSelectedNumber = selectedVal == num;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: SizedBox(
-                      width: 42,
-                      height: 46,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isCurrentSelectedNumber
-                              ? AppColors.limePrimary
-                              : AppColors.darkElevatedSurface,
-                          foregroundColor: isCurrentSelectedNumber
-                              ? AppColors.darkBase
-                              : AppColors.limePrimary,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide(
-                              color: isCurrentSelectedNumber
-                                  ? AppColors.limePrimary
-                                  : AppColors.darkBorder,
-                            ),
-                          ),
-                          padding: EdgeInsets.zero,
-                        ),
-                        onPressed: () => _handleNumberInput(num),
-                        child: Text(
-                          '$num',
-                          style: AppTypography.titleLarge.copyWith(
-                            fontWeight: FontWeight.w900,
-                          ),
-                        ),
+                    ],
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() => _resetBoard());
+                      _startTimer();
+                    },
+                    child: const Text(
+                      'PLAY AGAIN',
+                      style: TextStyle(
+                        color: AppColors.limePrimary,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                  );
-                }),
-                Padding(
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: AppSpacing.sm),
+          ],
+
+          // Numbers Keypad (1 to 6 + Clear button)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ...List.generate(6, (idx) {
+                final num = idx + 1;
+                final isCurrentSelectedNumber = selectedVal == num;
+                return Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 3),
                   child: SizedBox(
                     width: 42,
                     height: 46,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.darkElevatedSurface,
-                        foregroundColor: AppColors.error,
+                        backgroundColor: isCurrentSelectedNumber
+                            ? AppColors.limePrimary
+                            : AppColors.darkElevatedSurface,
+                        foregroundColor: isCurrentSelectedNumber
+                            ? AppColors.darkBase
+                            : AppColors.limePrimary,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
-                          side: const BorderSide(color: AppColors.darkBorder),
+                          side: BorderSide(
+                            color: isCurrentSelectedNumber
+                                ? AppColors.limePrimary
+                                : AppColors.darkBorder,
+                          ),
                         ),
                         padding: EdgeInsets.zero,
                       ),
-                      onPressed: _handleClearCell,
-                      child: const Icon(Icons.backspace_outlined, size: 18),
+                      onPressed: () => _handleNumberInput(num),
+                      child: Text(
+                        '$num',
+                        style: AppTypography.titleLarge.copyWith(
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
                     ),
                   ),
+                );
+              }),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 3),
+                child: SizedBox(
+                  width: 42,
+                  height: 46,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.darkElevatedSurface,
+                      foregroundColor: AppColors.error,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: const BorderSide(color: AppColors.darkBorder),
+                      ),
+                      padding: EdgeInsets.zero,
+                    ),
+                    onPressed: _handleClearCell,
+                    child: const Icon(Icons.backspace_outlined, size: 18),
+                  ),
                 ),
-              ],
-            ),
-          ],
-        ),
+              ),
+            ],
+          ),
+        ],
       ),
+    ),
     );
   }
 }

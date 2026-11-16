@@ -140,8 +140,7 @@ class MockDashboardRepository implements DashboardRepository {
     final todayStr =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-    final hasActivityToday =
-        completedQuests.any((q) {
+    final hasActivityToday = completedQuests.any((q) {
           final d = q.completedAt ?? q.createdAt;
           return d.year == now.year && d.month == now.month && d.day == now.day;
         }) ||
@@ -206,5 +205,50 @@ class MockDashboardRepository implements DashboardRepository {
   void addXp(int amount) {
     _bonusXp += amount;
     _persistState();
+  }
+
+  @override
+  Future<void> updateProfile({
+    String? displayName,
+    String? title,
+    String? avatarId,
+  }) async {
+    _profile = _profile.copyWith(
+      displayName: displayName ?? _profile.displayName,
+      title: title ?? _profile.title,
+      avatarId: avatarId ?? _profile.avatarId,
+    );
+    await _persistState();
+  }
+
+  @override
+  Future<void> resetToZero() async {
+    _bonusXp = 0;
+    _profile = UserProfile(
+      id: 'user_local',
+      displayName: _profile.displayName,
+      avatarId: 'avatar_mage',
+      level: 1,
+      totalXp: 0,
+      currentStage: ProgressionStage.explorer,
+      visualTheme: 'dark',
+      title: 'The Novice Scholar',
+      createdAt: DateTime.now(),
+    );
+    _streak = const StreakInfo(
+      currentStreak: 0,
+      longestStreak: 0,
+      lastActiveDate: '',
+      activeDaysCount: 0,
+      isProtectedToday: false,
+      freezesRemaining: 1,
+    );
+
+    if (storage != null) {
+      await storage!.remove(_bonusXpKey);
+      await storage!.remove(_profileKey);
+      await storage!.remove(_streakKey);
+    }
+    await _persistState();
   }
 }
