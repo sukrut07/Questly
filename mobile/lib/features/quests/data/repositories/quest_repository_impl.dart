@@ -160,7 +160,7 @@ class QuestRepositoryImpl implements QuestRepository {
     if (qIndex != -1) {
       final quest = _localQuests[qIndex];
       final newSubtask = QuestSubtask(
-        id: 'subtask_${DateTime.now().millisecondsSinceEpoch}',
+        id: 'subtask_${DateTime.now().microsecondsSinceEpoch}_${quest.subtasks.length}',
         questId: questId,
         title: title,
         isCompleted: false,
