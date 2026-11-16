@@ -56,6 +56,8 @@ export interface QuestSubtask {
   id: string;
   title: string;
   isCompleted: boolean;
+  checkpointTime?: string;
+  xpReward?: number;
 }
 
 export interface Quest {

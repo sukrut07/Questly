@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { useQuestly } from '@/lib/store';
 import { LEVEL_CONFIG } from '@/lib/progressionEngine';
 import { AnimatedMobileRoadmap } from '@/components/roadmap/AnimatedMobileRoadmap';
 import { InteractiveWalkHeatmap } from '@/components/analytics/InteractiveWalkHeatmap';
 import { DailyCheckpoints } from '@/components/goals/DailyCheckpoints';
 import { StreakFlameAnimation } from '@/components/animations/StreakFlameAnimation';
+import { MobileTaskCreatorModal } from '@/components/quests/MobileTaskCreatorModal';
 import { ArcadeHub } from '@/components/arcade/ArcadeHub';
 import { QuestlyLogo } from '@/components/common/QuestlyLogo';
 import { sound } from '@/common/SoundService';
@@ -31,8 +32,12 @@ import {
   VolumeX,
   Wifi,
   Battery,
-  Shield,
-  Layers,
+  Calendar,
+  ChevronDown,
+  ChevronUp,
+  SlidersHorizontal,
+  Check,
+  Trash2,
 } from 'lucide-react';
 
 export type MobileAppSection = 'roadmap' | 'checkpoints' | 'tasks' | 'arcade' | 'heatmap';
@@ -46,7 +51,8 @@ export function LandingPage() {
     completeQuest,
     reopenQuest,
     createQuest,
-    focusSessions,
+    updateQuest,
+    toggleSubtask,
     settings,
     updateSettings,
     setCurrentTab,
@@ -59,16 +65,19 @@ export function LandingPage() {
   const [streakModalOpen, setStreakModalOpen] = useState(false);
   const [lastCompletedTaskTitle, setLastCompletedTaskTitle] = useState('');
 
-  // Task creation and filter state
+  // Task Creator Modal state
+  const [creatorModalOpen, setCreatorModalOpen] = useState(false);
+
+  // Expanded task card details state
+  const [expandedQuestId, setExpandedQuestId] = useState<string | null>(null);
+  const [inlineSubtaskInputs, setInlineSubtaskInputs] = useState<Record<string, string>>({});
+
+  // Quick inline task creation state
   const [newQuestTitle, setNewQuestTitle] = useState('');
   const [taskFilter, setTaskFilter] = useState<'all' | 'pending' | 'completed'>('all');
 
   // Current Level info
   const currentLvlConfig = LEVEL_CONFIG.find((l) => l.level === user.level) || LEVEL_CONFIG[0];
-  const levelProgressPercent = Math.min(
-    100,
-    Math.round((user.currentXp / Math.max(1, user.nextLevelXp)) * 100)
-  );
 
   const handleTabSwitch = (sec: MobileAppSection) => {
     sound.playButtonClick();
@@ -110,6 +119,67 @@ export function LandingPage() {
     }
   };
 
+  const handleToggleSubtaskItem = (questId: string, subtaskId: string) => {
+    sound.playButtonClick();
+    toggleSubtask(questId, subtaskId);
+  };
+
+  const handleAddInlineSubtask = (questId: string) => {
+    const text = inlineSubtaskInputs[questId]?.trim();
+    if (!text) return;
+    sound.playButtonClick();
+
+    const quest = quests.find((q) => q.id === questId);
+    if (!quest) return;
+
+    const updatedSubtasks = [
+      ...quest.subtasks,
+      {
+        id: `st_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
+        title: text,
+        isCompleted: false,
+      },
+    ];
+
+    updateQuest({
+      ...quest,
+      subtasks: updatedSubtasks,
+    });
+
+    setInlineSubtaskInputs((prev) => ({ ...prev, [questId]: '' }));
+  };
+
+  const getDeadlineBadge = (dueDate: string | null) => {
+    if (!dueDate) return null;
+    const today = new Date().toISOString().split('T')[0];
+
+    if (dueDate === today) {
+      return {
+        label: 'Due Today',
+        className: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+      };
+    }
+    const diffDays = Math.ceil(
+      (new Date(dueDate).getTime() - new Date(today).getTime()) / (1000 * 60 * 60 * 24)
+    );
+    if (diffDays < 0) {
+      return {
+        label: `Overdue by ${Math.abs(diffDays)}d`,
+        className: 'bg-rose-500/15 text-rose-400 border-rose-500/30',
+      };
+    }
+    if (diffDays === 1) {
+      return {
+        label: 'Due Tomorrow',
+        className: 'bg-cyan-500/15 text-cyan-400 border-cyan-500/30',
+      };
+    }
+    return {
+      label: `Due ${dueDate}`,
+      className: 'bg-white/5 text-zinc-400 border-white/10',
+    };
+  };
+
   const filteredQuests = quests.filter((q) => {
     if (taskFilter === 'pending') return q.status !== 'COMPLETED';
     if (taskFilter === 'completed') return q.status === 'COMPLETED';
@@ -119,7 +189,7 @@ export function LandingPage() {
   return (
     <div className="h-[100dvh] max-h-[100dvh] w-full bg-[#090A0D] text-[#F5F5F0] overflow-hidden flex flex-col justify-between selection:bg-[#B5FF55] selection:text-[#090A0D]">
       {/* =========================================================================
-          1. TOP APP BAR & CLEAN STATUS BAR (TASTE-SKILL POLISHED, NO ROBOT SLOP)
+          1. TOP APP BAR & CLEAN STATUS BAR
          ========================================================================= */}
       <header className="shrink-0 bg-[#0C0E14] border-b border-white/[0.08] z-30">
         {/* Native mobile device simulated top bar */}
@@ -159,7 +229,7 @@ export function LandingPage() {
 
           {/* Right Header Controls: Streak Pill, XP Pill, Sound & Workspace Switch */}
           <div className="flex items-center gap-2">
-            {/* Streak Trigger Pill (Click to preview streak flame) */}
+            {/* Streak Trigger Pill */}
             <button
               onClick={() => {
                 sound.playButtonClick();
@@ -212,15 +282,11 @@ export function LandingPage() {
         {/* Quick Access Action Bar */}
         <div className="px-3 py-1.5 bg-[#08090D] border-t border-white/[0.06] flex items-center gap-2 overflow-x-auto no-scrollbar text-xs">
           <button
-            onClick={() => handleTabSwitch('tasks')}
-            className={`px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 transition-all text-xs font-medium ${
-              activeSection === 'tasks'
-                ? 'bg-[#B5FF55] text-black border-[#B5FF55] font-bold'
-                : 'bg-white/[0.03] text-zinc-300 border-white/[0.08] hover:border-[#B5FF55]'
-            }`}
+            onClick={() => setCreatorModalOpen(true)}
+            className="px-3 py-1 rounded-lg border shrink-0 flex items-center gap-1.5 bg-[#B5FF55] text-black border-[#B5FF55] font-bold text-xs shadow-sm hover:bg-[#A3F040] transition-all"
           >
-            <Plus className="w-3 h-3 stroke-[3]" />
-            <span>New Quest</span>
+            <Plus className="w-3.5 h-3.5 stroke-[3]" />
+            <span>+ New Quest & Checkpoints</span>
           </button>
 
           <button
@@ -304,7 +370,7 @@ export function LandingPage() {
           </div>
         )}
 
-        {/* SECTION 3: INTERACTIVE ATOMIC QUEST TO-DO LIST */}
+        {/* SECTION 3: INTERACTIVE ATOMIC QUEST TO-DO LIST (WITH SUBTASKS & DEADLINES) */}
         {activeSection === 'tasks' && (
           <div className="h-full w-full flex flex-col overflow-hidden p-3 sm:p-5 space-y-3 max-w-xl mx-auto animate-in fade-in duration-150">
             {/* Header */}
@@ -314,7 +380,7 @@ export function LandingPage() {
                   Atomic Quests
                 </h3>
                 <p className="text-[11px] text-zinc-400">
-                  Complete tasks to trigger streak fire and verified XP
+                  Tap any quest to view descriptions, deadlines, and milestone checkpoints
                 </p>
               </div>
 
@@ -353,80 +419,260 @@ export function LandingPage() {
               </div>
             </div>
 
-            {/* Quick Add Quest Input Form */}
-            <form onSubmit={handleQuickAddQuest} className="flex gap-2 shrink-0">
-              <input
-                type="text"
-                value={newQuestTitle}
-                onChange={(e) => setNewQuestTitle(e.target.value)}
-                placeholder="Add a new academic quest..."
-                className="flex-1 bg-[#12151D] border border-white/[0.08] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B5FF55] transition-colors"
-              />
+            {/* Quick Add Quest Input Form + Creator Trigger */}
+            <div className="flex gap-2 shrink-0">
+              <form onSubmit={handleQuickAddQuest} className="flex-1 flex gap-2">
+                <input
+                  type="text"
+                  value={newQuestTitle}
+                  onChange={(e) => setNewQuestTitle(e.target.value)}
+                  placeholder="Quick add quest title..."
+                  className="flex-1 bg-[#12151D] border border-white/[0.08] rounded-xl px-3.5 py-2 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B5FF55] transition-colors"
+                />
+                <button
+                  type="submit"
+                  disabled={!newQuestTitle.trim()}
+                  className="px-3.5 py-2 bg-[#B5FF55] hover:bg-[#A3F040] disabled:opacity-40 text-black font-extrabold text-xs uppercase tracking-wide rounded-xl shadow-md flex items-center gap-1"
+                >
+                  <Plus className="w-3.5 h-3.5 stroke-[3]" />
+                  <span>Add</span>
+                </button>
+              </form>
+
               <button
-                type="submit"
-                disabled={!newQuestTitle.trim()}
-                className="px-4 py-2.5 bg-[#B5FF55] hover:bg-[#A3F040] disabled:opacity-40 text-black font-extrabold text-xs uppercase tracking-wide rounded-xl shadow-md flex items-center gap-1.5 transition-all"
+                type="button"
+                onClick={() => setCreatorModalOpen(true)}
+                className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-zinc-300 hover:text-white rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-colors"
+                title="Full Quest & Checkpoint Creator"
               >
-                <Plus className="w-4 h-4 stroke-[3]" />
-                <span>Add</span>
+                <SlidersHorizontal className="w-3.5 h-3.5 text-zinc-400" />
+                <span className="hidden sm:inline">Details</span>
               </button>
-            </form>
+            </div>
 
             {/* Quest Feed */}
-            <div className="flex-1 min-h-0 overflow-y-auto space-y-2 pr-1">
+            <div className="flex-1 min-h-0 overflow-y-auto space-y-2.5 pr-1">
               {filteredQuests.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center p-6 space-y-2 text-zinc-500 text-xs">
                   <CheckCircle2 className="w-8 h-8 text-[#B5FF55]/60" />
-                  <span>Queue clear. Tap Add above to create your next quest.</span>
+                  <span>No quests found. Tap Add or Full Creator above.</span>
                 </div>
               ) : (
                 filteredQuests.map((quest) => {
                   const isDone = quest.status === 'COMPLETED';
+                  const isExpanded = expandedQuestId === quest.id;
+                  const deadline = getDeadlineBadge(quest.dueDate);
+
+                  const completedSubtasksCount = quest.subtasks.filter(
+                    (s) => s.isCompleted
+                  ).length;
+                  const totalSubtasksCount = quest.subtasks.length;
+                  const subtaskProgressPct =
+                    totalSubtasksCount > 0
+                      ? Math.round((completedSubtasksCount / totalSubtasksCount) * 100)
+                      : 0;
 
                   return (
                     <div
                       key={quest.id}
-                      className={`p-3.5 rounded-2xl border transition-all flex items-start gap-3 ${
+                      className={`rounded-2xl border transition-all overflow-hidden ${
                         isDone
                           ? 'bg-white/[0.02] border-white/[0.05] opacity-60'
-                          : 'bg-[#0E1118] border-white/[0.08] hover:border-[#B5FF55]/40 shadow-sm'
+                          : isExpanded
+                          ? 'bg-[#11141D] border-[#B5FF55]/40 shadow-lg'
+                          : 'bg-[#0E1118] border-white/[0.08] hover:border-white/20 shadow-sm'
                       }`}
                     >
-                      {/* Checkbox Button */}
-                      <button
-                        onClick={() => handleToggleQuest(quest.id, quest.status, quest.title)}
-                        className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center transition-all ${
-                          isDone
-                            ? 'bg-[#B5FF55] border-[#B5FF55] text-black shadow-sm'
-                            : 'border-zinc-700 hover:border-[#B5FF55]'
-                        }`}
-                        aria-label={`Toggle quest completion: ${quest.title}`}
-                      >
-                        {isDone && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}
-                      </button>
+                      {/* Quest Primary Header */}
+                      <div className="p-3.5 flex items-start gap-3">
+                        {/* Checkbox Button */}
+                        <button
+                          onClick={() =>
+                            handleToggleQuest(quest.id, quest.status, quest.title)
+                          }
+                          className={`mt-0.5 w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 transition-all ${
+                            isDone
+                              ? 'bg-[#B5FF55] border-[#B5FF55] text-black shadow-sm'
+                              : 'border-zinc-700 hover:border-[#B5FF55]'
+                          }`}
+                          aria-label={`Toggle quest completion: ${quest.title}`}
+                        >
+                          {isDone && <CheckCircle2 className="w-4 h-4 stroke-[3]" />}
+                        </button>
 
-                      {/* Quest Title & Meta */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap mb-1">
-                          <span
-                            className={`text-xs font-semibold leading-snug ${
-                              isDone ? 'line-through text-zinc-500' : 'text-zinc-100'
-                            }`}
-                          >
-                            {quest.title}
-                          </span>
-                        </div>
+                        {/* Title and Badges */}
+                        <div
+                          className="flex-1 min-w-0 cursor-pointer"
+                          onClick={() =>
+                            setExpandedQuestId(isExpanded ? null : quest.id)
+                          }
+                        >
+                          <div className="flex items-center justify-between gap-2">
+                            <span
+                              className={`text-xs font-semibold leading-snug truncate ${
+                                isDone ? 'line-through text-zinc-500' : 'text-zinc-100'
+                              }`}
+                            >
+                              {quest.title}
+                            </span>
 
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-zinc-400">
-                          <span className="px-1.5 py-0.2 rounded bg-white/[0.04] text-[#B5FF55] font-bold">
-                            +{quest.xpReward} XP
-                          </span>
-                          <span className="text-zinc-500">{quest.subjectCode || 'General'}</span>
-                          {quest.priority === 'URGENT' && (
-                            <span className="text-rose-400 font-bold">Urgent</span>
-                          )}
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {deadline && (
+                                <span
+                                  className={`text-[10px] font-mono px-2 py-0.5 rounded-md border ${deadline.className}`}
+                                >
+                                  {deadline.label}
+                                </span>
+                              )}
+                              <button
+                                className="p-0.5 text-zinc-500 hover:text-zinc-300"
+                                aria-label="Toggle details"
+                              >
+                                {isExpanded ? (
+                                  <ChevronUp className="w-4 h-4" />
+                                ) : (
+                                  <ChevronDown className="w-4 h-4" />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+
+                          {/* Secondary Meta Row */}
+                          <div className="flex items-center gap-2 mt-1 text-[10px] font-mono text-zinc-400">
+                            <span className="px-1.5 py-0.2 rounded bg-white/[0.04] text-[#B5FF55] font-bold">
+                              +{quest.xpReward} XP
+                            </span>
+                            <span className="text-zinc-500">
+                              {quest.subjectCode || 'General'}
+                            </span>
+                            {totalSubtasksCount > 0 && (
+                              <span className="text-purple-300">
+                                {completedSubtasksCount}/{totalSubtasksCount} Checkpoints
+                              </span>
+                            )}
+                            {quest.priority === 'URGENT' && (
+                              <span className="text-rose-400 font-bold">Urgent</span>
+                            )}
+                          </div>
                         </div>
                       </div>
+
+                      {/* Expanded Section: Description, Subtasks, and Checkpoints */}
+                      {isExpanded && (
+                        <div className="px-3.5 pb-3.5 pt-1 border-t border-white/[0.06] space-y-3 bg-black/20 text-xs">
+                          {/* Task Description */}
+                          {quest.description && (
+                            <div className="space-y-1">
+                              <span className="text-[10px] uppercase font-mono text-zinc-500 font-semibold tracking-wider">
+                                Description & Objective
+                              </span>
+                              <p className="text-zinc-300 text-xs leading-relaxed bg-white/[0.02] p-2.5 rounded-xl border border-white/[0.04]">
+                                {quest.description}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* Subtasks / Milestone Checkpoints */}
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between text-[10px] uppercase font-mono text-zinc-400 font-semibold tracking-wider">
+                              <span className="flex items-center gap-1.5">
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#B5FF55]" />
+                                <span>Milestone Checkpoints ({totalSubtasksCount})</span>
+                              </span>
+                              {totalSubtasksCount > 0 && (
+                                <span className="text-[#B5FF55]">
+                                  {subtaskProgressPct}% cleared
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Progress bar */}
+                            {totalSubtasksCount > 0 && (
+                              <div className="w-full h-1.5 rounded-full bg-white/10 overflow-hidden">
+                                <div
+                                  className="h-full bg-gradient-to-r from-purple-400 to-[#B5FF55] transition-all"
+                                  style={{ width: `${subtaskProgressPct}%` }}
+                                />
+                              </div>
+                            )}
+
+                            {/* Subtask items list */}
+                            <div className="space-y-1.5">
+                              {quest.subtasks.map((st) => (
+                                <div
+                                  key={st.id}
+                                  onClick={() =>
+                                    handleToggleSubtaskItem(quest.id, st.id)
+                                  }
+                                  className={`p-2 rounded-xl border flex items-center justify-between gap-2 cursor-pointer transition-colors ${
+                                    st.isCompleted
+                                      ? 'bg-emerald-950/20 border-emerald-500/20 text-zinc-400'
+                                      : 'bg-white/[0.03] border-white/[0.06] text-zinc-200 hover:border-white/20'
+                                  }`}
+                                >
+                                  <div className="flex items-center gap-2 min-w-0">
+                                    <div
+                                      className={`w-4 h-4 rounded-md border flex items-center justify-center shrink-0 ${
+                                        st.isCompleted
+                                          ? 'bg-[#B5FF55] border-[#B5FF55] text-black'
+                                          : 'border-zinc-600'
+                                      }`}
+                                    >
+                                      {st.isCompleted && (
+                                        <Check className="w-3 h-3 stroke-[3]" />
+                                      )}
+                                    </div>
+                                    <span
+                                      className={`truncate text-xs ${
+                                        st.isCompleted
+                                          ? 'line-through text-zinc-500'
+                                          : 'text-zinc-200'
+                                      }`}
+                                    >
+                                      {st.title}
+                                    </span>
+                                  </div>
+
+                                  {st.checkpointTime && (
+                                    <span className="text-[10px] font-mono text-amber-400 shrink-0 px-1.5 py-0.2 rounded bg-amber-500/10 border border-amber-500/20">
+                                      {st.checkpointTime}
+                                    </span>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Inline Add Subtask Input */}
+                            <div className="flex gap-1.5 pt-1">
+                              <input
+                                type="text"
+                                value={inlineSubtaskInputs[quest.id] || ''}
+                                onChange={(e) =>
+                                  setInlineSubtaskInputs((prev) => ({
+                                    ...prev,
+                                    [quest.id]: e.target.value,
+                                  }))
+                                }
+                                placeholder="Add checkpoint or subtask..."
+                                className="flex-1 bg-[#141720] border border-white/[0.08] rounded-xl px-2.5 py-1.5 text-xs text-white placeholder:text-zinc-500 focus:outline-none focus:border-[#B5FF55]"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    handleAddInlineSubtask(quest.id);
+                                  }
+                                }}
+                              />
+                              <button
+                                type="button"
+                                onClick={() => handleAddInlineSubtask(quest.id)}
+                                className="px-3 py-1.5 bg-white/10 hover:bg-[#B5FF55] hover:text-black text-white text-xs font-semibold rounded-xl transition-all"
+                              >
+                                Add
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   );
                 })
@@ -540,7 +786,15 @@ export function LandingPage() {
       </nav>
 
       {/* =========================================================================
-          4. STREAK FLAME CELEBRATION MODAL (LOTTIE FLAME MASTER)
+          4. FULL QUEST & CHECKPOINT CREATOR MODAL
+         ========================================================================= */}
+      <MobileTaskCreatorModal
+        isOpen={creatorModalOpen}
+        onClose={() => setCreatorModalOpen(false)}
+      />
+
+      {/* =========================================================================
+          5. STREAK FLAME CELEBRATION MODAL (LOTTIE FLAME MASTER)
          ========================================================================= */}
       <StreakFlameAnimation
         isOpen={streakModalOpen}
