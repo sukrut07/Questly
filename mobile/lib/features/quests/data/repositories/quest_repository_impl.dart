@@ -161,4 +161,38 @@ class QuestRepositoryImpl implements QuestRepository {
     }
     throw Exception('Quest with id $questId not found');
   }
+
+  @override
+  Future<Quest> addSubtask(String questId, String title) async {
+    final qIndex = _localQuests.indexWhere((q) => q.id == questId);
+    if (qIndex != -1) {
+      final quest = _localQuests[qIndex];
+      final newSubtask = QuestSubtask(
+        id: 'subtask_${DateTime.now().millisecondsSinceEpoch}',
+        questId: questId,
+        title: title,
+        isCompleted: false,
+      );
+      final updated = quest.copyWith(
+        subtasks: [...quest.subtasks, newSubtask],
+      );
+      _localQuests[qIndex] = updated;
+      return updated;
+    }
+    throw Exception('Quest with id $questId not found');
+  }
+
+  @override
+  Future<Quest> deleteSubtask(String questId, String subtaskId) async {
+    final qIndex = _localQuests.indexWhere((q) => q.id == questId);
+    if (qIndex != -1) {
+      final quest = _localQuests[qIndex];
+      final updatedSubtasks =
+          quest.subtasks.where((s) => s.id != subtaskId).toList();
+      final updated = quest.copyWith(subtasks: updatedSubtasks);
+      _localQuests[qIndex] = updated;
+      return updated;
+    }
+    throw Exception('Quest with id $questId not found');
+  }
 }

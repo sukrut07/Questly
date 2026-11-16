@@ -1,23 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
+import 'package:questly/features/quests/presentation/widgets/quest_checklist_card.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/app_card.dart';
-import 'package:questly/shared/widgets/questly_celebration_dialog.dart';
-import 'package:questly/shared/widgets/stat_badge.dart';
 
-class ActiveQuestsSection extends StatelessWidget {
+class ActiveQuestsSection extends ConsumerWidget {
   final List<Quest> quests;
 
   const ActiveQuestsSection({super.key, required this.quests});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -93,173 +91,20 @@ class ActiveQuestsSection extends StatelessWidget {
             ),
           )
         else
-          ListView.separated(
+          ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: quests.take(3).length,
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: AppSpacing.sm),
             itemBuilder: (context, index) {
               final quest = quests[index];
-              return _QuestItemCard(quest: quest);
+              return QuestChecklistCard(
+                quest: quest,
+                onChanged: () =>
+                    ref.read(dashboardStateProvider.notifier).refresh(),
+              );
             },
           ),
       ],
-    );
-  }
-}
-
-class _QuestItemCard extends ConsumerWidget {
-  final Quest quest;
-
-  const _QuestItemCard({required this.quest});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
-    return AppCard(
-      onTap: () => context.pushNamed(
-        RouteNames.questDetail,
-        pathParameters: {'id': quest.id},
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Category Icon / Complete Container
-              InkWell(
-                onTap: () async {
-                  await ref
-                      .read(questRepositoryProvider)
-                      .completeQuest(quest.id);
-                  ref.read(dashboardStateProvider.notifier).refresh();
-                  if (context.mounted) {
-                    QuestlyCelebrationDialog.show(
-                      context,
-                      title: quest.title,
-                      xpReward: quest.xpReward,
-                      badge: 'Task Completed',
-                    );
-                  }
-                },
-                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    color: isDark
-                        ? AppColors.darkElevatedSurface
-                        : AppColors.lightElevatedSurface,
-                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                    border: Border.all(
-                      color: isDark
-                          ? AppColors.darkBorder
-                          : AppColors.lightBorder,
-                    ),
-                  ),
-                  child: Icon(
-                    quest.isCompleted
-                        ? Icons.check_circle_rounded
-                        : quest.category.icon,
-                    size: 20,
-                    color: quest.isCompleted
-                        ? AppColors.limePrimary
-                        : (isDark
-                              ? AppColors.darkPrimary
-                              : AppColors.lightPrimary),
-                  ),
-                ),
-              ),
-
-              const SizedBox(width: AppSpacing.sm),
-
-              // Title and Description
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      quest.title,
-                      style: theme.textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w700,
-                        color: isDark
-                            ? AppColors.darkTextPrimary
-                            : AppColors.lightTextPrimary,
-                      ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    if (quest.description.isNotEmpty) ...[
-                      const SizedBox(height: AppSpacing.xxs),
-                      Text(
-                        quest.description,
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: isDark
-                              ? AppColors.darkTextSecondary
-                              : AppColors.lightTextSecondary,
-                        ),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-
-              // XP Reward Badge
-              StatBadge(
-                label: '+${quest.xpReward} XP',
-                icon: Icons.bolt_rounded,
-                color: AppColors.darkAccent,
-              ),
-            ],
-          ),
-
-          const SizedBox(height: AppSpacing.sm),
-
-          // Footer Tags (Category, Difficulty, Estimated Time)
-          Row(
-            children: [
-              StatBadge(
-                label: quest.category.displayName,
-                color: isDark
-                    ? AppColors.darkTextSecondary
-                    : AppColors.lightTextSecondary,
-              ),
-              const SizedBox(width: AppSpacing.xs),
-              StatBadge(
-                label: quest.difficulty.displayName,
-                color: quest.difficulty.badgeColor,
-              ),
-              const Spacer(),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.schedule_rounded,
-                    size: 14,
-                    color: isDark
-                        ? AppColors.darkTextMuted
-                        : AppColors.lightTextMuted,
-                  ),
-                  const SizedBox(width: AppSpacing.xxs),
-                  Text(
-                    '${quest.estimatedMinutes}m',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: isDark
-                          ? AppColors.darkTextMuted
-                          : AppColors.lightTextMuted,
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

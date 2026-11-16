@@ -19,6 +19,8 @@ class LevelNodeData {
   final double x; // Relative 0.0 to 1.0
   final double y; // Relative 0.0 to 1.0
   final String reward;
+  final String gameChallenge;
+  final int gameXpReward;
 
   const LevelNodeData({
     required this.level,
@@ -27,6 +29,8 @@ class LevelNodeData {
     required this.x,
     required this.y,
     required this.reward,
+    required this.gameChallenge,
+    this.gameXpReward = 15,
   });
 }
 
@@ -61,6 +65,8 @@ class _LevelSelectionMapWidgetState
       x: 0.25,
       y: 0.88,
       reward: 'Basic Academic Tools & Daily Streak Counter',
+      gameChallenge: 'XOXO Minimax Warmup Bot',
+      gameXpReward: 8,
     ),
     LevelNodeData(
       level: 2,
@@ -69,6 +75,8 @@ class _LevelSelectionMapWidgetState
       x: 0.72,
       y: 0.76,
       reward: 'Custom Coursework Categories & Mind Snap Games',
+      gameChallenge: 'Sudoku Blitz 6×6 Tactical Challenge',
+      gameXpReward: 15,
     ),
     LevelNodeData(
       level: 3,
@@ -77,6 +85,8 @@ class _LevelSelectionMapWidgetState
       x: 0.78,
       y: 0.58,
       reward: 'Arcane Violet Neon Theme & Spaced Repetition Timer',
+      gameChallenge: 'KenKen 4×4 Arithmetic Matrix',
+      gameXpReward: 20,
     ),
     LevelNodeData(
       level: 4,
@@ -85,6 +95,8 @@ class _LevelSelectionMapWidgetState
       x: 0.32,
       y: 0.48,
       reward: 'Workload Balancer V2 & Streak Resiliency Shield',
+      gameChallenge: 'Speed Math Blitz Sprint',
+      gameXpReward: 20,
     ),
     LevelNodeData(
       level: 5,
@@ -93,6 +105,8 @@ class _LevelSelectionMapWidgetState
       x: 0.22,
       y: 0.30,
       reward: 'KenKen Grandmaster Mode & Focus Audio Synthesizer',
+      gameChallenge: 'KenKen Grandmaster Cage Duel',
+      gameXpReward: 25,
     ),
     LevelNodeData(
       level: 6,
@@ -101,6 +115,8 @@ class _LevelSelectionMapWidgetState
       x: 0.70,
       y: 0.20,
       reward: 'Cognitive Sprint Multiplier & Verified Audit Ledger',
+      gameChallenge: 'Unbeatable Minimax Boss Trial',
+      gameXpReward: 30,
     ),
     LevelNodeData(
       level: 7,
@@ -109,6 +125,8 @@ class _LevelSelectionMapWidgetState
       x: 0.50,
       y: 0.08,
       reward: 'Golden Legendary Aura & Pinnacle Prestige Badge',
+      gameChallenge: 'Pinnacle Grandmaster Arena Trial',
+      gameXpReward: 40,
     ),
   ];
 
@@ -486,6 +504,73 @@ class _LevelSelectionMapWidgetState
                   ),
                 ],
               ),
+              const SizedBox(height: AppSpacing.xs),
+              // Playable Game Track Challenge Banner
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 6,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.lavenderAccent.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(
+                    color: AppColors.lavenderAccent.withValues(alpha: 0.3),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.videogame_asset_rounded,
+                      color: AppColors.lavenderAccent,
+                      size: 18,
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'TIER $_selectedLevel GAME TRACK CHALLENGE',
+                            style: const TextStyle(
+                              fontSize: 9,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.lavenderAccent,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                          Text(
+                            selectedConfig.gameChallenge,
+                            style: AppTypography.bodySmall.copyWith(
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textPrimary,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 6,
+                        vertical: 2,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.limePrimary.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        '+${selectedConfig.gameXpReward} XP',
+                        style: AppTypography.captionBold.copyWith(
+                          color: AppColors.limePrimary,
+                          fontSize: 10,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               const SizedBox(height: AppSpacing.sm),
               // Fast Action CTAs to boost XP
               Row(
@@ -508,7 +593,7 @@ class _LevelSelectionMapWidgetState
                   const SizedBox(width: AppSpacing.xs),
                   Expanded(
                     child: QuestlyButton(
-                      text: 'BRAIN GAMES',
+                      text: 'PLAY GAME',
                       icon: Icons.sports_esports_rounded,
                       size: QuestlyButtonSize.small,
                       variant: QuestlyButtonVariant.secondaryLavender,

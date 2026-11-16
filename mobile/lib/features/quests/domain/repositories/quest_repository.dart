@@ -10,4 +10,6 @@ abstract class QuestRepository {
   Future<void> deleteQuest(String id);
   Future<Quest> completeQuest(String id);
   Future<Quest> toggleSubtask(String questId, String subtaskId);
+  Future<Quest> addSubtask(String questId, String title);
+  Future<Quest> deleteSubtask(String questId, String subtaskId);
 }

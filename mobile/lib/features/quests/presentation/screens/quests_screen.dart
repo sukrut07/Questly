@@ -6,13 +6,11 @@ import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/quests/presentation/widgets/quest_checklist_card.dart';
 import 'package:questly/features/quests/presentation/widgets/quick_task_bottom_sheet.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/empty_state.dart';
-import 'package:questly/shared/widgets/questly_button.dart';
-import 'package:questly/shared/widgets/questly_card.dart';
-import 'package:questly/shared/widgets/questly_celebration_dialog.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
@@ -194,161 +192,9 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                       itemCount: filtered.length,
                       itemBuilder: (context, index) {
                         final quest = filtered[index];
-                        final completedSubtasks = quest.subtasks
-                            .where((s) => s.isCompleted)
-                            .length;
-                        final totalSubtasks = quest.subtasks.length;
-                        final isDone = quest.status == QuestStatus.completed;
-
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: AppSpacing.sm),
-                          child: QuestlyCard(
-                            borderColor: isDone
-                                ? AppColors.limePrimary.withValues(alpha: 0.4)
-                                : AppColors.darkBorder,
-                            onTap: () => context.push(
-                              RoutePaths.questDetail.replaceAll(
-                                ':id',
-                                quest.id,
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        Icon(
-                                          quest.category.icon,
-                                          size: 16,
-                                          color: AppColors.limePrimary,
-                                        ),
-                                        const SizedBox(width: 6),
-                                        Text(
-                                          quest.category.displayName
-                                              .toUpperCase(),
-                                          style: AppTypography.captionBold
-                                              .copyWith(
-                                                color: AppColors.limePrimary,
-                                                letterSpacing: 1.0,
-                                              ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        horizontal: 8,
-                                        vertical: 2,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AppColors.limePrimary.withValues(
-                                          alpha: 0.15,
-                                        ),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Text(
-                                        '+${quest.xpReward} XP',
-                                        style: AppTypography.captionBold
-                                            .copyWith(
-                                              color: AppColors.limePrimary,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(height: AppSpacing.xs),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      icon: Icon(
-                                        isDone
-                                            ? Icons.check_circle_rounded
-                                            : Icons
-                                                  .radio_button_unchecked_rounded,
-                                        color: isDone
-                                            ? AppColors.limePrimary
-                                            : AppColors.textSecondary,
-                                        size: 24,
-                                      ),
-                                      padding: EdgeInsets.zero,
-                                      constraints: const BoxConstraints(),
-                                      onPressed: () async {
-                                        if (isDone) {
-                                          await questRepo.updateQuest(
-                                            quest.copyWith(
-                                              status: QuestStatus.inProgress,
-                                            ),
-                                          );
-                                        } else {
-                                          await questRepo.completeQuest(
-                                            quest.id,
-                                          );
-                                          if (context.mounted) {
-                                            QuestlyCelebrationDialog.show(
-                                              context,
-                                              title: quest.title,
-                                              xpReward: quest.xpReward,
-                                              badge: 'Scholar Consistency',
-                                            );
-                                          }
-                                        }
-                                        if (mounted) setState(() {});
-                                      },
-                                    ),
-                                    const SizedBox(width: AppSpacing.xs),
-                                    Expanded(
-                                      child: Text(
-                                        quest.title.toUpperCase(),
-                                        style: AppTypography.titleMedium
-                                            .copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              decoration: isDone
-                                                  ? TextDecoration.lineThrough
-                                                  : null,
-                                            ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                if (quest.description.isNotEmpty) ...[
-                                  const SizedBox(height: 4),
-                                  Text(
-                                    quest.description,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: AppTypography.bodySmall.copyWith(
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  ),
-                                ],
-                                const SizedBox(height: AppSpacing.sm),
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      '$completedSubtasks/$totalSubtasks SUBTASKS',
-                                      style: AppTypography.captionBold.copyWith(
-                                        color: AppColors.textTertiary,
-                                        fontSize: 11,
-                                      ),
-                                    ),
-                                    QuestlyButton(
-                                      text: 'FOCUS',
-                                      icon: Icons.timer_outlined,
-                                      variant: QuestlyButtonVariant.darkOutline,
-                                      size: QuestlyButtonSize.small,
-                                      onPressed: () =>
-                                          context.push(RoutePaths.focus),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
+                        return QuestChecklistCard(
+                          quest: quest,
+                          onChanged: () => setState(() {}),
                         );
                       },
                     );
