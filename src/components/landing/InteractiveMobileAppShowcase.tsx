@@ -601,7 +601,7 @@ export function InteractiveMobileAppShowcase() {
                 sound.playButtonClick();
                 setActiveScreen('dashboard');
               }}
-              className={`py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all ${
+              className={`min-h-[46px] py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all active:scale-95 touch-target ${
                 activeScreen === 'dashboard'
                   ? 'bg-[#B5FF55] text-[#090A0D] font-bold'
                   : 'text-zinc-400 hover:text-white'
@@ -616,7 +616,7 @@ export function InteractiveMobileAppShowcase() {
                 sound.playButtonClick();
                 setActiveScreen('tasks');
               }}
-              className={`py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all ${
+              className={`min-h-[46px] py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all active:scale-95 touch-target ${
                 activeScreen === 'tasks'
                   ? 'bg-[#B5FF55] text-[#090A0D] font-bold'
                   : 'text-zinc-400 hover:text-white'
@@ -631,7 +631,7 @@ export function InteractiveMobileAppShowcase() {
                 sound.playButtonClick();
                 setActiveScreen('map');
               }}
-              className={`py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all ${
+              className={`min-h-[46px] py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all active:scale-95 touch-target ${
                 activeScreen === 'map'
                   ? 'bg-[#B5FF55] text-[#090A0D] font-bold'
                   : 'text-zinc-400 hover:text-white'
@@ -646,7 +646,7 @@ export function InteractiveMobileAppShowcase() {
                 sound.playButtonClick();
                 setActiveScreen('habits');
               }}
-              className={`py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all ${
+              className={`min-h-[46px] py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all active:scale-95 touch-target ${
                 activeScreen === 'habits'
                   ? 'bg-[#B5FF55] text-[#090A0D] font-bold'
                   : 'text-zinc-400 hover:text-white'
@@ -661,7 +661,7 @@ export function InteractiveMobileAppShowcase() {
                 sound.playButtonClick();
                 setActiveScreen('games');
               }}
-              className={`py-1.5 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all ${
+              className={`min-h-[46px] py-1 rounded-xl flex flex-col items-center justify-center gap-0.5 text-[9px] font-mono transition-all active:scale-95 touch-target ${
                 activeScreen === 'games'
                   ? 'bg-[#B5FF55] text-[#090A0D] font-bold'
                   : 'text-zinc-400 hover:text-white'

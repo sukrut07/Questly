@@ -205,6 +205,18 @@ export function Sidebar() {
           </button>
 
           <button
+            onClick={() => handleTabClick('mobile_app')}
+            className={`w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-colors ${
+              currentTab === 'mobile_app'
+                ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
+                : 'text-[#A1A1A1] hover:text-[#B5FF55] hover:bg-[#171A21]'
+            }`}
+          >
+            <Smartphone className="w-4 h-4 text-[#B5FF55]" />
+            <span>Mobile App View</span>
+          </button>
+
+          <button
             onClick={() => handleTabClick('widget')}
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold text-[#A1A1A1] hover:text-[#42DFFF] hover:bg-[#171A21] transition-colors"
           >

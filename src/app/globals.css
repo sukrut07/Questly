@@ -49,6 +49,33 @@
   }
 }
 
+/* Mobile Safe Area utilities for notched phones (iPhone Dynamic Island & Android bottom nav bar) */
+.pt-safe {
+  padding-top: max(0.5rem, env(safe-area-inset-top));
+}
+.pb-safe {
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+.pl-safe {
+  padding-left: max(0.5rem, env(safe-area-inset-left));
+}
+.pr-safe {
+  padding-right: max(0.5rem, env(safe-area-inset-right));
+}
+
+/* Prevent overscroll bounce that pulls screen away while playing touch games */
+.mobile-screen-lock {
+  overscroll-behavior-y: none;
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-y;
+}
+
+/* Touch minimum targets (Apple HIG 44px, Android Material 48px) */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+}
+
 /* Typography Utility Classes */
 .font-display {
   font-family: var(--font-display), var(--font-sans), sans-serif;

@@ -339,7 +339,7 @@ export function XoxoBotGame({ onBack }: XoxoBotGameProps = {}) {
       </div>
 
       {/* 3x3 Tic Tac Toe Grid */}
-      <div className="grid grid-cols-3 gap-2 p-2 bg-[#090A0D] rounded-2xl border-2 border-[#303642] aspect-square">
+      <div className="grid grid-cols-3 gap-2 p-2 bg-[#090A0D] rounded-2xl border-2 border-[#303642] aspect-square touch-manipulation">
         {board.map((cell, idx) => {
           const isWinningCell = winningLine?.includes(idx);
 
@@ -348,7 +348,7 @@ export function XoxoBotGame({ onBack }: XoxoBotGameProps = {}) {
               key={idx}
               onClick={() => handleCellClick(idx)}
               disabled={Boolean(cell || winner || !isPlayerTurn || isBotThinking)}
-              className={`rounded-xl flex items-center justify-center font-display font-black text-4xl sm:text-5xl transition-all duration-150 brutal-shadow active:scale-95 ${
+              className={`min-h-[72px] rounded-xl flex items-center justify-center font-display font-black text-4xl sm:text-5xl transition-all duration-150 brutal-shadow active:scale-90 touch-target ${
                 cell === 'X'
                   ? 'text-[#B5FF55] bg-[#171A21]'
                   : cell === 'O'

@@ -59,7 +59,8 @@ export type AppTab =
   | 'focus'
   | 'analytics'
   | 'profile'
-  | 'widget';
+  | 'widget'
+  | 'mobile_app';
 
 export interface ToastData {
   id: string;

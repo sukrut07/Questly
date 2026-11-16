@@ -527,9 +527,9 @@ export function LevelSelectionMap({
                   sound.playButtonClick();
                   onOpenTasks();
                 }}
-                className="flex-1 min-w-[130px] px-3 py-2 rounded-xl bg-[#B5FF55] hover:bg-[#A3F040] text-[#090A0D] text-xs font-display font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 min-w-[130px] min-h-[46px] px-3 py-2.5 rounded-xl bg-[#B5FF55] hover:bg-[#A3F040] text-[#090A0D] text-xs font-display font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-target"
               >
-                <CheckSquare className="w-3.5 h-3.5" />
+                <CheckSquare className="w-4 h-4 stroke-[2.5]" />
                 <span>Earn +20 XP (Tasks)</span>
               </button>
             )}
@@ -540,9 +540,9 @@ export function LevelSelectionMap({
                   sound.playButtonClick();
                   onOpenArcade();
                 }}
-                className="flex-1 min-w-[130px] px-3 py-2 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-[#F5F5F0] text-xs font-display font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors"
+                className="flex-1 min-w-[130px] min-h-[46px] px-3 py-2.5 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-[#F5F5F0] text-xs font-display font-black uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-target"
               >
-                <Gamepad2 className="w-3.5 h-3.5 text-[#A879FF]" />
+                <Gamepad2 className="w-4 h-4 text-[#A879FF]" />
                 <span>Play Games (+10 XP)</span>
               </button>
             )}
@@ -553,7 +553,7 @@ export function LevelSelectionMap({
                   sound.playButtonClick();
                   onOpenFocus();
                 }}
-                className="px-3 py-2 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-zinc-300 text-xs font-mono transition-colors"
+                className="min-h-[46px] px-3 py-2.5 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-zinc-300 text-xs font-mono transition-all active:scale-95 touch-target"
                 title="Focus Chamber"
               >
                 Focus (+50 XP)
@@ -565,3 +565,4 @@ export function LevelSelectionMap({
     </div>
   );
 }
+

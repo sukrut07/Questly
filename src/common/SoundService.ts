@@ -21,8 +21,20 @@ class SoundService {
     return this.audioCtx;
   }
 
+  // Physical tactile haptic vibration for mobile devices / webview APK
+  triggerHaptic(pattern: number | number[] = 12) {
+    if (typeof window !== 'undefined' && typeof navigator !== 'undefined' && 'vibrate' in navigator) {
+      try {
+        navigator.vibrate(pattern);
+      } catch {
+        // Safe fallback if vibration permissions or hardware unavailable
+      }
+    }
+  }
+
   // Soft subtle UI button click
   playButtonClick() {
+    this.triggerHaptic(10);
     if (!this.enabled) return;
     const ctx = this.getContext();
     if (!ctx) return;
@@ -46,6 +58,7 @@ class SoundService {
 
   // Quest completed: Upward bright sparkling chime (C5 -> E5 -> G5 -> C6)
   playQuestComplete() {
+    this.triggerHaptic([25, 40, 50]);
     if (!this.enabled) return;
     const ctx = this.getContext();
     if (!ctx) return;
@@ -72,6 +85,7 @@ class SoundService {
 
   // Level Up: Majestic fanfare with harmonic overtones
   playLevelUp() {
+    this.triggerHaptic([40, 50, 40, 90]);
     if (!this.enabled) return;
     const ctx = this.getContext();
     if (!ctx) return;
@@ -246,6 +260,7 @@ class SoundService {
 
   // Error buzz sound
   playError() {
+    this.triggerHaptic([40, 30, 40]);
     if (!this.enabled) return;
     const ctx = this.getContext();
     if (!ctx) return;

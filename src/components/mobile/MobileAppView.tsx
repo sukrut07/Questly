@@ -91,9 +91,9 @@ export function MobileAppView() {
     filterType === 'all' ? quests : filterType === 'active' ? activeQuests : completedQuests;
 
   return (
-    <div className="h-[100dvh] max-h-[100dvh] w-full max-w-md mx-auto bg-[#090A0D] text-[#F5F5F0] flex flex-col justify-between overflow-hidden relative select-none font-sans border-x border-[#303642]/40 shadow-2xl">
-      {/* 1. Mobile Status Bar (Simulated Native App Header) */}
-      <div className="px-4 pt-2 pb-1 flex items-center justify-between text-[11px] font-mono text-[#A1A1A1] border-b border-[#303642]/40 bg-[#090A0D]/95 shrink-0 z-30">
+    <div className="h-[100dvh] max-h-[100dvh] w-full max-w-md mx-auto bg-[#090A0D] text-[#F5F5F0] flex flex-col justify-between overflow-hidden relative select-none font-sans border-x border-[#303642]/40 shadow-2xl mobile-screen-lock">
+      {/* 1. Mobile Status Bar (Simulated Native App Header with Safe Area Inset) */}
+      <div className="px-4 pt-safe pt-2 pb-1.5 flex items-center justify-between text-[11px] font-mono text-[#A1A1A1] border-b border-[#303642]/40 bg-[#090A0D]/95 shrink-0 z-30">
         <div className="flex items-center gap-1.5">
           <span className="font-bold text-[#F5F5F0]">
             {new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -445,8 +445,8 @@ export function MobileAppView() {
         )}
       </div>
 
-      {/* 4. Bottom Tab Bar Navigation */}
-      <div className="p-2 bg-[#111319]/95 border-t border-[#303642] backdrop-blur-lg shrink-0 z-20">
+      {/* 4. Bottom Tab Bar Navigation with Safe Area & 48px+ Touch Targets */}
+      <div className="p-2 pb-safe bg-[#111319]/95 border-t border-[#303642] backdrop-blur-lg shrink-0 z-20">
         <div className="grid grid-cols-5 gap-1 text-center">
           {/* Roadmap */}
           <button
@@ -454,7 +454,7 @@ export function MobileAppView() {
               sound.playButtonClick();
               setActiveSection('roadmap');
             }}
-            className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+            className={`min-h-[50px] py-1.5 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 touch-target ${
               activeSection === 'roadmap'
                 ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
                 : 'text-zinc-400 hover:text-white'
@@ -470,7 +470,7 @@ export function MobileAppView() {
               sound.playButtonClick();
               setActiveSection('checkpoints');
             }}
-            className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+            className={`min-h-[50px] py-1.5 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 touch-target ${
               activeSection === 'checkpoints'
                 ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
                 : 'text-zinc-400 hover:text-white'
@@ -486,7 +486,7 @@ export function MobileAppView() {
               sound.playButtonClick();
               setActiveSection('tasks');
             }}
-            className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all relative ${
+            className={`min-h-[50px] py-1.5 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 touch-target relative ${
               activeSection === 'tasks'
                 ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
                 : 'text-zinc-400 hover:text-white'
@@ -507,7 +507,7 @@ export function MobileAppView() {
               sound.playButtonClick();
               setActiveSection('heatmap');
             }}
-            className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+            className={`min-h-[50px] py-1.5 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 touch-target ${
               activeSection === 'heatmap'
                 ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
                 : 'text-zinc-400 hover:text-white'
@@ -523,7 +523,7 @@ export function MobileAppView() {
               sound.playButtonClick();
               setActiveSection('arcade');
             }}
-            className={`py-2 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all ${
+            className={`min-h-[50px] py-1.5 px-1 rounded-xl flex flex-col items-center justify-center gap-1 transition-all active:scale-95 touch-target ${
               activeSection === 'arcade'
                 ? 'bg-[#B5FF55] text-[#090A0D] font-bold shadow-sm'
                 : 'text-zinc-400 hover:text-white'

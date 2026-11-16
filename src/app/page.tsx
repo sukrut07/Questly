@@ -78,6 +78,13 @@ export default function QuestlyApp() {
           {currentTab === 'workspaces' && <WorkspaceTrackerView />}
           {currentTab === 'arcade' && <ArcadeHub />}
           {currentTab === 'widget' && <MobileWidgetView />}
+          {currentTab === 'mobile_app' && (
+            <div className="flex justify-center py-4 animate-in fade-in duration-200">
+              <div className="w-full max-w-sm sm:max-w-md h-[800px] rounded-[44px] border-4 border-[#303642] overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8),0_0_40px_rgba(181,255,85,0.15)] bg-[#090A0D]">
+                <MobileAppView />
+              </div>
+            </div>
+          )}
           {currentTab === 'planner' && <PlannerView />}
           {currentTab === 'subjects' && <SubjectsView />}
           {currentTab === 'inbox' && <AcademicInboxView />}

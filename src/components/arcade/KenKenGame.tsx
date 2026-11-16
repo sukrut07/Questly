@@ -289,7 +289,7 @@ export function KenKenGame({ onBack }: KenKenGameProps = {}) {
       </div>
 
       {/* 4x4 KenKen Grid */}
-      <div className="grid grid-cols-4 gap-1 p-2 bg-[#090A0D] rounded-2xl border-2 border-[#303642] aspect-square">
+      <div className="grid grid-cols-4 gap-1 p-2 bg-[#090A0D] rounded-2xl border-2 border-[#303642] aspect-square touch-manipulation">
         {grid.map((cellValue, idx) => {
           const isSelected = selectedCell === idx;
           const hasError = errors.has(idx);
@@ -300,7 +300,7 @@ export function KenKenGame({ onBack }: KenKenGameProps = {}) {
             <button
               key={idx}
               onClick={() => handleCellClick(idx)}
-              className={`relative rounded-xl flex items-center justify-center font-display font-black text-2xl transition-all duration-150 ${
+              className={`relative rounded-xl flex items-center justify-center font-display font-black text-2xl sm:text-3xl transition-all duration-150 touch-target active:scale-95 ${
                 isSelected
                   ? 'bg-[#B5FF55]/20 ring-2 ring-[#B5FF55]'
                   : 'bg-[#171A21]/90 hover:bg-[#20242D]'
@@ -332,14 +332,14 @@ export function KenKenGame({ onBack }: KenKenGameProps = {}) {
           <button
             key={num}
             onClick={() => handleInputNumber(num)}
-            className="flex-1 py-3 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-xl font-display font-black text-[#F5F5F0] hover:text-[#B5FF55] hover:border-[#B5FF55] transition-all brutal-shadow active:scale-95"
+            className="flex-1 min-h-[52px] py-3 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-2xl font-display font-black text-[#F5F5F0] hover:text-[#B5FF55] hover:border-[#B5FF55] transition-all brutal-shadow active:scale-90 touch-target"
           >
             {num}
           </button>
         ))}
         <button
           onClick={handleClearCell}
-          className="px-4 py-3 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-xs font-mono font-bold text-[#FF806B] transition-all active:scale-95"
+          className="min-h-[52px] px-5 py-3 rounded-xl bg-[#171A21] hover:bg-[#20242D] border border-[#303642] text-xs font-mono font-bold text-[#FF806B] transition-all active:scale-90 touch-target"
         >
           CLEAR
         </button>
