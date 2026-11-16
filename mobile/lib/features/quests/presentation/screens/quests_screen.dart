@@ -6,11 +6,13 @@ import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
+import 'package:questly/features/quests/presentation/widgets/quick_task_bottom_sheet.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/empty_state.dart';
 import 'package:questly/shared/widgets/questly_button.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
+import 'package:questly/shared/widgets/questly_celebration_dialog.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
 
 class QuestsScreen extends ConsumerStatefulWidget {
@@ -258,14 +260,58 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
                                   ],
                                 ),
                                 const SizedBox(height: AppSpacing.xs),
-                                Text(
-                                  quest.title.toUpperCase(),
-                                  style: AppTypography.titleMedium.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                    decoration: isDone
-                                        ? TextDecoration.lineThrough
-                                        : null,
-                                  ),
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      icon: Icon(
+                                        isDone
+                                            ? Icons.check_circle_rounded
+                                            : Icons
+                                                  .radio_button_unchecked_rounded,
+                                        color: isDone
+                                            ? AppColors.limePrimary
+                                            : AppColors.textSecondary,
+                                        size: 24,
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                      constraints: const BoxConstraints(),
+                                      onPressed: () async {
+                                        if (isDone) {
+                                          await questRepo.updateQuest(
+                                            quest.copyWith(
+                                              status: QuestStatus.inProgress,
+                                            ),
+                                          );
+                                        } else {
+                                          await questRepo.completeQuest(
+                                            quest.id,
+                                          );
+                                          if (context.mounted) {
+                                            QuestlyCelebrationDialog.show(
+                                              context,
+                                              title: quest.title,
+                                              xpReward: quest.xpReward,
+                                              badge: 'Scholar Consistency',
+                                            );
+                                          }
+                                        }
+                                        if (mounted) setState(() {});
+                                      },
+                                    ),
+                                    const SizedBox(width: AppSpacing.xs),
+                                    Expanded(
+                                      child: Text(
+                                        quest.title.toUpperCase(),
+                                        style: AppTypography.titleMedium
+                                            .copyWith(
+                                              fontWeight: FontWeight.bold,
+                                              decoration: isDone
+                                                  ? TextDecoration.lineThrough
+                                                  : null,
+                                            ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 if (quest.description.isNotEmpty) ...[
                                   const SizedBox(height: 4),
@@ -313,11 +359,18 @@ class _QuestsScreenState extends ConsumerState<QuestsScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.limePrimary,
         foregroundColor: AppColors.darkBase,
-        child: const Icon(Icons.add, size: 28),
-        onPressed: () => context.push(RoutePaths.createQuest),
+        icon: const Icon(Icons.add_task_rounded, size: 20),
+        label: Text(
+          'NEW TASK',
+          style: AppTypography.labelBold.copyWith(color: AppColors.darkBase),
+        ),
+        onPressed: () => QuickTaskBottomSheet.show(
+          context,
+          onCreated: () => setState(() {}),
+        ),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
 import 'package:questly/app/theme/app_typography.dart';
 import 'package:questly/features/roadmaps/domain/models/roadmap.dart';
+import 'package:questly/features/roadmaps/presentation/widgets/level_selection_map_widget.dart';
 import 'package:questly/shared/widgets/questly_button.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
@@ -28,7 +29,10 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 3, vsync: this);
+    _tabController.addListener(() {
+      if (mounted) setState(() {});
+    });
     _loadData();
   }
 
@@ -149,6 +153,7 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
                         unselectedLabelStyle: AppTypography.labelMedium,
                         dividerColor: AppColors.darkBorder,
                         tabs: const [
+                          Tab(text: 'LEVEL MAP'),
                           Tab(text: 'MY JOURNEYS'),
                           Tab(text: 'TEMPLATES'),
                         ],
@@ -166,7 +171,11 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
                   )
                 : TabBarView(
                     controller: _tabController,
-                    children: [_buildActiveRoadmapsTab(), _buildTemplatesTab()],
+                    children: [
+                      _buildLevelMapTab(),
+                      _buildActiveRoadmapsTab(),
+                      _buildTemplatesTab(),
+                    ],
                   ),
           ),
         ),
@@ -174,13 +183,33 @@ class _RoadmapsScreenState extends ConsumerState<RoadmapsScreen>
       floatingActionButton: FloatingActionButton.extended(
         backgroundColor: AppColors.limePrimary,
         foregroundColor: AppColors.darkBase,
-        icon: const Icon(Icons.add, size: 20),
+        icon: Icon(
+          _tabController.index == 0 ? Icons.add_task : Icons.add,
+          size: 20,
+        ),
         label: Text(
-          'NEW ROADMAP',
+          _tabController.index == 0 ? 'NEW TASK' : 'NEW ROADMAP',
           style: AppTypography.labelBold.copyWith(color: AppColors.darkBase),
         ),
-        onPressed: () =>
-            context.push(RoutePaths.createRoadmap).then((_) => _loadData()),
+        onPressed: () {
+          if (_tabController.index == 0) {
+            context.pushNamed(RouteNames.createQuest);
+          } else {
+            context.push(RoutePaths.createRoadmap).then((_) => _loadData());
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildLevelMapTab() {
+    return SingleChildScrollView(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.all(AppSpacing.md),
+      child: LevelSelectionMapWidget(
+        onOpenTasks: () => context.pushNamed(RouteNames.createQuest),
+        onOpenArcade: () => context.push(RoutePaths.arcade),
+        onOpenFocus: () => context.push(RoutePaths.focus),
       ),
     );
   }

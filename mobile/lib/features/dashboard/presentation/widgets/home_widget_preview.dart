@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../app/theme/app_colors.dart';
 import '../../../../core/widgets/home_widget_service.dart';
 
@@ -7,10 +8,7 @@ enum WidgetPreviewSize { small, medium, large }
 class HomeWidgetPreviewCard extends StatefulWidget {
   final HomeWidgetSnapshot snapshot;
 
-  const HomeWidgetPreviewCard({
-    super.key,
-    required this.snapshot,
-  });
+  const HomeWidgetPreviewCard({super.key, required this.snapshot});
 
   @override
   State<HomeWidgetPreviewCard> createState() => _HomeWidgetPreviewCardState();
@@ -36,7 +34,11 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
             children: [
               const Row(
                 children: [
-                  Icon(Icons.widgets_outlined, size: 18, color: AppColors.primaryLime),
+                  Icon(
+                    Icons.widgets_outlined,
+                    size: 18,
+                    color: AppColors.primaryLime,
+                  ),
                   SizedBox(width: 8),
                   Text(
                     'HOME-SCREEN WIDGET PREVIEW',
@@ -62,9 +64,7 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
             ],
           ),
           const SizedBox(height: 16),
-          Center(
-            child: _buildWidgetBody(),
-          ),
+          Center(child: _buildWidgetBody()),
         ],
       ),
     );
@@ -77,7 +77,9 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryLime : AppColors.darkSecondaryBackground,
+          color: isSelected
+              ? AppColors.primaryLime
+              : AppColors.darkSecondaryBackground,
           borderRadius: BorderRadius.circular(8),
           border: Border.all(
             color: isSelected ? AppColors.primaryLime : AppColors.darkBorder,
@@ -116,11 +118,7 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
         borderRadius: BorderRadius.circular(22),
         border: Border.all(color: AppColors.darkBorder, width: 1.5),
         boxShadow: const [
-          BoxShadow(
-            color: Color(0x33B5FF55),
-            blurRadius: 10,
-            spreadRadius: 1,
-          )
+          BoxShadow(color: Color(0x33B5FF55), blurRadius: 10, spreadRadius: 1),
         ],
       ),
       child: Column(
@@ -223,11 +221,14 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
                         borderRadius: BorderRadius.circular(6),
                       ),
                       alignment: Alignment.center,
-                      child: const Text('Q',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900,
-                              fontSize: 12,
-                              color: Colors.black)),
+                      child: const Text(
+                        'Q',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w900,
+                          fontSize: 12,
+                          color: Colors.black,
+                        ),
+                      ),
                     ),
                     const SizedBox(width: 6),
                     Text(
@@ -308,7 +309,10 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
                 if (widget.snapshot.activeTaskSubject != null) ...[
                   const SizedBox(height: 4),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 6,
+                      vertical: 2,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF42DFFF).withValues(alpha: 0.15),
                       borderRadius: BorderRadius.circular(4),
@@ -358,11 +362,14 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.center,
-                    child: const Text('Q',
-                        style: TextStyle(
-                            fontWeight: FontWeight.w900,
-                            fontSize: 14,
-                            color: Colors.black)),
+                    child: const Text(
+                      'Q',
+                      style: TextStyle(
+                        fontWeight: FontWeight.w900,
+                        fontSize: 14,
+                        color: Colors.black,
+                      ),
+                    ),
                   ),
                   const SizedBox(width: 8),
                   Text(
@@ -396,9 +403,21 @@ class _HomeWidgetPreviewCardState extends State<HomeWidgetPreviewCard> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _buildMetricCol('XP', '${widget.snapshot.totalXp}', AppColors.primaryLime),
-                _buildMetricCol('FLOW', '${widget.snapshot.todayFocusMinutes}m', const Color(0xFFA879FF)),
-                _buildMetricCol('TASKS', '${widget.snapshot.completedTasks}/${widget.snapshot.totalTasks}', const Color(0xFF42DFFF)),
+                _buildMetricCol(
+                  'XP',
+                  '${widget.snapshot.totalXp}',
+                  AppColors.primaryLime,
+                ),
+                _buildMetricCol(
+                  'FLOW',
+                  '${widget.snapshot.todayFocusMinutes}m',
+                  const Color(0xFFA879FF),
+                ),
+                _buildMetricCol(
+                  'TASKS',
+                  '${widget.snapshot.completedTasks}/${widget.snapshot.totalTasks}',
+                  const Color(0xFF42DFFF),
+                ),
               ],
             ),
           ),

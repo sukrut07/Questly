@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:questly/app/providers/app_providers.dart';
 import 'package:questly/app/router/route_names.dart';
 import 'package:questly/app/theme/app_colors.dart';
 import 'package:questly/app/theme/app_spacing.dart';
+import 'package:questly/features/dashboard/presentation/providers/dashboard_providers.dart';
 import 'package:questly/shared/models/quest.dart';
 import 'package:questly/shared/widgets/app_card.dart';
+import 'package:questly/shared/widgets/questly_celebration_dialog.dart';
 import 'package:questly/shared/widgets/stat_badge.dart';
 
 class ActiveQuestsSection extends StatelessWidget {
@@ -105,13 +109,13 @@ class ActiveQuestsSection extends StatelessWidget {
   }
 }
 
-class _QuestItemCard extends StatelessWidget {
+class _QuestItemCard extends ConsumerWidget {
   final Quest quest;
 
   const _QuestItemCard({required this.quest});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
 
@@ -126,26 +130,47 @@ class _QuestItemCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Category Icon Container
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: isDark
-                      ? AppColors.darkElevatedSurface
-                      : AppColors.lightElevatedSurface,
-                  borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
-                  border: Border.all(
+              // Category Icon / Complete Container
+              InkWell(
+                onTap: () async {
+                  await ref
+                      .read(questRepositoryProvider)
+                      .completeQuest(quest.id);
+                  ref.read(dashboardStateProvider.notifier).refresh();
+                  if (context.mounted) {
+                    QuestlyCelebrationDialog.show(
+                      context,
+                      title: quest.title,
+                      xpReward: quest.xpReward,
+                      badge: 'Task Completed',
+                    );
+                  }
+                },
+                borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
                     color: isDark
-                        ? AppColors.darkBorder
-                        : AppColors.lightBorder,
+                        ? AppColors.darkElevatedSurface
+                        : AppColors.lightElevatedSurface,
+                    borderRadius: BorderRadius.circular(AppSpacing.radiusSm),
+                    border: Border.all(
+                      color: isDark
+                          ? AppColors.darkBorder
+                          : AppColors.lightBorder,
+                    ),
                   ),
-                ),
-                child: Icon(
-                  quest.category.icon,
-                  size: 20,
-                  color: isDark
-                      ? AppColors.darkPrimary
-                      : AppColors.lightPrimary,
+                  child: Icon(
+                    quest.isCompleted
+                        ? Icons.check_circle_rounded
+                        : quest.category.icon,
+                    size: 20,
+                    color: quest.isCompleted
+                        ? AppColors.limePrimary
+                        : (isDark
+                              ? AppColors.darkPrimary
+                              : AppColors.lightPrimary),
+                  ),
                 ),
               ),
 

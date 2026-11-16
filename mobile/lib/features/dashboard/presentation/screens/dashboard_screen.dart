@@ -17,8 +17,11 @@ import 'package:questly/features/dashboard/presentation/widgets/progression_card
 import 'package:questly/features/dashboard/presentation/widgets/quick_actions_bar.dart';
 import 'package:questly/features/dashboard/presentation/widgets/todays_challenge_banner.dart';
 import 'package:questly/features/dashboard/presentation/widgets/widget_customizer_sheet.dart';
+import 'package:questly/features/dashboard/presentation/widgets/workload_balancer_card.dart';
+import 'package:questly/features/quests/presentation/widgets/quick_task_bottom_sheet.dart';
 import 'package:questly/shared/widgets/app_button.dart';
 import 'package:questly/shared/widgets/app_loader.dart';
+import 'package:questly/shared/widgets/questly_button.dart';
 import 'package:questly/shared/widgets/questly_card.dart';
 import 'package:questly/shared/widgets/questly_grid_background.dart';
 import 'package:questly/shared/widgets/questly_heatmap.dart';
@@ -108,7 +111,7 @@ class DashboardScreen extends ConsumerWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'PERSONAL OS',
+                          'COMMAND CENTER',
                           style: AppTypography.labelSmall.copyWith(
                             fontFamily: 'Oswald',
                             letterSpacing: 1.2,
@@ -146,6 +149,69 @@ class DashboardScreen extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.sm),
 
+                    // Academic Workload Balancer
+                    const WorkloadBalancerCard(
+                      plannedMinutes: 45,
+                      capacityMinutes: 180,
+                    ),
+                    const SizedBox(height: AppSpacing.sm),
+
+                    // Ready for Focus Session Card
+                    QuestlyCard(
+                      borderColor: AppColors.limePrimary.withValues(alpha: 0.4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              const Icon(
+                                Icons.timer_rounded,
+                                color: AppColors.limePrimary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: AppSpacing.xs),
+                              Text(
+                                'Ready for a Focus Session?',
+                                style: AppTypography.titleSmall.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            'Add your first task to start a verified focus sprint, or jump into an open study timer.',
+                            style: AppTypography.bodySmall.copyWith(
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                          const SizedBox(height: AppSpacing.sm),
+                          Row(
+                            children: [
+                              QuestlyButton(
+                                text: '+ ADD TASK',
+                                icon: Icons.add,
+                                size: QuestlyButtonSize.small,
+                                variant: QuestlyButtonVariant.primaryLime,
+                                onPressed: () =>
+                                    QuickTaskBottomSheet.show(context),
+                              ),
+                              const SizedBox(width: AppSpacing.xs),
+                              QuestlyButton(
+                                text: 'OPEN CHAMBER',
+                                icon: Icons.play_arrow_rounded,
+                                size: QuestlyButtonSize.small,
+                                variant: QuestlyButtonVariant.darkOutline,
+                                onPressed: () => context.push(RoutePaths.focus),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: AppSpacing.md),
+
                     // Dynamic Ordered Widgets Rendering
                     for (final widgetConfig in activeWidgets) ...[
                       _buildWidgetByType(
@@ -163,6 +229,19 @@ class DashboardScreen extends ConsumerWidget {
               );
             },
           ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        backgroundColor: AppColors.limePrimary,
+        foregroundColor: AppColors.darkBase,
+        icon: const Icon(Icons.add_task_rounded, size: 20),
+        label: Text(
+          'NEW TASK',
+          style: AppTypography.labelBold.copyWith(color: AppColors.darkBase),
+        ),
+        onPressed: () => QuickTaskBottomSheet.show(
+          context,
+          onCreated: () => ref.read(dashboardStateProvider.notifier).refresh(),
         ),
       ),
     );

@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeWidgetSnapshot {
@@ -29,19 +30,19 @@ class HomeWidgetSnapshot {
   });
 
   Map<String, dynamic> toJson() => {
-        'userLevel': userLevel,
-        'academicRank': academicRank,
-        'totalXp': totalXp,
-        'streakDays': streakDays,
-        'activeTaskTitle': activeTaskTitle,
-        'activeTaskSubject': activeTaskSubject,
-        'todayFocusMinutes': todayFocusMinutes,
-        'completedTasks': completedTasks,
-        'totalTasks': totalTasks,
-        'nextClassTitle': nextClassTitle,
-        'nextClassTime': nextClassTime,
-        'updatedAt': DateTime.now().toIso8601String(),
-      };
+    'userLevel': userLevel,
+    'academicRank': academicRank,
+    'totalXp': totalXp,
+    'streakDays': streakDays,
+    'activeTaskTitle': activeTaskTitle,
+    'activeTaskSubject': activeTaskSubject,
+    'todayFocusMinutes': todayFocusMinutes,
+    'completedTasks': completedTasks,
+    'totalTasks': totalTasks,
+    'nextClassTitle': nextClassTitle,
+    'nextClassTime': nextClassTime,
+    'updatedAt': DateTime.now().toIso8601String(),
+  };
 
   factory HomeWidgetSnapshot.fromJson(Map<String, dynamic> json) {
     return HomeWidgetSnapshot(
@@ -85,4 +86,3 @@ class HomeWidgetService {
     }
   }
 }
-
