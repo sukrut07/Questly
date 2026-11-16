@@ -1,7 +1,9 @@
 import 'package:intl/intl.dart';
 import 'package:questly/features/analytics/domain/repositories/analytics_repository.dart';
 import 'package:questly/features/dashboard/domain/repositories/dashboard_repository.dart';
+import 'package:questly/features/focus/domain/models/focus_session.dart';
 import 'package:questly/features/focus/domain/repositories/focus_repository.dart';
+import 'package:questly/features/gamification/domain/engine/xp_progression_engine.dart';
 import 'package:questly/features/quests/domain/repositories/quest_repository.dart';
 import 'package:questly/shared/enums/quest_enums.dart';
 import 'package:questly/shared/widgets/questly_heatmap.dart';
@@ -80,6 +82,31 @@ class AnalyticsRepositoryImpl implements AnalyticsRepository {
           count: existing.count,
           xpEarned: existing.xpEarned + s.xpEarned,
           focusMinutes: existing.focusMinutes + (s.elapsedSeconds ~/ 60),
+        );
+      }
+    }
+
+    // Populate checked subtasks checklist XP into today's heatmap cell
+    final todayKey = DateFormat('yyyy-MM-dd').format(today);
+    if (heatmapData.containsKey(todayKey)) {
+      var todaySubtaskXp = 0;
+      var todaySubtaskCount = 0;
+      for (final q in quests) {
+        final doneSubtasks = q.subtasks.where((s) => s.isCompleted).length;
+        if (doneSubtasks > 0) {
+          todaySubtaskCount += doneSubtasks;
+          todaySubtaskXp +=
+              doneSubtasks * XpProgressionEngine.calculateSubtaskXp(q.priority);
+        }
+      }
+
+      if (todaySubtaskXp > 0 || todaySubtaskCount > 0) {
+        final existing = heatmapData[todayKey]!;
+        heatmapData[todayKey] = HeatmapDayData(
+          date: existing.date,
+          count: existing.count + todaySubtaskCount,
+          xpEarned: existing.xpEarned + todaySubtaskXp,
+          focusMinutes: existing.focusMinutes,
         );
       }
     }
