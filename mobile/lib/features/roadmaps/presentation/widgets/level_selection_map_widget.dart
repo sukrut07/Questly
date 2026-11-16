@@ -150,7 +150,7 @@ class _LevelSelectionMapWidgetState
     final dashboardState = ref.watch(dashboardStateProvider);
     final profile = dashboardState.value?.profile;
     final currentLevel = profile?.level ?? 1;
-    final totalXp = profile?.totalXp ?? 120;
+    final totalXp = profile?.totalXp ?? 0;
     final levelInfo = XpProgressionEngine.calculateLevelInfo(totalXp);
 
     final selectedConfig = _levelNodes.firstWhere(

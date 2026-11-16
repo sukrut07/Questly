@@ -175,6 +175,10 @@ class MockDashboardRepository implements DashboardRepository {
 
     // 5. Dynamic Daily Productivity Metrics
     final totalSubtasks = quests.expand((q) => q.subtasks).length;
+    final completedSubtasksCount = quests
+        .expand((q) => q.subtasks)
+        .where((s) => s.isCompleted)
+        .length;
     final totalCompleted = completedQuests.length + completedSubtasksCount;
     final totalPlanned = quests.length + totalSubtasks;
     final score = totalPlanned == 0
